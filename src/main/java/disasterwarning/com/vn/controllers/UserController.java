@@ -1,4 +1,7 @@
 package disasterwarning.com.vn.controllers;
 
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
 public class UserController {
 }

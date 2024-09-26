@@ -16,13 +16,13 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "imageId", nullable = false)
+    @Column(name = "image_id", nullable = false)
     private int imageId;
 
-    @Column(name = "imageUrl", nullable = false)
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "disasterInfoId", nullable = false)
+    @JoinColumn(name = "disaster_info_id", nullable = false)
     private DisasterInfo disasterInfo;
 }

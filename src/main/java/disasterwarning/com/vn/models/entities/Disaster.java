@@ -15,13 +15,13 @@ import java.util.List;
 public class Disaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "disasterId")
-    private Integer disasterId;
+    @Column(name = "disaster_id")
+    private int disasterId;
 
-    @Column(name = "disasterName", nullable = false)
+    @Column(name = "disaster_name", nullable = false)
     private String disasterName;
 
-    @Column(name = "imageUrl")
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "description")

@@ -17,10 +17,10 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "locationId", nullable = false)
+    @Column(name = "location_id", nullable = false)
     private int locationId;
 
-    @Column(name = "locationName", nullable = false)
+    @Column(name = "location_name", nullable = false)
     private String locationName;
 
     @Column(name = "latitude", nullable = false)

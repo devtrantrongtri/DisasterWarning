@@ -15,14 +15,14 @@ import java.util.List;
 public class DisasterInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "disasterInfoId")
-    private Integer disasterInfoId;
+    @Column(name = "disaster_info_id")
+    private int disasterInfoId;
 
     @ManyToOne
-    @JoinColumn(name = "disasterId", nullable = false)
+    @JoinColumn(name = "disaster_id", nullable = false)
     private Disaster disaster;
 
-    @Column(name = "typeInfo", nullable = false)
+    @Column(name = "type_info", nullable = false)
     private String typeInfo;
 
     @Column(name = "information", nullable = false)

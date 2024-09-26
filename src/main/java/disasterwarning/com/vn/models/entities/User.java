@@ -14,10 +14,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userId", unique = true, nullable = false)
-    private Integer userId;
+    @Column(name = "user_id", unique = true, nullable = false)
+    private int userId;
 
-    @Column(name = "userName", nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String userName;
 
     @Column(name = "password", nullable = false)
@@ -30,6 +30,6 @@ public class User {
     private String role;
 
     @OneToOne
-    @JoinColumn(name = "locationId", nullable = false)
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 }

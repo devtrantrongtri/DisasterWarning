@@ -16,21 +16,21 @@ public class DisasterWarning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "disasterWarningId", nullable = false)
+    @Column(name = "disaster_warning_id", nullable = false)
     private int disasterWarningId;
 
     @ManyToOne
-    @JoinColumn(name = "disasterId", nullable = false)
+    @JoinColumn(name = "disaster_id", nullable = false)
     private Disaster disaster;
 
     @ManyToOne
-    @JoinColumn(name = "locationId", nullable = false)
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @Column(name = "startDate", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "endDate", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private Date endDate;
 
     @Column(name = "description", nullable = false)
