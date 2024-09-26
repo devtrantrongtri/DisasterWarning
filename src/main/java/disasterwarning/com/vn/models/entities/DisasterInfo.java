@@ -4,27 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "disaster_info")
+@Table(name = "DISASTER_INFOS")
 public class DisasterInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(name = "disasterInfoId")
+    private Integer disasterInfoId;
 
     @ManyToOne
-    @JoinColumn(name = "disaster_type_id", nullable = false)
-    private DisasterType disasterType;
+    @JoinColumn(name = "disasterId", nullable = false)
+    private Disaster disaster;
 
-    @Column(nullable = true)
-    private String formationProcess;
+    @Column(name = "typeInfo", nullable = false)
+    private String typeInfo;
 
-    @Column(nullable = true)
-    private String destructivePower;
+    @Column(name = "information", nullable = false)
+    private String information;
 
-    @Column(nullable = true)
-    private String preventionMethods;
+    @OneToMany(mappedBy = "disasterInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Image> images;
 }
