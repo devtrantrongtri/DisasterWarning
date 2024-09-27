@@ -34,4 +34,10 @@ public class Location {
 
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DisasterWarning> disasterWarnings;
+
+    public Location(String locationName, BigDecimal latitude, BigDecimal longitude) {
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

@@ -33,4 +33,10 @@ public class Disaster {
     @OneToMany(mappedBy = "disaster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DisasterWarning> disasterWarnings;
 
+    public Disaster(String disasterName, String imageUrl, String description) {
+        this.disasterName = disasterName;
+        this.imageUrl = imageUrl;
+        this.description = description;
+    }
+
 }
