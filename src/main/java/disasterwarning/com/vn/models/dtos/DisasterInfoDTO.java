@@ -9,10 +9,7 @@ import java.util.List;
 public class DisasterInfoDTO {
     private String typeInfo;
     private String information;
-//    @JsonManagedReference
-//    private Disaster disaster;
-//    @JsonManagedReference
-//    private List<Image> images;
+
     @JsonManagedReference
     private DisasterDTO disaster;
     @JsonManagedReference
