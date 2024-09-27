@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements IUserService{
 
     @Autowired
     private UserRepo userRepo;
@@ -23,6 +23,7 @@ public class UserService {
         if (existingUser != null) {
             throw new RuntimeException("User already exists");
         }
+        //set id cho location id
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
     }
@@ -34,6 +35,10 @@ public class UserService {
         if (existingUser == null) {
             throw new RuntimeException("User does not exist");
         }
+        existingUser.setUserName(user.getUserName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setRole(user.getRole());
+        existingUser.setLocation(user.getLocation());
         userRepo.save(user);
         return mapper.convertToDto(user, UserDTO.class);
     }
