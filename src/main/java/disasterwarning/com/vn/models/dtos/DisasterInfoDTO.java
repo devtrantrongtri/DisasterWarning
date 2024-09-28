@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class DisasterInfoDTO {
+    private Integer disasterInfoId;
     private String typeInfo;
     private String information;
 
