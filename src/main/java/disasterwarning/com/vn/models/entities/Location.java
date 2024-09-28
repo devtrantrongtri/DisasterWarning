@@ -29,8 +29,11 @@ public class Location {
     @Column(name = "longitude", nullable = false)
     private BigDecimal longitude;
 
-    @OneToOne(mappedBy = "location", fetch = FetchType.LAZY)
-    private User user;
+    @Column(name = "status", nullable = false )
+    private String status;
+
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+    private List<User> user;
 
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<DisasterWarning> disasterWarnings;

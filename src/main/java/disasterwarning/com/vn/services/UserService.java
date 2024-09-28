@@ -1,7 +1,9 @@
 package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.models.dtos.UserDTO;
+import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;
+import disasterwarning.com.vn.repositories.LocationRepo;
 import disasterwarning.com.vn.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class UserService implements IUserService{
     private UserRepo userRepo;
 
     @Autowired
+    private LocationRepo locationRepo;
+
+    @Autowired
     private Mapper mapper;
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -23,7 +28,9 @@ public class UserService implements IUserService{
         if (existingUser != null) {
             throw new RuntimeException("User already exists");
         }
-        //set id cho location id
+        Location location = locationRepo.findById(newUser.getLocation().getLocationId())
+                .orElseThrow(()->new RuntimeException("Location not found"));
+        newUser.setLocation(location);
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
     }

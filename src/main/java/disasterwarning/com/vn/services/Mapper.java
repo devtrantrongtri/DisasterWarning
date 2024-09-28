@@ -1,5 +1,6 @@
 package disasterwarning.com.vn.services;
 
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,27 @@ public class Mapper {
     private ModelMapper modelMapper;
 
     public <D, E> E convertToEntity(D dto, Class<E> entityClass) {
-        return modelMapper.map(dto, entityClass);
+        try {
+            if (dto == null) {
+                return null;
+            }
+            return modelMapper.map(dto, entityClass);
+        } catch (MappingException e) {
+            throw new IllegalArgumentException("Error mapping DTO to entity", e);
+        }
     }
 
     public <E, D> D convertToDto(E entity, Class<D> dtoClass) {
-        return modelMapper.map(entity, dtoClass);
+        try {
+            if (entity == null) {
+                return null;
+            }
+            return modelMapper.map(entity, dtoClass);
+        } catch (MappingException e) {
+            throw new IllegalArgumentException("Error mapping entity to DTO", e);
+        }
     }
+
 
     public <D, E> List<E> convertToEntityList(List<D> dtoList, Class<E> entityClass) {
         return dtoList.stream()

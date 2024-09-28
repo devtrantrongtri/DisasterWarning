@@ -29,7 +29,10 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @OneToOne
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 }

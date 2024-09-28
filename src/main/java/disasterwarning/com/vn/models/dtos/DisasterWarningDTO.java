@@ -1,9 +1,12 @@
 package disasterwarning.com.vn.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Data;
 
 import java.sql.Date;
 
+@Data
 public class DisasterWarningDTO {
 
     private int disasterWarningId;
@@ -11,9 +14,9 @@ public class DisasterWarningDTO {
     private Date endDate;
     private String description;
 
-    @JsonManagedReference
+    @JsonBackReference(value = "disaster-warning")
     private DisasterDTO disaster;
 
-    @JsonManagedReference
+    @JsonBackReference(value = "location-warning")
     private LocationDTO location;
 }

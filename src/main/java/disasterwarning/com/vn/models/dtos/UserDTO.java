@@ -11,7 +11,8 @@ public class UserDTO {
     private String email;
     private String password;
     private String role;
+    private String status;
 
-    @JsonManagedReference
-    private LocationDTO locationDTO;
+    @JsonManagedReference(value = "location-user")
+    private LocationDTO location;
 }

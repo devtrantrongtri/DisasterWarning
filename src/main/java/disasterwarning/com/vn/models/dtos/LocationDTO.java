@@ -1,23 +1,28 @@
 package disasterwarning.com.vn.models.dtos;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import disasterwarning.com.vn.models.entities.DisasterWarning;
-import disasterwarning.com.vn.models.entities.User;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Data
 public class LocationDTO {
 
     private int locationId;
+    @JsonProperty("locationName")
     private String locationName;
+    @JsonProperty("latitude")
     private BigDecimal latitude;
+    @JsonProperty("longitude")
     private BigDecimal longitude;
+    private String status;
 
-    @JsonBackReference
+    @JsonBackReference(value = "location-user")
     private UserDTO user;
 
-    @JsonBackReference
+    @JsonManagedReference(value = "location-warning")
     private List<DisasterWarningDTO> disasterWarnings;
 }
