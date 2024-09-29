@@ -45,4 +45,13 @@ public class FileUploadService {
         // Return an object with both public_id and secure_url
         return new ImageCloudinaryResponse(publicId, secureUrl);
     }
+
+    public String deleteImage(String publicId) {
+        try {
+            Map<String, Object> result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            return (String) result.get("result");
+        } catch (IOException e) {
+            throw new RuntimeException("Error occurred while deleting image: " + e.getMessage(), e);
+        }
+    }
 }

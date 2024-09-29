@@ -50,4 +50,18 @@ public class DisasterInfoController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteDisasterInfo(@PathVariable int id) {
+        try {
+            boolean isDeleted = disasterInfoService.deleteDisasterInfo(id);
+
+            if (isDeleted) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // HTTP 204 No Content
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("DisasterInfo not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
 }

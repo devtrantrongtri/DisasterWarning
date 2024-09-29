@@ -123,8 +123,23 @@ public class DisasterInfoService implements IDisasterInfoService {
 
     @Override
     public boolean deleteDisasterInfo(int id) {
-        // Check if the disaster info exists
-        if (disasterInfoRepo.existsById(id)) {
+
+        Optional<DisasterInfo> disasterInfoOptional = disasterInfoRepo.findById(id);
+        if (disasterInfoOptional.isPresent()) {
+            DisasterInfo disasterInfo = disasterInfoOptional.get();
+            List<Image> images = disasterInfo.getImages();
+            for (Image image : images) {
+                try {
+                    // Delete image from Cloudinary by publicId
+                    String result = fileUploadService.deleteImage(image.getImagePublicId());
+                    if (!"ok".equals(result)) {
+                        throw new RuntimeException("Failed to delete image from Cloudinary: " + image.getImagePublicId());
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException("Error occurred while deleting image with publicId " + image.getImagePublicId(), e);
+                }
+            }
+
             disasterInfoRepo.deleteById(id);
             return true;
         } else {
