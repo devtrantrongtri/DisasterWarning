@@ -93,31 +93,16 @@ public class DisasterInfoService implements IDisasterInfoService {
 
     @Override
     public DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO) {
-        // Fetch existing disasterInfỏ from repository
         Optional<DisasterInfo> disasterInfoOpt = disasterInfoRepo.findById(id);
-
-        // Check if the disaster info exists, otherwise throw an error
         if (disasterInfoOpt.isEmpty()) {
             throw new RuntimeException("DisasterInfo with ID " + id + " does not exist");
         }
-
-        // Get the existing entity
         DisasterInfo existingDisasterInfo = disasterInfoOpt.get();
-
-        // Map fields from DTO to the existing entity
         DisasterInfo updatedDisasterInfo = mapper.convertToEntity(disasterInfoDTO, DisasterInfo.class);
-
-        // Ensure the ID remains the same, as we're updating an existing record
         updatedDisasterInfo.setDisasterInfoId(existingDisasterInfo.getDisasterInfoId());
-
-
-        updatedDisasterInfo.setDisaster(existingDisasterInfo.getDisaster());  // Keep the associated disaster
-        // TODO: save image
-
-        // Save the updated disaster info
+        updatedDisasterInfo.setDisaster(existingDisasterInfo.getDisaster());
+        updatedDisasterInfo.setImages(existingDisasterInfo.getImages());
         DisasterInfo savedDisasterInfo = disasterInfoRepo.save(updatedDisasterInfo);
-
-        // Convert the updated entity back to DTO and return it
         return mapper.convertToDto(savedDisasterInfo, DisasterInfoDTO.class);
     }
 

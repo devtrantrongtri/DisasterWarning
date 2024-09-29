@@ -54,4 +54,26 @@ public class FileUploadService {
             throw new RuntimeException("Error occurred while deleting image: " + e.getMessage(), e);
         }
     }
+
+    public ImageCloudinaryResponse uploadImageWithPublicId(MultipartFile file, String publicId) throws IOException {
+        if (file.isEmpty()) {
+            throw new RuntimeException("File is empty");
+        }
+
+        // Prepare the options for Cloudinary upload
+        Map<String, Object> uploadOptions = ObjectUtils.asMap(
+                "public_id", publicId,  // Use the existing public_id to overwrite the image
+                "overwrite", true       // Overwrite the existing image
+        );
+
+        // Upload the new image and overwrite the existing one
+        Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
+
+        String newPublicId = (String) uploadResult.get("public_id");
+        String secureUrl = (String) uploadResult.get("secure_url");
+
+        // Return an object with the public_id and secure_url
+        return new ImageCloudinaryResponse(newPublicId, secureUrl);
+    }
+
 }

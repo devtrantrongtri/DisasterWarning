@@ -50,6 +50,34 @@ public class DisasterInfoController {
         }
     }
 
+    @GetMapping("getById/{id}")
+    public ResponseEntity<?> findDisasterInfoById(@PathVariable int id) {
+        try {
+            // Call the service to find the disaster info by ID
+            DisasterInfoDTO disasterInfo = disasterInfoService.findDisasterInfoById(id);
+
+            // Return the found DisasterInfoDTO with HTTP 200 OK status
+            return ResponseEntity.ok(disasterInfo);
+        } catch (RuntimeException e) {
+            // Handle case where the disaster info does not exist
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // Handle any other errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateDisasterInfo(@PathVariable int id, @RequestBody DisasterInfoDTO disasterInfoDTO) {
+        try {
+            DisasterInfoDTO updatedInfo = disasterInfoService.updateDisasterInfo(id, disasterInfoDTO);
+            return ResponseEntity.ok(updatedInfo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDisasterInfo(@PathVariable int id) {
         try {
