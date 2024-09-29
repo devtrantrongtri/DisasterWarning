@@ -1,6 +1,7 @@
 package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.models.dtos.DisasterInfoDTO;
+import disasterwarning.com.vn.models.dtos.ImageCloudinaryResponse;
 import disasterwarning.com.vn.models.entities.Disaster;
 import disasterwarning.com.vn.models.entities.DisasterInfo;
 import disasterwarning.com.vn.models.entities.Image;
@@ -53,11 +54,12 @@ public class DisasterInfoService implements IDisasterInfoService {
             for (MultipartFile imageFile : images) {
                 try {
                     // Upload từng file ảnh lên Cloudinary và lấy URL
-                    String imageUrl = fileUploadService.uploadImage(imageFile);
+                    ImageCloudinaryResponse mageCloudinaryResponse = fileUploadService.uploadImagev2(imageFile);
 
                     //Image và  disasterInfo
                     Image imageEntity = new Image();
-                    imageEntity.setImageUrl(imageUrl);
+                    imageEntity.setImageUrl(mageCloudinaryResponse.getSecureUrl());
+                    imageEntity.setImagePublicId(mageCloudinaryResponse.getPublicId());
                     imageEntity.setDisasterInfo(savedDisasterInfo);  //  Linking Image và DisasterInfo
 
                     // add image to images

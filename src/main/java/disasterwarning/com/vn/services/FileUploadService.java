@@ -2,6 +2,7 @@ package disasterwarning.com.vn.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import disasterwarning.com.vn.models.dtos.ImageCloudinaryResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,5 +31,18 @@ public class FileUploadService {
 
         Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return (String) uploadResult.get("secure_url"); // Trả về URL của ảnh đã được upload
+    }
+
+    public ImageCloudinaryResponse uploadImagev2(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new RuntimeException("File is empty");
+        }
+
+        Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        String publicId = (String) uploadResult.get("public_id");
+        String secureUrl = (String) uploadResult.get("secure_url");
+
+        // Return an object with both public_id and secure_url
+        return new ImageCloudinaryResponse(publicId, secureUrl);
     }
 }

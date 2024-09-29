@@ -10,6 +10,7 @@ public class ImageDTO {
 
     private int imageId;
     private String imageUrl;
+    private String imagePublicId;
 
     @JsonBackReference(value = "disaster-img")
     private DisasterInfoDTO disasterInfo;
