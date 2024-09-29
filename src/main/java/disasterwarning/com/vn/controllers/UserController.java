@@ -1,5 +1,6 @@
 package disasterwarning.com.vn.controllers;
 
+import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ public class UserController {
     private IUserService iUserService;
 
     @PostMapping("/user")
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) throws DuplicateDataException {
         UserDTO createdUser = iUserService.createUser(userDTO);
         if (createdUser != null) {
             return ResponseEntity.ok(createdUser);
         }
         return ResponseEntity.notFound().build();
     }
+
+
 }

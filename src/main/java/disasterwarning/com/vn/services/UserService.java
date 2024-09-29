@@ -1,5 +1,7 @@
 package disasterwarning.com.vn.services;
 
+import disasterwarning.com.vn.exceptions.DataNotFoundException;
+import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;
@@ -22,14 +24,15 @@ public class UserService implements IUserService{
     @Autowired
     private Mapper mapper;
 
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) throws DuplicateDataException {
         User newUser = mapper.convertToEntity(userDTO, User.class);
         User existingUser = userRepo.findByEmail(newUser.getEmail());
         if (existingUser != null) {
-            throw new RuntimeException("User already exists");
+            throw new DuplicateDataException("User already exists");
         }
         Location location = locationRepo.findById(newUser.getLocation().getLocationId())
-                .orElseThrow(()->new RuntimeException("Location not found"));
+                .orElseThrow(()->new DataNotFoundException("Location not found"));
+        newUser.setStatus("active");
         newUser.setLocation(location);
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
@@ -40,7 +43,7 @@ public class UserService implements IUserService{
         User user = mapper.convertToEntity(userDTO, User.class);
         User existingUser = userRepo.findByEmail(user.getEmail());
         if (existingUser == null) {
-            throw new RuntimeException("User does not exist");
+            throw new DataNotFoundException("User does not exist");
         }
         existingUser.setUserName(user.getUserName());
         existingUser.setEmail(user.getEmail());
@@ -52,14 +55,14 @@ public class UserService implements IUserService{
 
     public UserDTO findUserById(int id) {
         User user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User does not exist"));
+                .orElseThrow(() -> new DataNotFoundException("User does not exist"));
         return mapper.convertToDto(user, UserDTO.class);
     }
 
     public UserDTO findUserByEmail(String email) {
         User user = userRepo.findByEmail(email);
         if (user == null) {
-            throw new RuntimeException("User does not exist");
+            throw new DataNotFoundException("User does not exist");
         }
         return mapper.convertToDto(user, UserDTO.class);
     }
@@ -67,15 +70,16 @@ public class UserService implements IUserService{
     public List<UserDTO> findAllUsers() {
         List<User> users = userRepo.findAll();
         if (users.isEmpty()) {
-            throw new RuntimeException("User does not exist");
+            throw new DataNotFoundException("User does not exist");
         }
         return mapper.convertToDtoList(users, UserDTO.class);
     }
 
     public boolean deleteUser(int id) {
         User user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User does not exist"));
-        userRepo.delete(user);
+                .orElseThrow(() -> new DataNotFoundException("User does not exist"));
+        user.setStatus("inactive");
+        userRepo.save(user);
         return true;
     }
 }

@@ -1,5 +1,7 @@
 package disasterwarning.com.vn.services;
 
+import disasterwarning.com.vn.exceptions.DataNotFoundException;
+import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.LocationDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.repositories.LocationRepo;
@@ -22,7 +24,7 @@ public class LocationService implements ILocationService {
     @Override
     public LocationDTO findLocationById(int id){
         Location location = locationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location Not found"));
+                .orElseThrow(() -> new DataNotFoundException("Location Not found"));
         return mapper.convertToEntity(location, LocationDTO.class);
     }
 
@@ -30,7 +32,7 @@ public class LocationService implements ILocationService {
     public LocationDTO findLocationByName(String name) {
         Location location = locationRepo.findByName(name);
         if(location == null || Objects.equals(location.getStatus(), "inactive")) {
-            throw new RuntimeException("Location Not found");
+            throw new DataNotFoundException("Location Not found");
         }
         return mapper.convertToDto(location, LocationDTO.class);
     }
@@ -39,7 +41,7 @@ public class LocationService implements ILocationService {
     public List<LocationDTO> findAllLocations() {
         List<Location> locations = locationRepo.findAll();
         if (locations.isEmpty()) {
-            throw new RuntimeException("Location Not found");
+            throw new DataNotFoundException("Location Not found");
         }
         List<Location> activeLocations = new ArrayList<>();
         for (Location location : locations) {
@@ -52,12 +54,12 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    public LocationDTO createLocation(LocationDTO locationDTO) {
+    public LocationDTO createLocation(LocationDTO locationDTO) throws DuplicateDataException {
 
         Location locationToSave = mapper.convertToEntity(locationDTO, Location.class);
 
         if (locationRepo.findById(locationToSave.getLocationId()).isPresent()) {
-            throw new RuntimeException("Location already exists");
+            throw new DuplicateDataException("Location already exists");
         }
         locationToSave.setStatus("active");
         Location savedLocation = locationRepo.save(locationToSave);
@@ -71,7 +73,7 @@ public class LocationService implements ILocationService {
     public LocationDTO updateLocation(int id, LocationDTO locationDTO) {
         Location newLocation = mapper.convertToEntity(locationDTO, Location.class);
         Location existingLocation = locationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location Not found"));
+                .orElseThrow(() -> new DataNotFoundException("Location Not found"));
         existingLocation.setLocationName(newLocation.getLocationName());
         existingLocation.setLatitude(newLocation.getLatitude());
         existingLocation.setLongitude(newLocation.getLongitude());
@@ -82,8 +84,9 @@ public class LocationService implements ILocationService {
     @Override
     public boolean deleteLocation(int id) {
         Location existingLocation = locationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location Not found"));
-        locationRepo.delete(existingLocation);
+                .orElseThrow(() -> new DataNotFoundException("Location Not found"));
+        existingLocation.setStatus("inactive");
+        locationRepo.save(existingLocation);
         return true;
     }
 
