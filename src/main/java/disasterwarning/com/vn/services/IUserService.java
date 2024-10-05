@@ -20,4 +20,5 @@ public interface IUserService {
 
     public boolean deleteUser(int id) throws DataNotFoundException;
 
+    public List<UserDTO> findUsersBtProvince(String province) throws DataNotFoundException;
 }

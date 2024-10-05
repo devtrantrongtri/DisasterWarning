@@ -82,4 +82,13 @@ public class UserService implements IUserService{
         userRepo.save(user);
         return true;
     }
+
+    @Override
+    public List<UserDTO> findUsersBtProvince(String province) throws DataNotFoundException {
+        List<User> users = userRepo.findUsersByProvince(province);
+        if (users.isEmpty()) {
+            throw new DataNotFoundException("User does not exist");
+        }
+        return mapper.convertToDtoList(users, UserDTO.class);
+    }
 }
