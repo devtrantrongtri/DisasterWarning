@@ -1,6 +1,5 @@
 package disasterwarning.com.vn.services;
 
-import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.models.dtos.DisasterInfoDTO;
 import org.springframework.web.multipart.MultipartFile;
 

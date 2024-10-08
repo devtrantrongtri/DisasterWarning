@@ -2,6 +2,7 @@ package disasterwarning.com.vn.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
 import disasterwarning.com.vn.models.dtos.LocationDTO;
@@ -9,6 +10,7 @@ import disasterwarning.com.vn.models.dtos.WeatherData;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.repositories.DisasterWarningRepo;
+import disasterwarning.com.vn.repositories.LocationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class DisasterWarningService implements IDisasterWarningService {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private LocationRepo locationRepo;
 
     @Autowired
     private Mapper mapper;
@@ -156,40 +161,125 @@ public class DisasterWarningService implements IDisasterWarningService {
         return true;
     }
 
+    public DisasterWarningDTO sendDisasterWarning() {
+        List<LocationDTO> locations = locationService.findAllLocations();
+        List<Location> locationList = mapper.convertToEntityList(locations, Location.class);
+        if (locationList.isEmpty()) {
+            throw new DataNotFoundException("Location List is empty");
+        }
+        DisasterWarning disasterWarning  = new DisasterWarning();
+        for (Location location : locationList){
+            List<WeatherData> weatherData = getWeatherData(location.getLocationName());
+            if (weatherData.isEmpty()) {
+                throw new DataNotFoundException("Weather Data is empty");
+            }
+            WeatherData alert = CheckDisasterWarning(weatherData);
+            if (alert.getMessage().equals("Rain is too high")) {
+                Location locationRepoByName = locationRepo.findByName(location.getLocationName());
+                disasterWarning.setLocation(locationRepoByName);
+                disasterWarning.setDescription("Cảnh báo: Lượng mưa lớn có nguy cơ gây lũ quét tại khu vực \" + location.getLocationName() + \". Khuyến nghị người dân thực hiện các biện pháp phòng tránh, tuân thủ hướng dẫn của cơ quan chức năng và di dời đến nơi an toàn nếu cần thiết.");
+                disasterWarningRepo.save(disasterWarning);
+            }
+        }
+        return mapper.convertToEntity(disasterWarning, DisasterWarningDTO.class);
+    }
 
 
-    public String CheckDisasterWarning(WeatherData weatherData){
-        if(weatherData == null){
+
+    public WeatherData CheckDisasterWarning(List<WeatherData> weatherDataList){
+        if(weatherDataList.isEmpty()){
             throw new RuntimeException("Weather data is empty");
         }
+        for(WeatherData weatherData : weatherDataList) {
 
-        double tempC = weatherData.getMain().getTemp() - 273.15;
+            // Kiểm tra nếu các giá trị
+            if (weatherData.getMain() == null || weatherData.getRain() == null || weatherData.getWind() == null) {
+                throw new RuntimeException("Incomplete weather data");
+            }
 
-        //Cảnh báo lũ
-        if (weatherData.getRain().get_3h() >= 100) {
-            return "Rain is too high"; //lũ quét
-        } else if (weatherData.getRain().get_3h() >= 50) {
-            return "Rain is high"; //lũ cục bộ
+            double tempC = weatherData.getMain().getTemp() - 273.15;
+
+            //Cảnh báo lũ
+            if (weatherData.getRain().get_3h() >= 100) {
+                weatherData.setMessage("Rain is too high");
+                return weatherData; //lũ quét
+            } else if (weatherData.getRain().get_3h() >= 50) {
+                weatherData.setMessage("Rain is high");
+                return weatherData; //lũ cục bộ
+            }
+
+            // Cảnh báo sạt lở đất
+            if (weatherData.getRain().get_3h() >= 50 && continuousHeavyRain(weatherDataList)) {
+                weatherData.setMessage("High risk of landslide due to continuous heavy rainfall");
+                return weatherData;
+            }
+
+            //Cảnh báo bão
+            if (weatherData.getWind().getSpeed() >= 32.7) {
+                weatherData.setMessage("Wind is high");//siêu bão
+                return weatherData;
+            } else if (weatherData.getWind().getSpeed() >= 17.2) {
+                weatherData.setMessage("Wind is too high");//bão
+                return weatherData;
+            }
+
+            //Cảnh báo áp suất thấp bất thường (có thể là dấu hiệu của bão)
+            if (weatherData.getMain().getPressure() < 950) {
+                weatherData.setMessage("Pressure is low"); //có thể có bão mạnh
+            }
+
+
+            if (tempC > 35 && weatherData.getMain().getHumidity() < 30) {
+                weatherData.setMessage("Warning: Drought risk (High temperature with low humidity");
+                return weatherData;
+            }
+
+            //Cảnh báo nắng nóng và rét đậm
+            if (tempC > 35) {
+                weatherData.setMessage("Temperature is too high");//Nhiệt độ cao
+                return weatherData;
+            } else if (tempC < 13) {
+                weatherData.setMessage("Temperature is too low");//Nhiệt độ thấp
+                return weatherData;
+            }
+
+            if (weatherData.getVisibility() < 1000) {
+                weatherData.setMessage("Dense fog");
+                return weatherData;
+            }
+
+            if (weatherData.getWind().getGust() > 33) {
+                weatherData.setMessage("Tornado risk (Strong wind gusts)");
+                return weatherData;
+            }
+
+            if (weatherData.getMain().getPressure() < 980 && weatherData.getWind().getSpeed() >= 15) {
+                weatherData.setMessage("Risk of large waves and storm surge");
+                return weatherData;
+            }
+
+            if (weatherData.getRain().get_3h() >= 50 && weatherData.getWind().getSpeed() >= 13.9) {
+                weatherData.setMessage("Severe weather warning");// Thời tiết nguy hiểm
+                return weatherData;
+            }
         }
+        return null;
+    }
 
-        //Cảnh báo bão
-        if (weatherData.getWind().getSpeed() >= 32.7) {
-            return "Wind is high"; //siêu bão
-        } else if (weatherData.getWind().getSpeed() >= 17.2) {
-            return "Wind is too high"; //bão
+    private boolean continuousHeavyRain(List<WeatherData> weatherDataList) {
+        int heavyRainCount = 0;
+
+        for (WeatherData weatherData : weatherDataList) {
+            if (weatherData.getRain() != null && weatherData.getRain().get_3h() >= 50) {
+                heavyRainCount++;
+            } else {
+                heavyRainCount = 0;
+            }
+
+            if (heavyRainCount >= 3) { // Giả sử mưa lớn liên tục trong 3 chu kỳ (9h) là nguy hiểm
+                return true;
+            }
         }
-
-        //Cảnh báo áp suất thấp bất thường (có thể là dấu hiệu của bão)
-        if (weatherData.getMain().getPressure() < 950) {
-            return "Pressure is low"; //có thể có bão mạnh
-        }
-
-        if (tempC > 35) {
-            return "Temperature is too high"; //Nhiệt độ cao
-        } else if (tempC < 13) {
-            return "Temperature is too low"; //Nhiệt độ thấp
-        }
-
-        return "0";
+        return false;
     }
 }

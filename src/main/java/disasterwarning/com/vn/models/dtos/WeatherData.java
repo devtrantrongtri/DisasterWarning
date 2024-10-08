@@ -18,6 +18,7 @@ public class WeatherData {
     private Sys sys; // Thông tin hệ thống (pod)
     private String dt_txt; // Thời gian dự báo dạng chuỗi
     private String cityName;
+    private String Message;
 
     @Data
     public static class Main {
