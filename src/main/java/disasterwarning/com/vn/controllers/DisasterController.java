@@ -1,8 +1,12 @@
 package disasterwarning.com.vn.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.services.DisasterService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,9 +58,19 @@ public class DisasterController {
 
     @PostMapping(value = "disaster" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity<ResponseWrapper<DisasterDTO>> createDisaster
-            (@RequestPart("disaster") DisasterDTO disasterDTO,
+            (@Parameter(description = "Disaster DTO", required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"disasterName\": \"string\", \"imageUrl\": \"string\", \"description\": \"string\"}"
+                            )
+                    ))
+             @RequestParam("disaster") String disasterReq ,
              @RequestPart(value = "images", required = false) MultipartFile images) {
         try {
+            // Chuyển đổi từ JSON String sang DisasterInfoDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            DisasterDTO disasterDTO = objectMapper.readValue(disasterReq, DisasterDTO.class);
             DisasterDTO disaster = disasterService.createDisaster(disasterDTO, images);
             ResponseWrapper<DisasterDTO> responseWrapper;
 
