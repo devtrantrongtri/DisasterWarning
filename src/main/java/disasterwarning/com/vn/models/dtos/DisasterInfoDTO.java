@@ -16,6 +16,7 @@ public class DisasterInfoDTO {
 
     @JsonBackReference(value = "disaster-info")
     private DisasterDTO disaster;
+
     @JsonManagedReference(value = "disaster-img")
     private List<ImageDTO> images;
 }

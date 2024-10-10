@@ -78,9 +78,11 @@ public class DisasterWarningService implements IDisasterWarningService {
             throw new RuntimeException("Disaster is null");
         }
         else {
-            DisasterDTO existingDisaster = disasterService.findDisasterById(newDisasterWarning.getDisaster().getDisasterId());
-            if(existingDisaster == null){
-                throw new RuntimeException("Disaster not found");
+            if(newDisasterWarning.getDisaster().getDisasterId() != 0){
+                DisasterDTO existingDisaster = disasterService.findDisasterById(newDisasterWarning.getDisaster().getDisasterId());
+                if(existingDisaster == null){
+                    throw new RuntimeException("Disaster not found");
+                }
             }
         }
 
@@ -88,9 +90,11 @@ public class DisasterWarningService implements IDisasterWarningService {
             throw new RuntimeException("Location is null");
         }
         else {
-            LocationDTO existingLocation = locationService.findLocationById(newDisasterWarning.getLocation().getLocationId());
-            if(existingLocation == null){
-                throw new RuntimeException("Location not found");
+            if(newDisasterWarning.getLocation().getLocationId() != 0){
+                LocationDTO existingLocation = locationService.findLocationById(newDisasterWarning.getLocation().getLocationId());
+                if(existingLocation == null){
+                    throw new RuntimeException("Location not found");
+                }
             }
         }
 
@@ -109,11 +113,13 @@ public class DisasterWarningService implements IDisasterWarningService {
             throw new RuntimeException("Disaster is null");
         }
         else {
-            DisasterDTO existingDisaster = disasterService.findDisasterById(disasterWarning.getDisaster().getDisasterId());
-            if(existingDisaster == null){
-                throw new RuntimeException("Disaster not found");
+            if(disasterWarningDTO.getDisaster().getDisasterId() != 0){
+                DisasterDTO existingDisaster = disasterService.findDisasterById(disasterWarning.getDisaster().getDisasterId());
+                if(existingDisaster == null){
+                    throw new RuntimeException("Disaster not found");
+                }
+                updateDisasterWarning.setDisaster(disasterWarning.getDisaster());
             }
-            updateDisasterWarning.setDisaster(disasterWarning.getDisaster());
 
         }
 
@@ -121,11 +127,13 @@ public class DisasterWarningService implements IDisasterWarningService {
             throw new RuntimeException("Location is null");
         }
         else {
-            LocationDTO existingLocation = locationService.findLocationById(disasterWarning.getLocation().getLocationId());
-            if(existingLocation == null){
-                throw new RuntimeException("Location not found");
+            if(disasterWarningDTO.getLocation().getLocationId() != 0){
+                LocationDTO existingLocation = locationService.findLocationById(disasterWarning.getLocation().getLocationId());
+                if(existingLocation == null){
+                    throw new RuntimeException("Location not found");
+                }
+                updateDisasterWarning.setLocation(disasterWarning.getLocation());
             }
-            updateDisasterWarning.setLocation(disasterWarning.getLocation());
         }
 
         updateDisasterWarning.setStartDate(disasterWarning.getStartDate());
@@ -190,6 +198,7 @@ public class DisasterWarningService implements IDisasterWarningService {
         if(weatherDataList.isEmpty()){
             throw new RuntimeException("Weather data is empty");
         }
+
         for(WeatherData weatherData : weatherDataList) {
 
             // Kiểm tra nếu các giá trị
@@ -202,23 +211,28 @@ public class DisasterWarningService implements IDisasterWarningService {
             //Cảnh báo lũ
             if (weatherData.getRain().get_3h() >= 100) {
                 weatherData.setMessage("Rain is too high");
+                weatherData.setDisasterName("flood");
                 return weatherData; //lũ quét
             } else if (weatherData.getRain().get_3h() >= 50) {
+                weatherData.setDisasterName("flood");
                 weatherData.setMessage("Rain is high");
                 return weatherData; //lũ cục bộ
             }
 
             // Cảnh báo sạt lở đất
             if (weatherData.getRain().get_3h() >= 50 && continuousHeavyRain(weatherDataList)) {
+                weatherData.setDisasterName("earthquake");
                 weatherData.setMessage("High risk of landslide due to continuous heavy rainfall");
                 return weatherData;
             }
 
             //Cảnh báo bão
             if (weatherData.getWind().getSpeed() >= 32.7) {
+                weatherData.setDisasterName("storm");
                 weatherData.setMessage("Wind is high");//siêu bão
                 return weatherData;
             } else if (weatherData.getWind().getSpeed() >= 17.2) {
+                weatherData.setDisasterName("storm");
                 weatherData.setMessage("Wind is too high");//bão
                 return weatherData;
             }

@@ -30,10 +30,12 @@ public class UserService implements IUserService{
         if (existingUser != null) {
             throw new DuplicateDataException("User already exists");
         }
-        Location location = locationRepo.findById(newUser.getLocation().getLocationId())
-                .orElseThrow(()->new DataNotFoundException("Location not found"));
+        if(userDTO.getLocation() != null){
+            Location location = locationRepo.findById(newUser.getLocation().getLocationId())
+                    .orElseThrow(()->new DataNotFoundException("Location not found"));
+            newUser.setLocation(location);
+        }
         newUser.setStatus("active");
-        newUser.setLocation(location);
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
     }

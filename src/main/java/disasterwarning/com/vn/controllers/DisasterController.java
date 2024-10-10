@@ -5,6 +5,7 @@ import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.services.DisasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,7 +52,7 @@ public class DisasterController {
     }
 
 
-    @PostMapping
+    @PostMapping(value = "/create" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity<ResponseWrapper<DisasterDTO>> createDisaster
             (@RequestPart("disaster") DisasterDTO disasterDTO,
              @RequestPart(value = "images", required = false) MultipartFile images) {

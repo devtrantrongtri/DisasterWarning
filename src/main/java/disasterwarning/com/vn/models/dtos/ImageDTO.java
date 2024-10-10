@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class ImageDTO {
-
     private int imageId;
     private String imageUrl;
     private String imagePublicId;

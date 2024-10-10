@@ -19,6 +19,7 @@ public class WeatherData {
     private String dt_txt; // Thời gian dự báo dạng chuỗi
     private String cityName;
     private String Message;
+    private String DisasterName;
 
     @Data
     public static class Main {
@@ -63,5 +64,4 @@ public class WeatherData {
     public static class Sys {
         private String pod;
     }
-
 }
