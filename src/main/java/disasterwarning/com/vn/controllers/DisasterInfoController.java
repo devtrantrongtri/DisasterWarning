@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/disaster-info")
+@RequestMapping("/disaster-info-management")
 public class DisasterInfoController {
     private final IDisasterInfoService disasterInfoService;
 
@@ -25,13 +25,13 @@ public class DisasterInfoController {
     }
 
     // Get All DisasterInfos
-    @GetMapping
+    @GetMapping("/disaster-info")
     public ResponseEntity<ResponseWrapper<List<DisasterInfoDTO>>> getAllDisasterInfos() {
         List<DisasterInfoDTO> disasterInfoDTOList = disasterInfoService.findAllDisasterInfos();
         return ResponseEntity.ok(new ResponseWrapper<>("Get List ok",disasterInfoDTOList));
     }
 
-    @PostMapping(value = "/create" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    @PostMapping(value = "/disaster-info" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity<ResponseWrapper<?>> createDisasterInfo(@RequestPart("disasterInfo") DisasterInfoDTO disasterInfoDTO,
                                                 @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles) {
         try {
@@ -51,7 +51,7 @@ public class DisasterInfoController {
         }
     }
 
-    @GetMapping("getById/{id}")
+    @GetMapping("/disaster-info/{id}")
     public ResponseEntity<ResponseWrapper<?>> findDisasterInfoById(@PathVariable int id) {
         try {
             // Call the service to find the disaster info by ID
@@ -68,7 +68,7 @@ public class DisasterInfoController {
         }
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("/disaster-info/{id}")
     public ResponseEntity<ResponseWrapper<?>> updateDisasterInfo(@PathVariable int id, @RequestBody DisasterInfoDTO disasterInfoDTO) {
         try {
             DisasterInfoDTO updatedInfo = disasterInfoService.updateDisasterInfo(id, disasterInfoDTO);
@@ -79,7 +79,7 @@ public class DisasterInfoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(),null));
         }
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/disaster-info/{id}")
     public ResponseEntity<ResponseWrapper<?>> deleteDisasterInfo(@PathVariable int id) {
         try {
             boolean isDeleted = disasterInfoService.deleteDisasterInfo(id);

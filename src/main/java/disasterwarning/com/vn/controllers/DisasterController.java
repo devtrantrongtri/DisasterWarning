@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/disaster")
+@RequestMapping("/disaster-management")
 public class DisasterController {
 
     @Autowired
     private DisasterService disasterService;
 
 
-    @GetMapping
+    @GetMapping("/disaster")
     public ResponseEntity<ResponseWrapper<List<DisasterDTO>>> getAllDisaster() {
         List<DisasterDTO> disasters = disasterService.findAllDisaster();
         ResponseWrapper<List<DisasterDTO>> responseWrapper;
@@ -36,7 +36,7 @@ public class DisasterController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("disaster/{id}")
     public ResponseEntity<ResponseWrapper<DisasterDTO>> getDisaster(@PathVariable int id) {
         DisasterDTO disasters = disasterService.findDisasterById(id);
         ResponseWrapper<DisasterDTO> responseWrapper;
@@ -52,7 +52,7 @@ public class DisasterController {
     }
 
 
-    @PostMapping(value = "/create" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    @PostMapping(value = "disaster" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity<ResponseWrapper<DisasterDTO>> createDisaster
             (@RequestPart("disaster") DisasterDTO disasterDTO,
              @RequestPart(value = "images", required = false) MultipartFile images) {
@@ -73,7 +73,7 @@ public class DisasterController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("disaster/{id}")
     public ResponseEntity<ResponseWrapper<DisasterDTO>> updateDisaster
             (@RequestPart("disaster") DisasterDTO disasterDTO,
              @PathVariable int id,
@@ -94,7 +94,7 @@ public class DisasterController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("disaster/{id}")
     public ResponseEntity<ResponseWrapper<DisasterDTO>> deleteDisaster(@PathVariable int id) {
         try {
             boolean deleted = disasterService.deleteDisaster(id);

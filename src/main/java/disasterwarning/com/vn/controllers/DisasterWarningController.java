@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/disaster-warning")
+@RequestMapping("/disaster-warning-management")
 public class DisasterWarningController {
 
     @Autowired
     private DisasterWarningService disasterWarningService;
 
-    @GetMapping("/get/{city}")
+    @GetMapping("/disaster-warning/{city}")
     public List<WeatherData> getWeatherData(@PathVariable String city) {
         return disasterWarningService.getWeatherData(city);
     }
 
-    @GetMapping
+    @GetMapping("/disaster-warning")
     public ResponseEntity<ResponseWrapper<List<DisasterWarningDTO>>> getAllDisasterWarnings() {
         List<DisasterWarningDTO> disasterWarningDTOS = disasterWarningService.findAllDisasterWarning();
         ResponseWrapper<List<DisasterWarningDTO>> responseWrapper;
@@ -39,7 +39,7 @@ public class DisasterWarningController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/disaster-warning/{id}")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> getDisasterWarnings(@PathVariable int id) {
         DisasterWarningDTO disasterWarningDTO = disasterWarningService.findDisasterWarningById(id);
         ResponseWrapper<DisasterWarningDTO> responseWrapper;
@@ -54,7 +54,7 @@ public class DisasterWarningController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/disaster-warning/{id}")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> deleteDisasterWarning(@PathVariable int id) {
         try {
             boolean deleted = disasterWarningService.deleteDisasterWarning(id);
@@ -67,7 +67,7 @@ public class DisasterWarningController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/disaster-warning")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> createDisasterWarning(@RequestBody DisasterWarningDTO disasterWarningDTO) {
         DisasterWarningDTO disasterWarningDTONew = disasterWarningService.createDisasterWarning(disasterWarningDTO);
         ResponseWrapper<DisasterWarningDTO> responseWrapper;
@@ -82,7 +82,7 @@ public class DisasterWarningController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/disaster-warning/{id}")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> updateDisasterWarning(
             @PathVariable int id,
             @RequestBody DisasterWarningDTO disasterWarningDTO) {
