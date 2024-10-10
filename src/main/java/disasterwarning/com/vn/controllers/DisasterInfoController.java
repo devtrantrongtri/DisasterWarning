@@ -1,11 +1,16 @@
 package disasterwarning.com.vn.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.models.dtos.DisasterInfoDTO;
 import disasterwarning.com.vn.models.entities.Image;
 import disasterwarning.com.vn.services.FileUploadService;
 import disasterwarning.com.vn.services.IDisasterInfoService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,23 +36,35 @@ public class DisasterInfoController {
         return ResponseEntity.ok(new ResponseWrapper<>("Get List ok",disasterInfoDTOList));
     }
 
-    @PostMapping(value = "/disaster-info" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
-    public ResponseEntity<ResponseWrapper<?>> createDisasterInfo(@RequestPart("disasterInfo") DisasterInfoDTO disasterInfoDTO,
-                                                @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles) {
+    @PostMapping(value = "/disaster-info", consumes = "multipart/form-data")
+    public ResponseEntity<ResponseWrapper<?>> createDisasterInfo(
+            @Parameter(description = "Disaster Info DTO", required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"typeInfo\": \"Wildfire\", \"information\": \"A wildfire is spreading rapidly in the northern region.\", \"disaster\": {\"disasterId\": 1}}"
+                            )
+                    ))
+            @RequestParam("disasterInfo") String disasterInfo,
+            @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles) {
+
         try {
-            // Call service de tao thong tin disaster
+            // Chuyển đổi từ JSON String sang DisasterInfoDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            DisasterInfoDTO disasterInfoDTO = objectMapper.readValue(disasterInfo, DisasterInfoDTO.class);
+
+            // Xử lý logic tiếp theo với disasterInfoDTO và imageFiles
             DisasterInfoDTO result = disasterInfoService.createDisasterInfo(disasterInfoDTO, imageFiles);
 
-            // check result of service
             if (result != null) {
-                return ResponseEntity.ok(new ResponseWrapper<>("created ok",result));  // DisasterInfoDTO và HTTP 200 OK
+                return ResponseEntity.ok(new ResponseWrapper<>("Created successfully", result));
             } else {
-                //  HTTP 400 Bad Request
-                return ResponseEntity.status( HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>("Failed to create disaster info.",null));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseWrapper<>("Failed to create disaster info.", null));
             }
         } catch (Exception e) {
-            // HTTP 500 Internal Server Error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(),null) );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>("An error occurred: " + e.getMessage(), null));
         }
     }
 
