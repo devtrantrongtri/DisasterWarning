@@ -2,6 +2,7 @@ package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
+import disasterwarning.com.vn.models.dtos.LocationDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;
@@ -50,7 +51,11 @@ public class UserService implements IUserService{
         existingUser.setUserName(user.getUserName());
         existingUser.setEmail(user.getEmail());
         existingUser.setRole(user.getRole());
-        existingUser.setLocation(user.getLocation());
+        if(user.getLocation() != null && user.getLocation().getLocationId() != 0){
+            Location existingLocation = locationRepo.findById(user.getLocation().getLocationId())
+                    .orElseThrow(()->new DataNotFoundException("Location not found"));
+            existingUser.setLocation(existingLocation);
+        }
         userRepo.save(user);
         return mapper.convertToDto(user, UserDTO.class);
     }
