@@ -10,7 +10,6 @@ public class DisasterWarningDTO {
 
     private int disasterWarningId;
     private Date startDate;
-    private Date endDate;
     private String description;
 
     @JsonBackReference(value = "disaster-warning")

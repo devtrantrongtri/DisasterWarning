@@ -2,7 +2,6 @@ package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
-import disasterwarning.com.vn.models.dtos.LocationDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;

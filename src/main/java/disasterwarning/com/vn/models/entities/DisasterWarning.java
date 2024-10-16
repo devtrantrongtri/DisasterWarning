@@ -30,9 +30,6 @@ public class DisasterWarning {
     @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "end_date", nullable = false)
-    private Date endDate;
-
     @Column(name = "description", nullable = false)
     private String description;
 }

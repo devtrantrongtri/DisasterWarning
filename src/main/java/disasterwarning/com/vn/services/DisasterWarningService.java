@@ -137,7 +137,6 @@ public class DisasterWarningService implements IDisasterWarningService {
         }
 
         updateDisasterWarning.setStartDate(disasterWarning.getStartDate());
-        updateDisasterWarning.setEndDate(disasterWarning.getEndDate());
         updateDisasterWarning.setDescription(disasterWarning.getDescription());
 
         disasterWarningRepo.save(disasterWarning);
