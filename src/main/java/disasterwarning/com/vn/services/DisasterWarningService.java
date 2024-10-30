@@ -42,6 +42,36 @@ public class DisasterWarningService implements IDisasterWarningService {
 
     private static final String API_URL = "https://api.openweathermap.org/data/2.5/forecast";
 
+    // Wind speeds (m/s)
+    public static final double SUPER_TYPHOON_WIND = 32.7;
+    public static final double TYPHOON_WIND = 15.0;
+
+    // Pressure (hPa)
+    public static final double SUPER_TYPHOON_PRESSURE = 965;
+    public static final double TYPHOON_PRESSURE = 980;
+
+    // Rain (mm/h)
+    public static final double EXTREME_RAIN = 35;
+    public static final double HEAVY_RAIN = 10;
+
+    // Temperature (°C)
+    public static final double EXTREME_HOT = 41;
+    public static final double VERY_HOT = 35;
+    public static final double SEVERE_COLD = 10;
+    public static final double COLD = 13;
+
+    // Visibility (m)
+    public static final double DENSE_FOG = 200;
+    public static final double FOG = 1000;
+
+    // Wind gusts (m/s)
+    public static final double EXTREME_TORNADO = 70;
+    public static final double SEVERE_TORNADO = 50;
+    public static final double TORNADO = 33;
+
+    // Humidity threshold for drought warning
+    public static final double LOW_HUMIDITY = 30;
+
     public List<WeatherData> getWeatherData(String city) {
         LocationDTO location = locationService.findLocationByName(city);
         String url = API_URL + "?lat=" + location.getLatitude() +"&lon=" + location.getLongitude() + "&appid=" + API_KEY;
@@ -50,7 +80,7 @@ public class DisasterWarningService implements IDisasterWarningService {
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(url, String.class);
 
-        // Tạo ObjectMapper để parse JSON
+        // Parse JSON
         ObjectMapper objectMapper = new ObjectMapper();
         List<WeatherData> weatherDataList = new ArrayList<>();
 
@@ -180,158 +210,345 @@ public class DisasterWarningService implements IDisasterWarningService {
             if (weatherData.isEmpty()) {
                 throw new DataNotFoundException("Weather Data is empty");
             }
-            WeatherData alert = CheckDisasterWarning(weatherData);
-            if (alert.getMessage().equals("Rain is too high")) {
-                Location locationRepoByName = locationRepo.findByName(location.getLocationName());
-                disasterWarning.setLocation(locationRepoByName);
-                disasterWarning.setDescription("Cảnh báo: Lượng mưa lớn có nguy cơ gây lũ quét tại khu vực \" + location.getLocationName() + \". Khuyến nghị người dân thực hiện các biện pháp phòng tránh, tuân thủ hướng dẫn của cơ quan chức năng và di dời đến nơi an toàn nếu cần thiết.");
-                disasterWarningRepo.save(disasterWarning);
-            }
         }
         return mapper.convertToEntity(disasterWarning, DisasterWarningDTO.class);
     }
 
 
 
-    public WeatherData CheckDisasterWarning(List<WeatherData> weatherDataList) {
-        if (weatherDataList.isEmpty()) {
-            throw new RuntimeException("Danh sách dữ liệu thời tiết trống");
+    public DisasterWarningDTO CheckDisasterWarning(List<WeatherData> weatherDataList){
+        if(weatherDataList.isEmpty()){
+            throw new RuntimeException("Weather data is empty");
         }
 
-        for (WeatherData weatherData : weatherDataList) {
+        for(WeatherData weatherData : weatherDataList) {
 
+            // Kiểm tra nếu các giá trị
             if (weatherData.getMain() == null || weatherData.getRain() == null || weatherData.getWind() == null) {
-                throw new RuntimeException("Dữ liệu thời tiết không đầy đủ");
+                throw new RuntimeException("Incomplete weather data");
             }
 
-            double tempC = weatherData.getMain().getTemp() - 273.15;
+            DisasterWarningDTO warning;
 
-            // Bão kèm lũ
-            if (weatherData.getWind().getSpeed() >= 32.7 && weatherData.getRain().get_3h() >= 50) {
-                weatherData.setDisasterName("Bão kèm lũ");
-                weatherData.setMessage("CẢNH BÁO: Một cơn bão rất mạnh đang hình thành, kết hợp với lượng mưa lớn.\n" +
-                        "Nguy cơ lũ lụt nghiêm trọng đang xảy ra. Hãy chuẩn bị di tản và bảo đảm an toàn.\n" +
-                        "Kiểm tra và gia cố nhà cửa, dự trữ thực phẩm và nước uống.\n" +
-                        "Tránh xa các khu vực trũng thấp hoặc gần sông suối.");
-                return weatherData;
-            }
+            // 1. Tornado warnings
+            warning = checkTornadoWarning(weatherData);
+            if (warning != null) return warning;
 
-            // Bão kèm sạt lở đất
-            if (weatherData.getWind().getSpeed() >= 32.7 && continuousHeavyRain(weatherDataList)) {
-                weatherData.setDisasterName("Bão kèm sạt lở đất");
-                weatherData.setMessage("CẢNH BÁO: Cơn bão mạnh kèm theo mưa lớn liên tục.\n" +
-                        "Nguy cơ sạt lở đất cao tại các khu vực đồi núi và ven sông.\n" +
-                        "Hãy di tản khỏi các khu vực có nguy cơ và theo dõi thông báo từ cơ quan chức năng.");
-                return weatherData;
-            }
+            // 2. Storm warnings
+            warning = checkStormWarning(weatherData);
+            if (warning != null) return warning;
 
-            // Lũ kèm sạt lở đất
-            if (weatherData.getRain().get_3h() >= 50 && continuousHeavyRain(weatherDataList)) {
-                weatherData.setDisasterName("Lũ kèm sạt lở đất");
-                weatherData.setMessage("CẢNH BÁO: Mưa lớn kéo dài làm tăng nguy cơ lũ lụt và sạt lở đất.\n" +
-                        "Các khu vực đồi núi, ven suối dễ bị ảnh hưởng nghiêm trọng.\n" +
-                        "Hãy rời khỏi khu vực nguy hiểm và tìm nơi trú ẩn an toàn.");
-                return weatherData;
-            }
+            // 3. Pressure Warnings
+            warning = checkPressureWarning(weatherData);
+            if (warning != null) return warning;
 
-            // Bão lớn
-            if (weatherData.getWind().getSpeed() >= 32.7) {
-                weatherData.setDisasterName("Bão lớn");
-                weatherData.setMessage("CẢNH BÁO: Gió mạnh vượt quá 32,7 m/s, cơn bão lớn sắp tới.\n" +
-                        "Hãy gia cố nhà cửa, dự trữ thức ăn và nước uống.\n" +
-                        "Tránh xa các khu vực ven biển hoặc nơi có nguy cơ cao.");
-                return weatherData;
-            } else if (weatherData.getWind().getSpeed() >= 17.2) {
-                weatherData.setDisasterName("Bão");
-                weatherData.setMessage("CẢNH BÁO: Gió mạnh trên 17,2 m/s, một cơn bão đang hình thành.\n" +
-                        "Hãy chuẩn bị đối phó với bão, kiểm tra các thông tin thời tiết mới nhất.\n" +
-                        "Hạn chế ra ngoài và đảm bảo các vật dụng dễ bị cuốn bay đã được cố định.");
-                return weatherData;
-            }
+            // 4. Rain Warnings
+            warning = checkRainWarning(weatherData, weatherDataList);
+            if (warning != null) return warning;
 
-            // Lũ quét
-            if (weatherData.getRain().get_3h() >= 100) {
-                weatherData.setDisasterName("Lũ quét");
-                weatherData.setMessage("CẢNH BÁO: Lượng mưa cực lớn trong 3 giờ qua, có nguy cơ xảy ra lũ quét.\n" +
-                        "Hãy rời khỏi các khu vực trũng thấp, gần sông suối ngay lập tức.\n" +
-                        "Nguy cơ nước dâng nhanh và có thể cuốn trôi các tài sản, phương tiện giao thông.");
-                return weatherData;
-            } else if (weatherData.getRain().get_3h() >= 50) {
-                weatherData.setDisasterName("Lũ cục bộ");
-                weatherData.setMessage("CẢNH BÁO: Mưa lớn kéo dài, nước đang dâng cao tại các khu vực cục bộ.\n" +
-                        "Hãy theo dõi mực nước và di chuyển đến nơi an toàn nếu cần thiết.\n" +
-                        "Kiểm tra hệ thống thoát nước và chuẩn bị sẵn sàng cho tình huống lũ xảy ra.");
-                return weatherData;
-            }
+            // 5. Temperature Warnings
+            warning = checkTemperatureWarning(weatherData);
+            if (warning != null) return warning;
 
-            // Sóng lớn và triều cường
-            if (weatherData.getMain().getPressure() < 980 && weatherData.getWind().getSpeed() >= 15) {
-                weatherData.setDisasterName("Sóng lớn và triều cường");
-                weatherData.setMessage("CẢNH BÁO: Áp suất thấp và gió mạnh đang gây ra nguy cơ sóng lớn và triều cường.\n" +
-                        "Các khu vực ven biển có nguy cơ cao chịu ảnh hưởng.\n" +
-                        "Hãy tránh xa biển, không ra khơi và bảo đảm an toàn cho các phương tiện và tài sản.");
-                return weatherData;
-            }
+            // 6. Visibility Warnings
+            warning = checkVisibilityWarning(weatherData);
+            if (warning != null) return warning;
 
-            // Sạt lở đất
-            if (weatherData.getRain().get_3h() >= 50 && continuousHeavyRain(weatherDataList)) {
-                weatherData.setDisasterName("Sạt lở đất");
-                weatherData.setMessage("CẢNH BÁO: Mưa lớn kéo dài làm tăng nguy cơ sạt lở đất nghiêm trọng.\n" +
-                        "Các khu vực đồi núi, ven sông dễ bị tác động.\n" +
-                        "Hãy di tản khỏi khu vực có nguy cơ và tìm nơi trú ẩn an toàn.");
-                return weatherData;
-            }
-
-            // Hạn hán
-            if (tempC > 35 && weatherData.getMain().getHumidity() < 30) {
-                weatherData.setDisasterName("Hạn hán");
-                weatherData.setMessage("CẢNH BÁO: Nhiệt độ cao và độ ẩm thấp, nguy cơ hạn hán đang diễn ra.\n" +
-                        "Nguồn nước có thể cạn kiệt, ảnh hưởng đến sinh hoạt và sản xuất.\n" +
-                        "Hãy tiết kiệm nước và thực hiện các biện pháp phòng chống hạn hán.");
-                return weatherData;
-            }
-
-            // Nắng nóng và rét đậm
-            if (tempC > 35) {
-                weatherData.setDisasterName("Nắng nóng");
-                weatherData.setMessage("CẢNH BÁO: Nhiệt độ trên 35°C, gây ra tình trạng nắng nóng gay gắt.\n" +
-                        "Hãy hạn chế ra ngoài, uống đủ nước và sử dụng quạt hoặc điều hòa để hạ nhiệt.");
-                return weatherData;
-            } else if (tempC < 13) {
-                weatherData.setDisasterName("Rét đậm");
-                weatherData.setMessage("CẢNH BÁO: Nhiệt độ dưới 13°C, gây ra tình trạng rét đậm.\n" +
-                        "Hãy mặc ấm và tránh tiếp xúc lâu với nhiệt độ lạnh để giữ sức khỏe.");
-                return weatherData;
-            }
-
-            // Sương mù dày đặc
-            if (weatherData.getVisibility() < 1000) {
-                weatherData.setDisasterName("Sương mù dày đặc");
-                weatherData.setMessage("CẢNH BÁO: Sương mù dày đặc làm giảm tầm nhìn xuống dưới 1000m.\n" +
-                        "Hãy bật đèn pha khi lái xe và lái xe cẩn thận, đặc biệt ở những khu vực đông dân cư.");
-                return weatherData;
-            }
-
-            // Lốc xoáy
-            if (weatherData.getWind().getGust() > 33) {
-                weatherData.setDisasterName("Lốc xoáy");
-                weatherData.setMessage("CẢNH BÁO: Gió giật mạnh trên 33 m/s, nguy cơ cao xảy ra lốc xoáy.\n" +
-                        "Hãy tìm nơi trú ẩn an toàn, tránh xa cửa sổ và các vật dễ bay.");
-                return weatherData;
-            }
-
-            // Thời tiết nguy hiểm
-            if (weatherData.getRain().get_3h() >= 50 && weatherData.getWind().getSpeed() >= 13.9) {
-                weatherData.setDisasterName("Thời tiết nguy hiểm");
-                weatherData.setMessage("CẢNH BÁO: Mưa lớn kèm theo gió mạnh, thời tiết nguy hiểm.\n" +
-                        "Hãy theo dõi thông tin từ cơ quan chức năng và tránh ra ngoài nếu không cần thiết.");
-                return weatherData;
-            }
         }
-
         return null;
     }
 
+    private DisasterWarningDTO checkTornadoWarning(WeatherData weatherData) {
+        // Lấy tốc độ gió giật từ dữ liệu thời tiết
+        double gustSpeed = weatherData.getWind().getGust();
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Tornado");
+
+        // Cảnh báo lốc xoáy cực kỳ nguy hiểm (EXTREME_TORNADO)
+        if (gustSpeed > EXTREME_TORNADO) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+            String description = String.format("CẢNH BÁO KHẨN CẤP: Lốc xoáy cực kỳ nguy hiểm với sức gió giật %,.1f m/s. " +
+                            "Khuyến cáo: Người dân cần di chuyển ngay đến nơi trú ẩn kiên cố, tránh xa khu vực có các vật dễ bay, " +
+                            "đổ. Đóng chặt cửa và cửa sổ. Chuẩn bị các vật dụng cần thiết và theo dõi thông báo liên tục.",
+                    gustSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo lốc xoáy mạnh (SEVERE_TORNADO)
+        } else if (gustSpeed > SEVERE_TORNADO) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO: Nguy cơ lốc xoáy mạnh với sức gió giật %,.1f m/s. " +
+                            "Khuyến cáo: Người dân hạn chế ra ngoài, tìm nơi trú ẩn an toàn, " +
+                            "gia cố mái nhà và các công trình xung quanh. Chuẩn bị sẵn sàng phương án sơ tán khi có lệnh.",
+                    gustSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo lốc xoáy bình thường (TORNADO)
+        } else if (gustSpeed > TORNADO) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO: Có khả năng xảy ra lốc xoáy với sức gió giật %,.1f m/s. " +
+                            "Khuyến cáo: Theo dõi thông tin thời tiết liên tục. Chuẩn bị các phương án phòng tránh, " +
+                            "gia cố nhà cửa và các công trình.",
+                    gustSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
+
+
+    private DisasterWarningDTO checkStormWarning(WeatherData weatherData) {
+        // Lấy tốc độ gió từ dữ liệu thời tiết
+        double windSpeed = weatherData.getWind().getSpeed();
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Storm");
+
+        // Cảnh báo siêu bão (SUPER_TYPHOON_WIND)
+        if (windSpeed >= SUPER_TYPHOON_WIND) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO SIÊU BÃO: Gió mạnh cấp %d (%,.1f m/s). " +
+                            "Khuyến cáo: TUYỆT ĐỐI KHÔNG ra ngoài trong thời điểm này. " +
+                            "Sơ tán khẩn cấp khỏi các khu vực ven biển, vùng trũng thấp. " +
+                            "Nguy cơ cao xảy ra lũ quét, sạt lở đất và ngập lụt. " +
+                            "Chuẩn bị lương thực và nước uống cho 3-5 ngày.",
+                    getBeaufortScale(windSpeed), windSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo bão (TYPHOON_WIND)
+        } else if (windSpeed >= TYPHOON_WIND) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO BÃO: Gió mạnh cấp %d (%,.1f m/s). " +
+                            "Khuyến cáo: Không ra khơi, di chuyển tàu thuyền về nơi trú ẩn an toàn. " +
+                            "Gia cố mái nhà, kho tàng. Chuẩn bị các phương án phòng chống ngập lụt. " +
+                            "Sẵn sàng sơ tán khi có lệnh.",
+                    getBeaufortScale(windSpeed), windSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
+
+    private DisasterWarningDTO checkPressureWarning(WeatherData weatherData) {
+        // Lấy áp suất và tốc độ gió từ dữ liệu thời tiết
+        double pressure = weatherData.getMain().getPressure();
+        double windSpeed = weatherData.getWind().getSpeed();
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Pressure Warning");
+
+        // Cảnh báo áp thấp nhiệt đới mạnh (SUPER_TYPHOON_PRESSURE)
+        if (pressure < SUPER_TYPHOON_PRESSURE) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO ÁP THẤP NHIỆT ĐỚI MẠNH: Áp suất xuống thấp bất thường (%,.1f hPa). " +
+                            "Dấu hiệu hình thành siêu bão. Khuyến cáo: Theo dõi chặt chẽ diễn biến thời tiết. " +
+                            "Chuẩn bị các phương án ứng phó với siêu bão. " +
+                            "Sẵn sàng phương án di dời dân khỏi các khu vực nguy hiểm.",
+                    pressure);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo áp thấp nhiệt đới (TYPHOON_PRESSURE) kèm gió mạnh
+        } else if (pressure < TYPHOON_PRESSURE && windSpeed >= 15) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO ÁP THẤP NHIỆT ĐỚI: Áp suất thấp (%,.1f hPa) kèm gió mạnh (%,.1f m/s). " +
+                            "Có khả năng phát triển thành bão. Khuyến cáo: Theo dõi thông tin thời tiết liên tục. " +
+                            "Sẵn sàng các phương án phòng chống bão. " +
+                            "Hạn chế ra khơi.",
+                    pressure, windSpeed);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
+
+
+    private DisasterWarningDTO checkRainWarning(WeatherData weatherData, List<WeatherData> weatherDataList) {
+        // Lấy lượng mưa trong 3 giờ và tính ra lượng mưa mỗi giờ
+        double rainPerHour = weatherData.getRain().get_3h() / 3.0;
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Rain Warning");
+
+        // Cảnh báo mưa cực lớn dẫn đến nguy cơ lũ quét (EXTREME_RAIN)
+        if (rainPerHour >= EXTREME_RAIN) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO LŨ QUÉT: Mưa cực lớn với lượng mưa %,.1f mm/giờ. " +
+                            "Nguy cơ rất cao xảy ra lũ quét và sạt lở đất tại các khu vực trũng thấp, ven sông suối và vùng núi. " +
+                            "Khuyến cáo: Sẵn sàng phương án sơ tán khẩn cấp. Không đi lại khi không cần thiết. " +
+                            "Chủ động di chuyển tài sản lên cao.",
+                    rainPerHour);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo mưa lớn (HEAVY_RAIN) kèm gió mạnh
+        } else if (rainPerHour >= HEAVY_RAIN) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            if (weatherData.getWind().getSpeed() >= 13.9) {
+                String description = String.format("CẢNH BÁO THỜI TIẾT NGUY HIỂM: Mưa lớn %,.1f mm/giờ kèm gió mạnh. " +
+                                "Nguy cơ cao xảy ra ngập úng cục bộ tại các vùng trũng thấp. Khuyến cáo: Hạn chế ra đường, đề phòng cây xanh bị đổ. " +
+                                "Chú ý các biện pháp thoát nước để tránh ngập úng.",
+                        rainPerHour);
+                disasterWarningDTO.setDescription(description);
+                return createDisasterWarning(disasterWarningDTO);
+            } else if (continuousHeavyRain(weatherDataList)) {
+                String description = String.format("CẢNH BÁO SẠT LỞ ĐẤT: Mưa lớn kéo dài với lượng mưa %,.1f mm/giờ. " +
+                                "Nguy cơ cao xảy ra sạt lở đất tại các khu vực đồi núi dốc. Khuyến cáo: Người dân cần di chuyển khỏi các khu vực có nguy cơ sạt lở. " +
+                                "Không đi lại qua các khu vực đồi núi dốc trong mưa lớn.",
+                        rainPerHour);
+                disasterWarningDTO.setDescription(description);
+                return createDisasterWarning(disasterWarningDTO);
+            } else {
+                String description = String.format("CẢNH BÁO NGẬP LỤT CỤC BỘ: Mưa lớn với lượng mưa %,.1f mm/giờ. " +
+                                "Đề phòng ngập úng tại các khu vực trũng thấp. Khuyến cáo: Theo dõi thông tin thời tiết. " +
+                                "Chuẩn bị các phương án ứng phó với ngập lụt.",
+                        rainPerHour);
+                disasterWarningDTO.setDescription(description);
+                return createDisasterWarning(disasterWarningDTO);
+            }
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
+
+
+    private DisasterWarningDTO checkTemperatureWarning(WeatherData weatherData) {
+        // Chuyển đổi nhiệt độ từ Kelvin sang Celsius
+        double tempC = weatherData.getMain().getTemp() - 273.15;
+        double humidity = weatherData.getMain().getHumidity();
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Temperature Warning");
+
+        // Cảnh báo nắng nóng gay gắt
+        if (tempC > EXTREME_HOT) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO NẮNG NÓNG GAY GẮT: Nhiệt độ cao bất thường %,.1f°C. " +
+                            "Khuyến cáo: Hạn chế tối đa hoạt động ngoài trời từ 10h-16h. " +
+                            "Giữ đủ nước cho cơ thể, tránh say nắng. " +
+                            "Đặc biệt chú ý đến người già, trẻ em và người có bệnh nền.",
+                    tempC);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo nắng nóng và khô hạn
+        } else if (tempC > VERY_HOT) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            if (humidity < LOW_HUMIDITY) {
+                String description = String.format("CẢNH BÁO NẮNG NÓNG VÀ KHÔ HẠN: Nhiệt độ cao %,.1f°C, độ ẩm thấp %,.1f%%. " +
+                                "Nguy cơ cao xảy ra hạn hán và cháy rừng. " +
+                                "Khuyến cáo: Tiết kiệm nguồn nước. " +
+                                "Phòng chống cháy nổ và cháy rừng. " +
+                                "Hạn chế hoạt động ngoài trời.",
+                        tempC, humidity);
+                disasterWarningDTO.setDescription(description);
+                return createDisasterWarning(disasterWarningDTO);
+            } else {
+                String description = String.format("CẢNH BÁO NẮNG NÓNG: Nhiệt độ cao %,.1f°C. " +
+                                "Khuyến cáo: Hạn chế hoạt động ngoài trời từ 11h-15h. " +
+                                "Bổ sung đủ nước, đề phòng say nắng. " +
+                                "Người già và trẻ em cần đặc biệt chú ý.",
+                        tempC);
+                disasterWarningDTO.setDescription(description);
+                return createDisasterWarning(disasterWarningDTO);
+            }
+            // Cảnh báo rét hại
+        } else if (tempC < SEVERE_COLD) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO RÉT HẠI: Nhiệt độ xuống thấp %,.1f°C. " +
+                            "Nguy cơ cao ảnh hưởng đến sức khỏe con người, vật nuôi và hoa màu. " +
+                            "Khuyến cáo: Giữ ấm cơ thể, nhất là người già và trẻ nhỏ. " +
+                            "Che chắn, bảo vệ vật nuôi và cây trồng. " +
+                            "Phòng chống đột quỵ do thời tiết.",
+                    tempC);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo rét đậm
+        } else if (tempC < COLD) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO RÉT ĐẬM: Nhiệt độ thấp %,.1f°C. " +
+                            "Khuyến cáo: Giữ ấm cơ thể, đặc biệt là người già và trẻ em. " +
+                            "Che chắn cho vật nuôi và cây trồng. " +
+                            "Phòng tránh các bệnh do thời tiết lạnh.",
+                    tempC);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
+
+    private DisasterWarningDTO checkVisibilityWarning(WeatherData weatherData) {
+        double visibility = weatherData.getVisibility();
+        DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
+        LocationDTO locationDTO = new LocationDTO();
+        locationDTO.setLocationName(weatherData.getCityName());
+        DisasterDTO disasterDTO = new DisasterDTO();
+        disasterDTO.setDisasterName("Visibility Warning");
+
+        // Cảnh báo sương mù dày đặc
+        if (visibility < DENSE_FOG) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO SƯƠNG MÙ DÀY ĐẶC: Tầm nhìn xa cực kỳ hạn chế dưới %,.0f mét. " +
+                            "Khuyến cáo: Tránh di chuyển khi không cần thiết. " +
+                            "Nếu phải di chuyển: Bật đèn sương mù, giảm tốc độ, giữ khoảng cách an toàn. " +
+                            "Đề phòng va chạm giao thông.",
+                    visibility);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+            // Cảnh báo sương mù
+        } else if (visibility < FOG) {
+            disasterWarningDTO.setLocation(locationDTO);
+            disasterWarningDTO.setDisaster(disasterDTO);
+
+            String description = String.format("CẢNH BÁO SƯƠNG MÙ: Tầm nhìn xa hạn chế dưới %,.0f mét. " +
+                            "Khuyến cáo: Khi di chuyển cần bật đèn sương mù, giảm tốc độ, " +
+                            "giữ khoảng cách an toàn với phương tiện phía trước. " +
+                            "Đề phòng tai nạn giao thông.",
+                    visibility);
+            disasterWarningDTO.setDescription(description);
+            return createDisasterWarning(disasterWarningDTO);
+        }
+
+        return null; // Nếu không có cảnh báo nào được tạo
+    }
 
     private boolean continuousHeavyRain(List<WeatherData> weatherDataList) {
         int heavyRainCount = 0;
@@ -348,5 +565,35 @@ public class DisasterWarningService implements IDisasterWarningService {
             }
         }
         return false;
+    }
+
+    private int getBeaufortScale(double windSpeed) {
+        if (windSpeed < 0.3) {
+            return 0;  // Calm
+        } else if (windSpeed < 1.6) {
+            return 1;  // Light air
+        } else if (windSpeed < 3.4) {
+            return 2;  // Light breeze
+        } else if (windSpeed < 5.5) {
+            return 3;  // Gentle breeze
+        } else if (windSpeed < 8.0) {
+            return 4;  // Moderate breeze
+        } else if (windSpeed < 10.8) {
+            return 5;  // Fresh breeze
+        } else if (windSpeed < 13.9) {
+            return 6;  // Strong breeze
+        } else if (windSpeed < 17.2) {
+            return 7;  // High wind, moderate gale
+        } else if (windSpeed < 20.8) {
+            return 8;  // Gale
+        } else if (windSpeed < 24.5) {
+            return 9;  // Strong gale
+        } else if (windSpeed < 28.5) {
+            return 10; // Storm
+        } else if (windSpeed < 32.7) {
+            return 11; // Violent storm
+        } else {
+            return 12; // Hurricane force
+        }
     }
 }

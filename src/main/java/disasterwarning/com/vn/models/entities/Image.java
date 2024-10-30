@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Data
 @Entity
@@ -22,7 +21,7 @@ public class Image {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "image_public_id", nullable = true)
+    @Column(name = "image_public_id")
     private String imagePublicId;
 
 
