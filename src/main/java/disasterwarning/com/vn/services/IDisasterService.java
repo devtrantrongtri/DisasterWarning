@@ -14,6 +14,8 @@ public interface IDisasterService {
 
     public DisasterDTO findDisasterById(int id);
 
+    public DisasterDTO findDisasterByName(String disasterName);
+
     public List<DisasterDTO> findAllDisaster();
 
     public boolean deleteDisaster(int id);

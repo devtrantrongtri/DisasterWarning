@@ -90,7 +90,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public List<UserDTO> findUsersBtProvince(String province) throws DataNotFoundException {
+    public List<UserDTO> findUsersByProvince(String province) throws DataNotFoundException {
         List<User> users = userRepo.findUsersByProvince(province);
         if (users.isEmpty()) {
             throw new DataNotFoundException("User does not exist");

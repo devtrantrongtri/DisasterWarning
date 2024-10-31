@@ -1,9 +1,11 @@
 package disasterwarning.com.vn.controllers;
 
 import disasterwarning.com.vn.Response.ResponseWrapper;
+import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
 import disasterwarning.com.vn.models.dtos.WeatherData;
 import disasterwarning.com.vn.services.DisasterWarningService;
+import disasterwarning.com.vn.services.sendMail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ public class DisasterWarningController {
     @Autowired
     private DisasterWarningService disasterWarningService;
 
-    @GetMapping("/disaster-warning/{city}")
+
+    @GetMapping("/{city}")
     public List<WeatherData> getWeatherData(@PathVariable String city) {
         return disasterWarningService.getWeatherData(city);
     }
@@ -96,6 +99,21 @@ public class DisasterWarningController {
         else {
             responseWrapper = new ResponseWrapper<>("Disaster Warning fail to update", null);
             return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/send")
+    public ResponseEntity<ResponseWrapper<?>> sendWarning() {
+        try {
+            disasterWarningService.sendDisasterWarning();
+            ResponseWrapper<String> response = new ResponseWrapper<>("Cảnh báo thiên tai đã được gửi thành công", null);
+            return ResponseEntity.ok(response);
+        } catch (DataNotFoundException e) {
+            ResponseWrapper<String> response = new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            ResponseWrapper<String> response = new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

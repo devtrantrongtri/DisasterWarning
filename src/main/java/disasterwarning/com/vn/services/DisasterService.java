@@ -63,6 +63,15 @@ public class DisasterService implements IDisasterService{
     }
 
     @Override
+    public DisasterDTO findDisasterByName(String disasterName) {
+        Disaster disaster = disasterRepo.getDisasterByName(disasterName);
+        if(disaster == null) {
+            throw new RuntimeException("Disaster not found");
+        }
+        return mapper.convertToEntity(disaster, DisasterDTO.class);
+    }
+
+    @Override
     public List<DisasterDTO> findAllDisaster(){
         List<Disaster> disasterList = disasterRepo.findAll();
         if(disasterList.isEmpty()){

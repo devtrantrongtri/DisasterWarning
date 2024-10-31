@@ -3,7 +3,8 @@ package disasterwarning.com.vn.models.dtos;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 @Data
 public class DisasterWarningDTO {

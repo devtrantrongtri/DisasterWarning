@@ -3,21 +3,21 @@ package disasterwarning.com.vn.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
-import disasterwarning.com.vn.models.dtos.DisasterDTO;
-import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
-import disasterwarning.com.vn.models.dtos.LocationDTO;
-import disasterwarning.com.vn.models.dtos.WeatherData;
+import disasterwarning.com.vn.models.dtos.*;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
 import disasterwarning.com.vn.models.entities.Location;
+import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.repositories.DisasterWarningRepo;
-import disasterwarning.com.vn.repositories.LocationRepo;
+import disasterwarning.com.vn.services.sendMail.IMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DisasterWarningService implements IDisasterWarningService {
@@ -32,7 +32,10 @@ public class DisasterWarningService implements IDisasterWarningService {
     private LocationService locationService;
 
     @Autowired
-    private LocationRepo locationRepo;
+    private IMailService mailService;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private Mapper mapper;
@@ -198,33 +201,44 @@ public class DisasterWarningService implements IDisasterWarningService {
         return true;
     }
 
-    public DisasterWarningDTO sendDisasterWarning() {
+    public void sendDisasterWarning() {
         List<LocationDTO> locations = locationService.findAllLocations();
         List<Location> locationList = mapper.convertToEntityList(locations, Location.class);
         if (locationList.isEmpty()) {
             throw new DataNotFoundException("Location List is empty");
         }
-        DisasterWarning disasterWarning  = new DisasterWarning();
+        DisasterWarningDTO disasterWarningDTO;
         for (Location location : locationList){
             List<WeatherData> weatherData = getWeatherData(location.getLocationName());
             if (weatherData.isEmpty()) {
                 throw new DataNotFoundException("Weather Data is empty");
             }
+            disasterWarningDTO = CheckDisasterWarning(weatherData);
+            if (disasterWarningDTO.getDisaster() != null){
+                List<UserDTO> userDTO = userService.findUsersByProvince(location.getLocationName());
+                List<UserDTO> userActiveList = new ArrayList<>();
+                for (UserDTO userDTO1 : userDTO){
+                    if (Objects.equals(userDTO1.getStatus(), "active")) {
+                        userActiveList.add(userDTO1);
+                    }
+                }
+                for (UserDTO userDTO1 : userActiveList){
+                    mailService.sendMail(userDTO1.getEmail(), disasterWarningDTO);
+                }
+            }
         }
-        return mapper.convertToEntity(disasterWarning, DisasterWarningDTO.class);
     }
 
 
 
-    public DisasterWarningDTO CheckDisasterWarning(List<WeatherData> weatherDataList){
-        if(weatherDataList.isEmpty()){
+    public DisasterWarningDTO CheckDisasterWarning(List<WeatherData> weatherDataList) {
+        if (weatherDataList.isEmpty()) {
             throw new RuntimeException("Weather data is empty");
         }
 
-        for(WeatherData weatherData : weatherDataList) {
-
+        for (WeatherData weatherData : weatherDataList) {
             // Kiểm tra nếu các giá trị
-            if (weatherData.getMain() == null || weatherData.getRain() == null || weatherData.getWind() == null) {
+            if (weatherData.getMain() == null && weatherData.getWind() == null) {
                 throw new RuntimeException("Incomplete weather data");
             }
 
@@ -243,8 +257,11 @@ public class DisasterWarningService implements IDisasterWarningService {
             if (warning != null) return warning;
 
             // 4. Rain Warnings
-            warning = checkRainWarning(weatherData, weatherDataList);
-            if (warning != null) return warning;
+            // Kiểm tra Rain trước khi gọi get_3h()
+            if (weatherData.getRain() != null) {
+                warning = checkRainWarning(weatherData, weatherDataList);
+                if (warning != null) return warning;
+            }
 
             // 5. Temperature Warnings
             warning = checkTemperatureWarning(weatherData);
@@ -253,7 +270,6 @@ public class DisasterWarningService implements IDisasterWarningService {
             // 6. Visibility Warnings
             warning = checkVisibilityWarning(weatherData);
             if (warning != null) return warning;
-
         }
         return null;
     }
@@ -266,6 +282,8 @@ public class DisasterWarningService implements IDisasterWarningService {
         locationDTO.setLocationName(weatherData.getCityName());
         DisasterDTO disasterDTO = new DisasterDTO();
         disasterDTO.setDisasterName("Tornado");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo lốc xoáy cực kỳ nguy hiểm (EXTREME_TORNADO)
         if (gustSpeed > EXTREME_TORNADO) {
@@ -313,6 +331,8 @@ public class DisasterWarningService implements IDisasterWarningService {
         locationDTO.setLocationName(weatherData.getCityName());
         DisasterDTO disasterDTO = new DisasterDTO();
         disasterDTO.setDisasterName("Storm");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo siêu bão (SUPER_TYPHOON_WIND)
         if (windSpeed >= SUPER_TYPHOON_WIND) {
@@ -353,6 +373,8 @@ public class DisasterWarningService implements IDisasterWarningService {
         locationDTO.setLocationName(weatherData.getCityName());
         DisasterDTO disasterDTO = new DisasterDTO();
         disasterDTO.setDisasterName("Pressure Warning");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo áp thấp nhiệt đới mạnh (SUPER_TYPHOON_PRESSURE)
         if (pressure < SUPER_TYPHOON_PRESSURE) {
@@ -388,10 +410,10 @@ public class DisasterWarningService implements IDisasterWarningService {
         // Lấy lượng mưa trong 3 giờ và tính ra lượng mưa mỗi giờ
         double rainPerHour = weatherData.getRain().get_3h() / 3.0;
         DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
-        LocationDTO locationDTO = new LocationDTO();
-        locationDTO.setLocationName(weatherData.getCityName());
-        DisasterDTO disasterDTO = new DisasterDTO();
-        disasterDTO.setDisasterName("Rain Warning");
+        LocationDTO locationDTO = locationService.findLocationByName(weatherData.getCityName()) ;
+        DisasterDTO disasterDTO = disasterService.findDisasterByName("Rain Warning");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo mưa cực lớn dẫn đến nguy cơ lũ quét (EXTREME_RAIN)
         if (rainPerHour >= EXTREME_RAIN) {
@@ -447,6 +469,8 @@ public class DisasterWarningService implements IDisasterWarningService {
         locationDTO.setLocationName(weatherData.getCityName());
         DisasterDTO disasterDTO = new DisasterDTO();
         disasterDTO.setDisasterName("Temperature Warning");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo nắng nóng gay gắt
         if (tempC > EXTREME_HOT) {
@@ -520,6 +544,8 @@ public class DisasterWarningService implements IDisasterWarningService {
         locationDTO.setLocationName(weatherData.getCityName());
         DisasterDTO disasterDTO = new DisasterDTO();
         disasterDTO.setDisasterName("Visibility Warning");
+        Date date = new Date();
+        disasterWarningDTO.setStartDate(date);
 
         // Cảnh báo sương mù dày đặc
         if (visibility < DENSE_FOG) {
