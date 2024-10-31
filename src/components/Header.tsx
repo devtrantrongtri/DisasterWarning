@@ -102,7 +102,7 @@ const Header = () => {
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
               <Typography sx={{ mr: 1 }}>Trần Đăng Nam</Typography>
-              <IconButton edge="end" color="inherit">
+              <IconButton edge="end" color="inherit" component={Link} to="/info">
                 <Box
                   component="img"
                   src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFSCA8nWGaRj7a-ptN4zU6ByY0icvQabtXJjSJy9Bpu1QxjhJ_PBqZuHUWJYkXwbCNOADJLwYOMEAPcKdixdGbz&_nc_ohc=-LkzuFMA7UYQ7kNvgFqR6Vp&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=A17KWCCF95kLaJyS-LNvgS_&oh=00_AYBlsO-vGulhciWYVbsPKt9evs4iigNk0rHly9nUWSokkw&oe=67299C86"
