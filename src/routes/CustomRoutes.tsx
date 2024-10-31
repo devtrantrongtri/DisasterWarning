@@ -4,13 +4,14 @@ import { PublicRoute } from ".";
 import { RouteType } from "../interfaces/RouteType";
 import NotFoundPage from "../pages/NotFoundPage";
 import NoneLayout from "../layouts/NoneLayout";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 
 const CustomRoutes: React.FC = () => {
   const renderRoutes = (routes: RouteType[]) =>
     routes.map((route, index) => {
       const Component = route.page;
-      const Layout = route.layout || NoneLayout;
+      const Layout = route.layout || DefaultLayout;
 
       return (
         <Route
@@ -33,9 +34,9 @@ const CustomRoutes: React.FC = () => {
       <Route
         path="*"
         element={
-          <NoneLayout>
+          <DefaultLayout>
             <NotFoundPage />
-          </NoneLayout>
+          </DefaultLayout>
         }
       />
 

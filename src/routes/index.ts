@@ -1,11 +1,12 @@
 import { RouteType } from "../interfaces/RouteType";
+import HomePage from "../pages/HomePage";
 
 
 const PublicRoute: RouteType[] = [
-  // {
-  //   path: "/product/:id",
-  //   page: ProductDetailPage,
-  // }
+  {
+    path: "/",
+    page: HomePage,
+  }
 ];
 
 const PrivateRoute : RouteType[] = [

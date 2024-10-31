@@ -1,0 +1,127 @@
+import React, { useState } from 'react';
+import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import { useLocation, Link } from 'react-router-dom';
+
+const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const location = useLocation();
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  // Xác định tab đang hoạt động dựa trên đường dẫn hiện tại
+  const getActiveTab = (path: string) => location.pathname === path;
+
+  return (
+    <>
+      {/* Header luôn cố định ở đầu */}
+      <AppBar position="fixed" color="default" elevation={1} sx={{ height: 100 }}>
+        <Toolbar>
+          {/* Logo */}
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <Box
+              component="img"
+              src="https://cdn.pixabay.com/photo/2023/11/22/12/05/climate-change-8405380_1280.png"
+              alt="Logo"
+              sx={{ width: 80, height: 80, borderRadius: '50%' }}
+            />
+          </IconButton>
+
+          {/* Navigation Buttons */}
+          <Box sx={{ flexGrow: 1, display: 'flex', gap: 2, ml: 2 }}>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/"
+              sx={{
+                fontWeight: getActiveTab('/') ? 'bold' : 'normal',
+                color: getActiveTab('/') ? 'primary.main' : 'inherit',
+              }}
+            >
+              Trang chủ
+            </Button>
+
+            {/* Tooltip cho nút "Thiên tai" */}
+            <Tooltip title="Chỉ xem được thông tin chung của các loại thiên tai" arrow>
+              <Button
+                color="inherit"
+                component={Link}
+                to="/disaster"
+                sx={{
+                  fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
+                  color: getActiveTab('/disaster') ? 'primary.main' : 'inherit',
+                }}
+              >
+                Thiên tai
+              </Button>
+            </Tooltip>
+
+            {/* Các nút khác chỉ hiển thị nếu người dùng đã đăng nhập */}
+            {isLoggedIn && (
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/location"
+                  sx={{
+                    fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
+                    color: getActiveTab('/location') ? 'primary.main' : 'inherit',
+                  }}
+                >
+                  Vị trí của bạn
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/support-info"
+                  sx={{
+                    fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
+                    color: getActiveTab('/support-info') ? 'primary.main' : 'inherit',
+                  }}
+                >
+                  Thông tin cứu trợ
+                </Button>
+              </>
+            )}
+          </Box>
+
+          {/* Search Bar */}
+          <Box sx={{ position: 'relative', borderRadius: '16px', backgroundColor: '#f1f1f1', ml: 2, p: '0 16px', display: 'flex', alignItems: 'center', maxWidth: 200 }}>
+            <Search sx={{ color: '#757575', mr: 1 }} />
+            <InputBase placeholder="Tìm kiếm..." />
+          </Box>
+
+          {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
+          {!isLoggedIn ? (
+            <Button color="inherit" sx={{ ml: 2 }} onClick={() => setIsLoggedIn(true)}>
+              Đăng nhập
+            </Button>
+          ) : (
+            /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+              <Typography sx={{ mr: 1 }}>Trần Đăng Nam</Typography>
+              <IconButton edge="end" color="inherit">
+                <Box
+                  component="img"
+                  src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFSCA8nWGaRj7a-ptN4zU6ByY0icvQabtXJjSJy9Bpu1QxjhJ_PBqZuHUWJYkXwbCNOADJLwYOMEAPcKdixdGbz&_nc_ohc=-LkzuFMA7UYQ7kNvgFqR6Vp&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=A17KWCCF95kLaJyS-LNvgS_&oh=00_AYBlsO-vGulhciWYVbsPKt9evs4iigNk0rHly9nUWSokkw&oe=67299C86"
+                  alt="User"
+                  sx={{  height: 60, borderRadius: '50%', ml: 1 }}
+                />
+              </IconButton>
+              <Button color="inherit" onClick={handleLogout} sx={{ ml: 1 }}>
+                Đăng xuất
+              </Button>
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Tạo khoảng trống bên dưới header để tránh che khuất nội dung */}
+      <Toolbar />
+    </>
+  );
+};
+
+export default Header;
