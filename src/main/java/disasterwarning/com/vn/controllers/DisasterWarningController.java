@@ -105,8 +105,9 @@ public class DisasterWarningController {
     @PostMapping("/send")
     public ResponseEntity<ResponseWrapper<?>> sendWarning() {
         try {
-            disasterWarningService.sendDisasterWarning();
-            ResponseWrapper<String> response = new ResponseWrapper<>("Cảnh báo thiên tai đã được gửi thành công", null);
+            boolean warningSent = disasterWarningService.sendDisasterWarning();
+            String message = warningSent ? "Cảnh báo thiên tai đã được gửi thành công" : "Không có cảnh báo thiên tai nào cần gửi";
+            ResponseWrapper<String> response = new ResponseWrapper<>(message, null);
             return ResponseEntity.ok(response);
         } catch (DataNotFoundException e) {
             ResponseWrapper<String> response = new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
@@ -116,4 +117,5 @@ public class DisasterWarningController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
