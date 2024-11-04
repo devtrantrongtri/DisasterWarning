@@ -6,6 +6,7 @@ interface DisasterInfoProps {
   description: string;
 }
 
+
 const DisasterInfo: React.FC<DisasterInfoProps> = ({ imageUrl, description }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, padding: 10 }}>

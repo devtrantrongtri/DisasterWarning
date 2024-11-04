@@ -95,7 +95,13 @@ const Header = () => {
 
           {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
           {!isLoggedIn ? (
-            <Button color="inherit" sx={{ ml: 2 }} onClick={() => setIsLoggedIn(true)}>
+           <Button
+           component={Link}
+           to="/auth"
+           color="inherit"
+           sx={{ ml: 2 }}
+          //  onClick={() => setIsLoggedIn(true)}
+         >
               Đăng nhập
             </Button>
           ) : (
