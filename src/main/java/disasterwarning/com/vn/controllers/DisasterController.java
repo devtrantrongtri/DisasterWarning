@@ -62,7 +62,7 @@ public class DisasterController {
                     content = @Content(
                             mediaType = "application/json",
                             examples = @ExampleObject(
-                                    value = "{\"disasterName\": \"string\", \"imageUrl\": \"string\", \"description\": \"string\"}"
+                                    value = "{\"disasterName\": \"string\", \"description\": \"string\"}"
                             )
                     ))
              @RequestParam("disaster") String disasterReq ,

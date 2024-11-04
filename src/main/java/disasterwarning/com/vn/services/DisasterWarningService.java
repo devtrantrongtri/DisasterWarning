@@ -534,10 +534,8 @@ public class DisasterWarningService implements IDisasterWarningService {
     private DisasterWarningDTO checkVisibilityWarning(WeatherData weatherData) {
         double visibility = weatherData.getVisibility();
         DisasterWarningDTO disasterWarningDTO = new DisasterWarningDTO();
-        LocationDTO locationDTO = new LocationDTO();
-        locationDTO.setLocationName(weatherData.getCityName());
-        DisasterDTO disasterDTO = new DisasterDTO();
-        disasterDTO.setDisasterName("Sương mù");
+        LocationDTO locationDTO = locationService.findLocationByName(weatherData.getCityName()) ;
+        DisasterDTO disasterDTO = disasterService.findDisasterByName("Sương mù");
         Date date = new Date();
         disasterWarningDTO.setStartDate(date);
 
