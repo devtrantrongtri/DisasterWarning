@@ -2,6 +2,7 @@ import { RouteType } from "../interfaces/RouteType";
 import NoneLayout from "../layouts/NoneLayout";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import LoginPage from "../pages/auth/LoginPage";
+import RegistrationPage from "../pages/auth/RegistrationPage";
 import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
 import VerificationCodePage from "../pages/auth/VerificationCodePage";
 import HomePage from "../pages/HomePage";
@@ -35,6 +36,11 @@ const PublicRoute: RouteType[] = [
   {
     path: "/auth/reset-password",
     page: ResetPasswordPage,
+    layout : NoneLayout
+  },
+  {
+    path: "/auth/register",
+    page: RegistrationPage,
     layout : NoneLayout
   }
 ];

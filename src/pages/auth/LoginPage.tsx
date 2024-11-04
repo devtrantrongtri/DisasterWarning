@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, TextField, Typography, Divider, Checkbox, FormControlLabel } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import AuthLayout from '../../layouts/AuthLayout';
+import { Link } from 'react-router-dom';
 
 
 const LoginPage: React.FC = () => {
@@ -16,7 +17,7 @@ const LoginPage: React.FC = () => {
       <FormControlLabel control={<Checkbox />} label="Remember me" />
       <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>Log In</Button>
       <Typography variant="body2" mt={2}>
-        Don’t have an account yet? <a href="#">Create account</a>
+        Don’t have an account yet? <Link to={"/auth/register"}>Create account</Link>
       </Typography>
     </AuthLayout>
   );
