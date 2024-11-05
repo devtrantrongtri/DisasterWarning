@@ -37,8 +37,8 @@ function Footer() {
       {/* Phần Liên hệ */}
       <Box sx={{ textAlign: 'center', alignSelf: 'center' }}>
         <Typography variant="body2" sx={{ mb: 0.5 }}>Liên hệ chúng tôi</Typography>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>Email: vuongtamthegioi@uth.com</Typography>
-        <Typography variant="body2">© 2024 Vuong Tam The Gioi</Typography>
+        <Typography variant="body2" sx={{ mb: 0.5 }}>Email: vuontamthegioi@uth.com</Typography>
+        <Typography variant="body2">© 2024 Vuon Tam The Gioi</Typography>
       </Box>
     </Box>
   );
