@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,7 @@ public class DisasterInfoController {
     }
 
     @PostMapping(value = "/disaster-info", consumes = "multipart/form-data")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> createDisasterInfo(
             @Parameter(description = "Disaster Info DTO", required = true,
                     content = @Content(
@@ -86,6 +88,7 @@ public class DisasterInfoController {
     }
 
     @PutMapping("/disaster-info/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> updateDisasterInfo(@PathVariable int id, @RequestBody DisasterInfoDTO disasterInfoDTO) {
         try {
             DisasterInfoDTO updatedInfo = disasterInfoService.updateDisasterInfo(id, disasterInfoDTO);
@@ -97,6 +100,7 @@ public class DisasterInfoController {
         }
     }
     @DeleteMapping("/disaster-info/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> deleteDisasterInfo(@PathVariable int id) {
         try {
             boolean isDeleted = disasterInfoService.deleteDisasterInfo(id);

@@ -8,6 +8,7 @@ import disasterwarning.com.vn.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class LocationController {
     private LocationService locationService;
 
     @PostMapping("/location")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<LocationDTO>> createLocation(@RequestBody LocationDTO locationDTO) {
         try {
             LocationDTO createdLocation = locationService.createLocation(locationDTO);
@@ -32,6 +34,7 @@ public class LocationController {
     }
 
     @PutMapping("/location/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<LocationDTO>> updateLocation(@PathVariable int id, @RequestBody LocationDTO locationDTO) {
         try {
             LocationDTO updatedLocation = locationService.updateLocation(id, locationDTO);
@@ -70,6 +73,7 @@ public class LocationController {
     }
 
     @DeleteMapping("/location/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<Boolean>> deleteLocation(@PathVariable int id) {
         try {
             boolean deleted = locationService.deleteLocation(id);

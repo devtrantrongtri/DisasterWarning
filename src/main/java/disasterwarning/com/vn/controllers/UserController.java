@@ -1,6 +1,7 @@
 package disasterwarning.com.vn.controllers;
 
 import disasterwarning.com.vn.Response.ResponseWrapper;
+import disasterwarning.com.vn.components.JwtTokenUtils;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.UserDTO;
@@ -8,6 +9,7 @@ import disasterwarning.com.vn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,15 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+
+    @GetMapping("/generate-secret-key")
+    public ResponseEntity<String> generateSecretKey(){
+        return ResponseEntity.ok(jwtTokenUtils.generateSecretKey());
+    }
+
 
     @PostMapping("/user")
     public ResponseEntity<ResponseWrapper<UserDTO>> createUser(@RequestBody UserDTO userDTO) {
@@ -32,6 +43,7 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<ResponseWrapper<UserDTO>> updateUser(@PathVariable int id, @RequestBody UserDTO userDTO) {
         try {
             UserDTO updatedUser = userService.updateUser(userDTO);
@@ -44,6 +56,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<List<UserDTO>>> getAllUsers() {
         List<UserDTO> userDTOS = userService.findAllUsers();
         ResponseWrapper<List<UserDTO>> responseWrapper;
@@ -58,6 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<ResponseWrapper<UserDTO>> getUser(@PathVariable int id) {
         try {
             UserDTO userDTO = userService.findUserById(id);
@@ -70,6 +84,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<Boolean>> deleteUser(@PathVariable int id) {
         try {
             boolean deleted = userService.deleteUser(id);

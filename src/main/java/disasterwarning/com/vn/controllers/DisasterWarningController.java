@@ -5,21 +5,22 @@ import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
 import disasterwarning.com.vn.models.dtos.WeatherData;
 import disasterwarning.com.vn.services.DisasterWarningService;
-import disasterwarning.com.vn.services.sendMail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/disaster-warning-management")
 public class DisasterWarningController {
 
     @Autowired
     private DisasterWarningService disasterWarningService;
-
 
     @GetMapping("/{city}")
     public List<WeatherData> getWeatherData(@PathVariable String city) {
@@ -29,93 +30,78 @@ public class DisasterWarningController {
     @GetMapping("/disaster-warning")
     public ResponseEntity<ResponseWrapper<List<DisasterWarningDTO>>> getAllDisasterWarnings() {
         List<DisasterWarningDTO> disasterWarningDTOS = disasterWarningService.findAllDisasterWarning();
-        ResponseWrapper<List<DisasterWarningDTO>> responseWrapper;
-
-        if (!disasterWarningDTOS.isEmpty()) {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning retrieved successfully", disasterWarningDTOS);
-            return ResponseEntity.ok(responseWrapper);
-        }
-        else {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning is empty", null);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
-        }
+        ResponseWrapper<List<DisasterWarningDTO>> responseWrapper = new ResponseWrapper<>(
+                disasterWarningDTOS.isEmpty() ? "Disaster Warning is empty" : "Disaster Warning retrieved successfully",
+                disasterWarningDTOS.isEmpty() ? null : disasterWarningDTOS
+        );
+        HttpStatus status = disasterWarningDTOS.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        return new ResponseEntity<>(responseWrapper, status);
     }
-
 
     @GetMapping("/disaster-warning/{id}")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> getDisasterWarnings(@PathVariable int id) {
         DisasterWarningDTO disasterWarningDTO = disasterWarningService.findDisasterWarningById(id);
-        ResponseWrapper<DisasterWarningDTO> responseWrapper;
-
-        if (disasterWarningDTO != null) {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning retrieved successfully", disasterWarningDTO);
-            return ResponseEntity.ok(responseWrapper);
-        }
-        else {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning is empty", null);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
-        }
+        ResponseWrapper<DisasterWarningDTO> responseWrapper = new ResponseWrapper<>(
+                disasterWarningDTO != null ? "Disaster Warning retrieved successfully" : "Disaster Warning is empty",
+                disasterWarningDTO
+        );
+        HttpStatus status = disasterWarningDTO != null ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(responseWrapper, status);
     }
 
     @DeleteMapping("/disaster-warning/{id}")
-    public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> deleteDisasterWarning(@PathVariable int id) {
+    public ResponseEntity<ResponseWrapper<String>> deleteDisasterWarning(@PathVariable int id) {
         try {
-            boolean deleted = disasterWarningService.deleteDisasterWarning(id);
-            ResponseWrapper<Boolean> responseWrapper =
-                    new ResponseWrapper<>("Disaster successfully deleted", deleted);
+            boolean check = disasterWarningService.deleteDisasterWarning(id);
 
-            return ResponseEntity.noContent().build();
+            if (check) {
+                return ResponseEntity.ok(new ResponseWrapper<>("Cảnh báo thiên tai đã được xóa thành công", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseWrapper<>("Không tìm thấy cảnh báo thiên tai với ID: " + id, null));
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(e.getMessage(), null));
         }
     }
+
 
     @PostMapping("/disaster-warning")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> createDisasterWarning(@RequestBody DisasterWarningDTO disasterWarningDTO) {
         DisasterWarningDTO disasterWarningDTONew = disasterWarningService.createDisasterWarning(disasterWarningDTO);
-        ResponseWrapper<DisasterWarningDTO> responseWrapper;
-
-        if (disasterWarningDTO != null) {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning successfully created", disasterWarningDTO);
-            return new ResponseEntity<>(responseWrapper,HttpStatus.CREATED);
-        }
-        else {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning fail to create", null);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ResponseWrapper<DisasterWarningDTO> responseWrapper = new ResponseWrapper<>(
+                disasterWarningDTONew != null ? "Disaster Warning successfully created" : "Disaster Warning fail to create",
+                disasterWarningDTONew
+        );
+        HttpStatus status = disasterWarningDTONew != null ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity<>(responseWrapper, status);
     }
 
     @PutMapping("/disaster-warning/{id}")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> updateDisasterWarning(
             @PathVariable int id,
             @RequestBody DisasterWarningDTO disasterWarningDTO) {
-        DisasterWarningDTO disasterWarningDTONew = disasterWarningService.updateDisasterWarning(id,disasterWarningDTO);
-        ResponseWrapper<DisasterWarningDTO> responseWrapper;
-
-        if (disasterWarningDTO != null) {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning successfully update", disasterWarningDTONew);
-            return new ResponseEntity<>(responseWrapper,HttpStatus.CREATED);
-        }
-        else {
-            responseWrapper = new ResponseWrapper<>("Disaster Warning fail to update", null);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        DisasterWarningDTO disasterWarningDTONew = disasterWarningService.updateDisasterWarning(id, disasterWarningDTO);
+        ResponseWrapper<DisasterWarningDTO> responseWrapper = new ResponseWrapper<>(
+                disasterWarningDTONew != null ? "Disaster Warning successfully updated" : "Disaster Warning fail to update",
+                disasterWarningDTONew
+        );
+        HttpStatus status = disasterWarningDTONew != null ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity<>(responseWrapper, status);
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<ResponseWrapper<?>> sendWarning() {
+    @MessageMapping("/disaster.sendWarning")
+    @SendTo("/topic/warnings")
+    public ResponseWrapper<String> sendWarning() {
         try {
             boolean warningSent = disasterWarningService.sendDisasterWarning();
             String message = warningSent ? "Cảnh báo thiên tai đã được gửi thành công" : "Không có cảnh báo thiên tai nào cần gửi";
-            ResponseWrapper<String> response = new ResponseWrapper<>(message, null);
-            return ResponseEntity.ok(response);
+            return new ResponseWrapper<>(message, null);
         } catch (DataNotFoundException e) {
-            ResponseWrapper<String> response = new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            return new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
         } catch (Exception e) {
-            ResponseWrapper<String> response = new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
         }
     }
-
 }
