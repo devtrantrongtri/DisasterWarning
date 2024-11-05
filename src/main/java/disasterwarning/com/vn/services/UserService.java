@@ -1,5 +1,6 @@
 package disasterwarning.com.vn.services;
 
+import disasterwarning.com.vn.components.JwtTokenUtils;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.UserDTO;
@@ -8,6 +9,7 @@ import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.repositories.LocationRepo;
 import disasterwarning.com.vn.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,9 @@ public class UserService implements IUserService{
     @Autowired
     private Mapper mapper;
 
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+
     public UserDTO createUser(UserDTO userDTO) throws DuplicateDataException {
         User newUser = mapper.convertToEntity(userDTO, User.class);
         User existingUser = userRepo.findByEmail(newUser.getEmail());
@@ -35,6 +40,8 @@ public class UserService implements IUserService{
                     .orElseThrow(()->new DataNotFoundException("Location not found"));
             newUser.setLocation(location);
         }
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setStatus("active");
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
@@ -96,5 +103,19 @@ public class UserService implements IUserService{
             throw new DataNotFoundException("User does not exist");
         }
         return mapper.convertToDtoList(users, UserDTO.class);
+    }
+
+    @Override
+    public User getUserDetailsFromToken(String token) throws Exception {
+        if (jwtTokenUtils.isTokenExpired(token)) {
+            throw new RuntimeException("Token is expired");
+        }
+        String email = jwtTokenUtils.extractEmail(token);
+        User user = userRepo.findByEmail(email);
+        if (user != null) {
+            return user;
+        } else {
+            throw new Exception("User not found");
+        }
     }
 }

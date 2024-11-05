@@ -2,7 +2,6 @@ package disasterwarning.com.vn.filter;
 
 import disasterwarning.com.vn.components.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -34,7 +33,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+            throws IOException {
         try {
             if (isBypassToken(request)) {
                 logger.info("Bypassing token for request path: {}", request.getServletPath());

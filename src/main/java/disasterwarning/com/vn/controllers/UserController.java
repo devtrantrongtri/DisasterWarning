@@ -30,7 +30,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/user")
+    @PostMapping("/register")
     public ResponseEntity<ResponseWrapper<UserDTO>> createUser(@RequestBody UserDTO userDTO) {
         try {
             UserDTO createdUser = userService.createUser(userDTO);
