@@ -1,3 +1,4 @@
+// src/pages/Admin/DashboardPage.tsx
 import {
   Box,
   Grid,
@@ -6,10 +7,12 @@ import {
   CircularProgress,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+
 import UserInfo from '../../components/Admin/UserInfo';
 import WeatherInfo from '../../components/Admin/WeatherInfo';
 import CitySelector from '../../components/Admin/CitySelector';
-
+import DisasterChart from '../../components/Admin/DisasterChart';
+import AffectedProvincesTable from '../../components/Admin/AffectedProvincesTable';
 import { WeatherData } from '../../interfaces/WeatherType';
 import { useGetWeatherByCityIdQuery, useGetWeatherByCoordsQuery } from '../../services/weather.service';
 
@@ -18,19 +21,8 @@ const DashboardPage: React.FC = () => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [cityId, setCityId] = useState<number | null>(null);
 
-  // Sử dụng RTK Query hooks để fetch dữ liệu
-  const {
-    data: weatherDataByCoords,
-    error: errorByCoords,
-    isLoading: loadingByCoords,
-  } = useGetWeatherByCoordsQuery(coords!, { skip: !coords });
-
-  const {
-    data: weatherDataByCityId,
-    error: errorByCityId,
-    isLoading: loadingByCityId,
-  } = useGetWeatherByCityIdQuery(cityId!, { skip: !cityId });
-
+  const { data: weatherDataByCoords, error: errorByCoords, isLoading: loadingByCoords } = useGetWeatherByCoordsQuery(coords!, { skip: !coords });
+  const { data: weatherDataByCityId, error: errorByCityId, isLoading: loadingByCityId } = useGetWeatherByCityIdQuery(cityId!, { skip: !cityId });
   const isLoading = loadingByCoords || loadingByCityId;
   const error = errorByCoords || errorByCityId;
   const weatherData = weatherDataByCoords || weatherDataByCityId;
@@ -42,7 +34,7 @@ const DashboardPage: React.FC = () => {
           const { latitude, longitude } = position.coords;
           setCoords({ lat: latitude, lon: longitude });
           setLocationDenied(false);
-          setCityId(null); // Đặt lại cityId để tránh xung đột khi fetch
+          setCityId(null);
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -62,7 +54,7 @@ const DashboardPage: React.FC = () => {
 
   const handleCitySelect = (selectedCityId: number) => {
     setCityId(selectedCityId);
-    setCoords(null); // Đặt lại coords để tránh xung đột khi fetch
+    setCoords(null);
   };
 
   if (isLoading) {
@@ -83,16 +75,6 @@ const DashboardPage: React.FC = () => {
         {locationDenied ? (
           <>
             <CitySelector onCitySelect={handleCitySelect} />
-            <Typography sx={{ marginTop: 2 }}>
-              Hoặc bạn có thể thử cho phép truy cập vị trí một lần nữa:
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={requestLocation}
-              sx={{ marginTop: 1 }}
-            >
-              Yêu cầu truy cập vị trí
-            </Button>
           </>
         ) : (
           <Box sx={{ marginTop: 2 }}>
@@ -111,15 +93,19 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}
-    >
+    <Box sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} md={3}>
           <UserInfo />
         </Grid>
         <Grid item xs={12} md={8}>
           <WeatherInfo data={weatherData} />
+        </Grid>
+        <Grid item xs={12}>
+          <DisasterChart />
+        </Grid>
+        <Grid item xs={12}>
+          <AffectedProvincesTable />
         </Grid>
       </Grid>
     </Box>
