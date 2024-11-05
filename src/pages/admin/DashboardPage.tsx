@@ -1,90 +1,134 @@
-import React from 'react';
-import { Box, Typography, Card, CardContent, Grid, Paper } from '@mui/material';
-import { Line } from 'react-chartjs-2';
-import { Chart, CategoryScale } from 'chart.js';
-// import 'react-open-weather/lib/css/ReactWeather.css';
-
-// Register the CategoryScale to fix the scale issue
-Chart.register(CategoryScale);
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  CircularProgress,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import UserInfo from '../../components/Admin/UserInfo';
+import WeatherInfo from '../../components/Admin/WeatherInfo';
+import { fetchWeatherData, fetchWeatherDataByCityId } from './weatherApi';
+import { WeatherData } from '../../interfaces/WeatherType';
+import CitySelector from '../../components/Admin/CitySelector';
 
 const DashboardPage: React.FC = () => {
-  // Sample data for the chart
-  const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Thiên tai mỗi loại',
-        data: [3, 2, 1, 4, 6, 5, 8, 7, 4, 3, 6, 9],
-        borderColor: 'rgba(75,192,192,1)',
-        backgroundColor: 'rgba(75,192,192,0.2)',
-      },
-    ],
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [locationDenied, setLocationDenied] = useState<boolean>(false);
+
+  const getWeatherByCityId = async (cityId: number) => {
+    try {
+      setLoading(true);
+      const data = await fetchWeatherDataByCityId(cityId);
+      setWeatherData(data);
+      setError(null);
+    } catch (error) {
+      setError('Không thể lấy dữ liệu thời tiết cho thành phố đã chọn.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Dashboard
-      </Typography>
+  const getWeatherByLocation = async (latitude: number, longitude: number) => {
+    try {
+      setLoading(true);
+      const data = await fetchWeatherData(latitude, longitude);
+      setWeatherData(data);
+      setError(null);
+    } catch (error) {
+      setError('Không thể lấy dữ liệu thời tiết.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      {/* Summary Cards */}
-      <Grid container spacing={3}>
+  const requestLocation = () => {
+    setLoading(true);
+    setError(null);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          getWeatherByLocation(latitude, longitude);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          if (error.code === error.PERMISSION_DENIED) {
+            setError('Truy cập vị trí bị từ chối. Không thể lấy dữ liệu thời tiết.');
+            setLocationDenied(true);
+          } else {
+            setError('Lỗi khi lấy vị trí.');
+          }
+          setLoading(false);
+        }
+      );
+    } else {
+      setError('Trình duyệt không hỗ trợ định vị địa lý.');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    requestLocation();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ padding: 3 }}>
+        <CircularProgress />
+        <Typography>Đang tải...</Typography>
+      </Box>
+    );
+  }
+
+  if (error || !weatherData) {
+    return (
+      <Box sx={{ padding: 3 }}>
+        {error && <Typography color="error">{error}</Typography>}
+        {locationDenied ? (
+          <>
+            <CitySelector onCitySelect={getWeatherByCityId} />
+            <Typography sx={{ marginTop: 2 }}>
+              Hoặc bạn có thể thử cho phép truy cập vị trí một lần nữa:
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={requestLocation}
+              sx={{ marginTop: 1 }}
+            >
+              Yêu cầu truy cập vị trí
+            </Button>
+          </>
+        ) : (
+          <Box sx={{ marginTop: 2 }}>
+            <Typography>Không thể lấy dữ liệu thời tiết.</Typography>
+            <Button
+              variant="contained"
+              onClick={requestLocation}
+              sx={{ marginTop: 1 }}
+            >
+              Thử lại
+            </Button>
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}
+    >
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Số lượng người dùng</Typography>
-              <Typography variant="h3">10</Typography>
-            </CardContent>
-          </Card>
+          <UserInfo />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Số lượng cảnh báo được gửi đi</Typography>
-              <Typography variant="h3">50</Typography>
-            </CardContent>
-          </Card>
+        <Grid item xs={12} md={8}>
+          <WeatherInfo data={weatherData} />
         </Grid>
       </Grid>
-
-      {/* Weather Widget */}
-      <Box sx={{ mt: 4 }}>
-        <Paper elevation={3} sx={{ padding: 2 }}>
-          <Typography variant="h5">June 20 - Weather Report</Typography>
-          <Typography variant="h3">67°F</Typography>
-          <Typography variant="subtitle1">Ho Chi Minh City, Vietnam</Typography>
-          {/* Additional weather details */}
-          <Box sx={{ display: 'flex', mt: 2 }}>
-            <Box sx={{ mr: 4 }}>
-              <Typography variant="body2">UV Index: 06</Typography>
-              <Typography variant="body2">Humidity: 58%</Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2">Wind: 7 mph ESE</Typography>
-              <Typography variant="body2">Pressure: 29.97 in</Typography>
-            </Box>
-          </Box>
-        </Paper>
-      </Box>
-
-      {/* Statistics and Tables */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Thống kê số lượng thiên tai mỗi loại trong năm
-        </Typography>
-        <Paper elevation={3} sx={{ padding: 2 }}>
-          <Line data={data} />
-        </Paper>
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Bảng các tỉnh/thành bị ảnh hưởng thiên tai gần đây nhất
-        </Typography>
-        <Paper elevation={3} sx={{ padding: 2 }}>
-          <Typography>Đang cập nhật thông tin...</Typography>
-        </Paper>
-      </Box>
     </Box>
   );
 };
