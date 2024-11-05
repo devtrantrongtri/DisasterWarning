@@ -53,7 +53,7 @@ const AffectedProvincesTable: React.FC = () => {
         const newEntry: ProvinceData = {
           id: selectedCityId,
           name: weatherData.name,
-          disasterType: 'Lũ lụt', // Dữ liệu mẫu, có thể thay đổi theo yêu cầu thực tế
+          disasterType: 'null', 
           date: new Date().toISOString().split('T')[0],
           temperature: weatherData.main.temp,
           feelsLike: weatherData.main.feels_like,
@@ -84,66 +84,70 @@ const AffectedProvincesTable: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: '#ffffff', borderRadius: 1 }}>
-      <Typography variant="h6" gutterBottom>
-        Bảng các tỉnh/thành bị ảnh hưởng thiên tai gần đây nhất
+    <Box sx={{ padding: 3, backgroundColor: '#f9f9f9', borderRadius: 1, boxShadow: 2 }}>
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
+        Bảng tra cứu các tỉnh/thành bị ảnh hưởng thiên tai
       </Typography>
       <CitySelector onCitySelect={handleCitySelect} />
-
-      <Table sx={{ marginTop: 2 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Tỉnh/Thành</TableCell>
-            <TableCell>Quốc gia</TableCell>
-            <TableCell>Loại thiên tai</TableCell>
-            <TableCell>Ngày xảy ra</TableCell>
-            <TableCell>Nhiệt độ (°C)</TableCell>
-            <TableCell>Cảm giác như (°C)</TableCell>
-            <TableCell>Nhiệt độ thấp nhất (°C)</TableCell>
-            <TableCell>Nhiệt độ cao nhất (°C)</TableCell>
-            <TableCell>Áp suất (hPa)</TableCell>
-            <TableCell>Độ ẩm (%)</TableCell>
-            <TableCell>Tốc độ gió (m/s)</TableCell>
-            <TableCell>Thời tiết</TableCell>
-            <TableCell>Mô tả</TableCell>
-            <TableCell>Hành động</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {provinceDataList.length > 0 ? (
-            provinceDataList.map((province) => (
-              <TableRow key={province.id}>
-                <TableCell>{province.name}</TableCell>
-                <TableCell>{province.country}</TableCell>
-                <TableCell>{province.disasterType}</TableCell>
-                <TableCell>{province.date}</TableCell>
-                <TableCell>{province.temperature}</TableCell>
-                <TableCell>{province.feelsLike}</TableCell>
-                <TableCell>{province.tempMin}</TableCell>
-                <TableCell>{province.tempMax}</TableCell>
-                <TableCell>{province.pressure}</TableCell>
-                <TableCell>{province.humidity}</TableCell>
-                <TableCell>{province.windSpeed}</TableCell>
-                <TableCell>{province.weatherMain}</TableCell>
-                <TableCell>{province.weatherDescription}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleDelete(province.id)} color="error">
-                    <DeleteIcon />
-                  </IconButton>
+  
+      {/* Thêm overflowX cho Box chứa bảng để có thể cuộn ngang */}
+      <Box sx={{ overflowX: 'auto' }}>
+        <Table sx={{ marginTop: 2, backgroundColor: '#ffffff', borderRadius: 1, minWidth: '800px' }}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Tỉnh/Thành</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Quốc gia</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Loại thiên tai</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Ngày xảy ra</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ (°C)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Cảm giác như (°C)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ thấp nhất (°C)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ cao nhất (°C)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Áp suất (hPa)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Độ ẩm (%)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Tốc độ gió (m/s)</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Thời tiết</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Mô tả</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Hành động</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {provinceDataList.length > 0 ? (
+              provinceDataList.map((province) => (
+                <TableRow key={province.id} sx={{ '&:nth-of-type(even)': { backgroundColor: '#f2f2f2' } }}>
+                  <TableCell>{province.name}</TableCell>
+                  <TableCell>{province.country}</TableCell>
+                  <TableCell>{province.disasterType}</TableCell>
+                  <TableCell>{province.date}</TableCell>
+                  <TableCell>{province.temperature}</TableCell>
+                  <TableCell>{province.feelsLike}</TableCell>
+                  <TableCell>{province.tempMin}</TableCell>
+                  <TableCell>{province.tempMax}</TableCell>
+                  <TableCell>{province.pressure}</TableCell>
+                  <TableCell>{province.humidity}</TableCell>
+                  <TableCell>{province.windSpeed}</TableCell>
+                  <TableCell>{province.weatherMain}</TableCell>
+                  <TableCell>{province.weatherDescription}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleDelete(province.id)} color="error">
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={14} sx={{ textAlign: 'center', color: '#888' }}>
+                  Chọn tỉnh/thành và bấm "Lấy thời tiết" để hiển thị thông tin.
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={14}>
-                Chọn tỉnh/thành và bấm "Lấy thời tiết" để hiển thị thông tin.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </Box>
     </Box>
   );
+  
 };
 
 export default AffectedProvincesTable;

@@ -93,8 +93,12 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-      <Grid container spacing={2} justifyContent="center">
+    <Box  sx={{
+    padding: 2, // Giảm padding xung quanh
+    backgroundColor: '#f5f5f5',
+    minHeight: '100vh',
+  }}>
+      <Grid container  spacing={10} justifyContent="center">
         <Grid item xs={12} md={3}>
           <UserInfo />
         </Grid>
