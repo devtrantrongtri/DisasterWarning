@@ -31,6 +31,19 @@ const Header = () => {
 
           {/* Navigation Buttons */}
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 2, ml: 2 }}>
+              {/* Mai mot them logic hide */}
+              <Button
+                  color="inherit"
+                  component={Link}
+                  to="/dashboard"
+                  sx={{
+                    fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
+                    color: getActiveTab('/dashboard') ? 'primary.main' : 'inherit',
+                  }}
+                >
+                  Admin Dashboard
+                </Button>
+
             <Button
               color="inherit"
               component={Link}
@@ -83,6 +96,7 @@ const Header = () => {
                 >
                   Thông tin cứu trợ
                 </Button>
+               
               </>
             )}
           </Box>
