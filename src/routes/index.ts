@@ -13,6 +13,7 @@ import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
 import VerificationCodePage from "../pages/auth/VerificationCodePage";
 import HomePage from "../pages/HomePage";
 import PersonalInfoPage from "../pages/PersonalInfoPage";
+import SupportPage from "../pages/support/SupportPage";
 
 const PublicRoute: RouteType[] = [
   {
@@ -47,6 +48,12 @@ const PublicRoute: RouteType[] = [
     path: "/auth/register",
     page: RegistrationPage,
     layout: NoneLayout,
+  },
+
+  {
+    path: "/support-info",
+    page: SupportPage,
+    
   },
 ];
 
