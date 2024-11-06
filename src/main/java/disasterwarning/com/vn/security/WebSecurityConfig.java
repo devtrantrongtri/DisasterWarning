@@ -50,7 +50,11 @@ public class WebSecurityConfig {
                                 "/user-management/update_password/**",
                                 "/forgot-password/send-otp",
                                 "/forgot-password/verify-otp",
-                                "/forgot-password/forgot_password/{email}"
+                                "/forgot-password/forgot_password/{email}",
+                                "/disaster-management/disaster",
+                                "/swagger-ui/index.html",
+                                "/api-docs",
+                                "/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

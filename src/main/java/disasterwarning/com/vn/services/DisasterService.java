@@ -5,10 +5,14 @@ import disasterwarning.com.vn.models.entities.DisasterInfo;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
 import disasterwarning.com.vn.repositories.DisasterRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,13 +76,16 @@ public class DisasterService implements IDisasterService{
     }
 
     @Override
-    public List<DisasterDTO> findAllDisaster(){
-        List<Disaster> disasterList = disasterRepo.findAll();
-        if(disasterList.isEmpty()){
+    public Page<DisasterDTO> findAllDisaster(Pageable pageable) {
+        Page<Disaster> disasterPage = disasterRepo.findAll(pageable);
+
+        if (disasterPage.isEmpty()) {
             throw new RuntimeException("Disaster list is empty");
         }
-        return mapper.convertToEntityList(disasterList, DisasterDTO.class);
+
+        return mapper.convertToDtoPage(disasterPage, DisasterDTO.class);
     }
+
 
     @Override
     public boolean deleteDisaster(int id){

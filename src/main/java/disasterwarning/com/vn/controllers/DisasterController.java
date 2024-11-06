@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +30,13 @@ public class DisasterController {
 
 
     @GetMapping("/disaster")
-    public ResponseEntity<ResponseWrapper<List<DisasterDTO>>> getAllDisaster() {
-        List<DisasterDTO> disasters = disasterService.findAllDisaster();
-        ResponseWrapper<List<DisasterDTO>> responseWrapper;
+    public ResponseEntity<ResponseWrapper<Page<DisasterDTO>>> getAllDisaster(
+            @RequestParam(defaultValue = "0") int page,   // Số trang, mặc định là 0
+            @RequestParam(defaultValue = "10") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DisasterDTO> disasters = disasterService.findAllDisaster(pageable);
+        ResponseWrapper<Page<DisasterDTO>> responseWrapper;
 
         if (disasters != null && !disasters.isEmpty()) {
             responseWrapper = new ResponseWrapper<>("Disaster retrieved successfully", disasters);

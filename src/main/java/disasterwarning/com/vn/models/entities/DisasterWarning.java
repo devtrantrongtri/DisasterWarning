@@ -30,6 +30,6 @@ public class DisasterWarning {
     @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 }

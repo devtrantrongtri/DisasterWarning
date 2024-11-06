@@ -3,6 +3,8 @@ package disasterwarning.com.vn.services;
 import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,4 +50,22 @@ public class Mapper {
                 .map(entity -> convertToDto(entity, dtoClass))
                 .collect(Collectors.toList());
     }
+
+    public <E, D> Page<D> convertToDtoPage(Page<E> entityPage, Class<D> dtoClass) {
+        List<D> dtoList = entityPage.getContent().stream()
+                .map(entity -> convertToDto(entity, dtoClass))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, entityPage.getPageable(), entityPage.getTotalElements());
+    }
+
+    public <D, E> Page<E> convertToEntityPage(Page<D> dtoPage, Class<E> entityClass) {
+        List<E> entityList = dtoPage.getContent().stream()
+                .map(dto -> convertToEntity(dto, entityClass))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(entityList, dtoPage.getPageable(), dtoPage.getTotalElements());
+    }
+
+
 }

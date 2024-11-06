@@ -1,6 +1,8 @@
 package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.models.dtos.DisasterDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,7 +18,7 @@ public interface IDisasterService {
 
     public DisasterDTO findDisasterByName(String disasterName);
 
-    public List<DisasterDTO> findAllDisaster();
+    public Page<DisasterDTO> findAllDisaster(Pageable pageable);
 
     public boolean deleteDisaster(int id);
 }
