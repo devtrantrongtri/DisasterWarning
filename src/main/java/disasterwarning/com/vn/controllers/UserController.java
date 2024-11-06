@@ -11,6 +11,7 @@ import disasterwarning.com.vn.models.entities.Token;
 import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.services.TokenService;
 import disasterwarning.com.vn.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user-management")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     @Autowired
