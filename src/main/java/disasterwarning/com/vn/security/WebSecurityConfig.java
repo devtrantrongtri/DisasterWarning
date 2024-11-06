@@ -1,4 +1,4 @@
-package disasterwarning.com.vn.configuration;
+package disasterwarning.com.vn.security;
 
 import disasterwarning.com.vn.filter.JwtTokenFilter;
 import jakarta.servlet.http.HttpServletResponse;

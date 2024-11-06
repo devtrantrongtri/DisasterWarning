@@ -9,7 +9,10 @@ import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.repositories.LocationRepo;
 import disasterwarning.com.vn.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +31,12 @@ public class UserService implements IUserService{
 
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public UserDTO createUser(UserDTO userDTO) throws DuplicateDataException {
         User newUser = mapper.convertToEntity(userDTO, User.class);
@@ -118,4 +127,22 @@ public class UserService implements IUserService{
             throw new Exception("User not found");
         }
     }
+
+    @Override
+    public String loginUser(String email, String password) throws DataNotFoundException {
+        User existingUser = userRepo.findByEmail(email);
+        if (existingUser == null) {
+            throw new DataNotFoundException("Invalid email/password");
+        }
+        if (!passwordEncoder.matches(password, existingUser.getPassword())) {
+            throw new DataNotFoundException("Invalid email/password");
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                email, password,
+                existingUser.getAuthorities()
+        );
+        authenticationManager.authenticate(authenticationToken);
+        return jwtTokenUtils.generateToken(existingUser);
+    }
+
 }

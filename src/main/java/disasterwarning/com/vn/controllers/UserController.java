@@ -4,12 +4,18 @@ import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.components.JwtTokenUtils;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
+import disasterwarning.com.vn.models.dtos.LoginDTO;
+import disasterwarning.com.vn.models.dtos.TokenDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
+import disasterwarning.com.vn.models.entities.Token;
+import disasterwarning.com.vn.models.entities.User;
+import disasterwarning.com.vn.services.TokenService;
 import disasterwarning.com.vn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +29,9 @@ public class UserController {
 
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
+
+    @Autowired
+    private TokenService tokenService;
 
     @GetMapping("/generate-secret-key")
     public ResponseEntity<String> generateSecretKey(){
@@ -41,6 +50,44 @@ public class UserController {
             return new ResponseEntity<>(responseWrapper, HttpStatus.CONFLICT);
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseWrapper<?>> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            String token = userService.loginUser(loginDTO.getEmail(), loginDTO.getPassword());
+
+            if (token == null) {
+                return new ResponseEntity<>(new ResponseWrapper<>("Login failed", null), HttpStatus.UNAUTHORIZED);
+            }
+
+            User userDetail = userService.getUserDetailsFromToken(token);
+
+            if (userDetail == null) {
+                return new ResponseEntity<>(new ResponseWrapper<>("Login failed", null), HttpStatus.UNAUTHORIZED);
+            }
+
+            Token jwt = tokenService.addToken(userDetail, token);
+            TokenDTO tokenDTO = new TokenDTO();
+            tokenDTO.setToken(jwt.getToken());
+            tokenDTO.setRefreshToken(jwt.getRefreshToken());
+            tokenDTO.setRole(userDetail.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList().toString());
+            tokenDTO.setTokenType(jwt.getTokenType());
+            tokenDTO.setUserName(userDetail.getUserName());
+            tokenDTO.setEmail(userDetail.getEmail());
+
+            ResponseWrapper<TokenDTO> responseWrapper = new ResponseWrapper<>("Login successful", tokenDTO);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            ResponseWrapper<String> responseWrapper = new ResponseWrapper<>("An error occurred during login", e.getMessage());
+            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @PutMapping("/user/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")

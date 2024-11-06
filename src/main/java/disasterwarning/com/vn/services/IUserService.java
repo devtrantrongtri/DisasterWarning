@@ -24,4 +24,6 @@ public interface IUserService {
     public List<UserDTO> findUsersByProvince(String province) throws DataNotFoundException;
 
     public User getUserDetailsFromToken(String token) throws Exception;
+
+    public String loginUser(String email, String password) throws DataNotFoundException;
 }
