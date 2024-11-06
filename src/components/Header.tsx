@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip, Avatar } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -122,12 +122,13 @@ const Header = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
               <Typography sx={{ mr: 1, color: 'black'}}>Trần Đăng Nam</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
-                <Box
+                {/* <Box
                   component="img"
                   src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=00uOCDFmGhsQ7kNvgGBpuEJ&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=ATOo2aG5AfP3HZdec_nkuay&oh=00_AYDzAhzv0RrEproIa6iMWmXlcbxzlI62Zkn81F7xlMdgvA&oe=6730DCC6"
                   alt="User"
                   sx={{  height: 60, borderRadius: '50%', ml: 1 }}
-                />
+                /> */}
+                <Avatar sx={{ bgcolor: "" }}>N</Avatar>
               </IconButton>
               <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold' }}>
                 Đăng xuất

@@ -19,6 +19,9 @@ const LoginPage: React.FC = () => {
       <Typography variant="body2" mt={2}>
         Don’t have an account yet? <Link to={"/auth/register"}>Create account</Link>
       </Typography>
+      <Typography variant="body2" mt={2}>
+        Forgot password ?  <Link to={"/auth/forgot-password"}>CLick here .</Link>
+      </Typography>
     </AuthLayout>
   );
 };

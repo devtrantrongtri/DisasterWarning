@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Button, Box } from '@mui/material';
 import AuthLayout from '../../layouts/AuthLayout';
 import { MuiOtpInput } from 'mui-one-time-password-input';
+import { useNavigate } from 'react-router-dom';
 
 const VerificationCodePage: React.FC = () => {
   const [otp, setOtp] = useState('');
+  const navigate = useNavigate();
   const [subtitle,setSubtitle] = useState('We have just sent a verification code to jonathandoe@gmail.com')
   const handleChange = (newValue: string) => {
     setOtp(newValue);
@@ -12,6 +14,11 @@ const VerificationCodePage: React.FC = () => {
 
   const handleVerifyCode = () => {
     setSubtitle("da xac thuc thanh cong :" + otp)
+    if(otp == "1111") {
+      navigate('/auth/reset-password')
+    }else{
+      setSubtitle("Xac thuc khong thanh cong" + otp)
+    }
     // alert("Da gui otp : " + otp);
   };
 
@@ -31,7 +38,7 @@ const VerificationCodePage: React.FC = () => {
           onChange={handleChange}
           length={4}
           validateChar={(value) => /\d/.test(value)} // Chỉ chấp nhận số
-          onComplete={handleVerifyCode}
+          // onComplete={ handleVerifyCode}
           autoFocus
           TextFieldsProps={{
             variant: 'outlined',
@@ -53,9 +60,9 @@ const VerificationCodePage: React.FC = () => {
           }}
         />
       </Box>
-      {/* <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleVerifyCode}> 
+      <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleVerifyCode}> 
         Verify
-      </Button> */}
+      </Button>
       <Button variant="text" onClick={handleResend} fullWidth sx={{ mt: 2 }}>
         Resend Code
       </Button>

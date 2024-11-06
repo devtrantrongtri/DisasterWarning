@@ -14,6 +14,7 @@ import VerificationCodePage from "../pages/auth/VerificationCodePage";
 import HomePage from "../pages/HomePage";
 import PersonalInfoPage from "../pages/PersonalInfoPage";
 import DisasterInfoPage from "../pages/disaster/DisasterInfoPage";
+import SupportPage from "../pages/support/SupportPage";
 
 const PublicRoute: RouteType[] = [
   {
@@ -52,6 +53,10 @@ const PublicRoute: RouteType[] = [
   {
     path: "/disaster",
     page: DisasterInfoPage,
+  },
+  {
+    path: "/support-info",
+    page: SupportPage,
   },
 ];
 
