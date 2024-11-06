@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip, Avatar } from '@mui/material';
 import { Search, Notifications } from '@mui/icons-material';
 import { useLocation, Link, useNavigate} from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const Header = () => {
     <>
       {/* Header luôn cố định ở đầu */}
       <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#d3f3ff' }}>
-        <Toolbar>
+        <Toolbar >
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
             <Box
@@ -54,7 +54,9 @@ const Header = () => {
                 sx={{
                   fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
                   color: getActiveTab('/disaster') ? 'primary.main' : 'black',
-                }}>
+                  fontSize: '1rem', 
+                }}
+              >
                 Thiên tai
               </Button>
 
@@ -87,6 +89,36 @@ const Header = () => {
                 }}>
                   <Notifications />
               </IconButton>
+            {/* Các nút khác chỉ hiển thị nếu người dùng đã đăng nhập */}
+            {isLoggedIn && (
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/location"
+                  sx={{
+                    fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
+                    color: getActiveTab('/location') ? 'primary.main' : 'black',
+                    fontSize: '1rem', 
+                  }}
+                >
+                  Vị trí của bạn
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/support-info"
+                  sx={{
+                    fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
+                    color: getActiveTab('/support-info') ? 'primary.main' : 'black',
+                    fontSize: '1rem', 
+                  }}
+                >
+                  Thông tin cứu trợ
+                </Button>
+               
+              </>
+            )}
           </Box>
 
           {/* Search Bar */}
@@ -97,22 +129,30 @@ const Header = () => {
 
           {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
            {/* onClick={() => setIsLoggedIn(true)} */}
-          {!isLoggedIn ? ( 
-            <Button component={Link} to="/auth" sx={{ ml: 2, color: 'black' }}> Đăng nhập </Button> 
+          {!isLoggedIn ? (
+           <Button
+           component={Link}
+           to="/auth"
+           sx={{ ml: 2, color: 'black',fontSize: '1rem',  }}
+          //  onClick={() => setIsLoggedIn(true)}
+         >
+              Đăng nhập
+            </Button>
           ) : (
             
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
-            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 ,fontSize: '1rem', }}>
               <Typography sx={{ mr: 1, color: 'black'}}>Trần Đăng Nam</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
-                <Box
+                {/* <Box
                   component="img"
                   src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=00uOCDFmGhsQ7kNvgGBpuEJ&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=ATOo2aG5AfP3HZdec_nkuay&oh=00_AYDzAhzv0RrEproIa6iMWmXlcbxzlI62Zkn81F7xlMdgvA&oe=6730DCC6"
                   alt="User"
                   sx={{  height: 60, borderRadius: '50%', ml: 1 }}
-                />
+                /> */}
+                <Avatar sx={{ bgcolor: "" }}>N</Avatar>
               </IconButton>
-              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold' }}>
+              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold',fontSize: '1rem',  }}>
                 Đăng xuất
               </Button>
             </Box>
