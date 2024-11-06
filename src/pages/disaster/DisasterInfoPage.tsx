@@ -6,7 +6,6 @@ const DisasterInfoPage: React.FC = () => {
     <Box sx={{ padding: 6, paddingTop:0 , backgroundColor: '#989898', marginTop :'37px', position: 'relative'}}> 
       {/* Hình ảnh lớn với tiêu đề NGUYÊN NHÂN HÌNH THÀNH */}
       <Paper
-      
         elevation={0}
         sx={{
           marginBottom: 4,
