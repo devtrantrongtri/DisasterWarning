@@ -81,44 +81,9 @@ const Header = () => {
                 </>
               )}
 
-              {/*  Nút "Thong Bao" */}
-              <IconButton color="inherit" component={Link} to="/disaster-warning"
-                sx={{
-                  fontWeight: getActiveTab('/disaster-warning') ? 'bold' : 'normal',
-                  color: getActiveTab('/disaster-warning') ? 'primary.main' : 'black',
-                }}>
-                  <Notifications />
-              </IconButton>
+             
             {/* Các nút khác chỉ hiển thị nếu người dùng đã đăng nhập */}
-            {isLoggedIn && (
-              <>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/location"
-                  sx={{
-                    fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
-                    color: getActiveTab('/location') ? 'primary.main' : 'black',
-                    fontSize: '1rem', 
-                  }}
-                >
-                  Vị trí của bạn
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/support-info"
-                  sx={{
-                    fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
-                    color: getActiveTab('/support-info') ? 'primary.main' : 'black',
-                    fontSize: '1rem', 
-                  }}
-                >
-                  Thông tin cứu trợ
-                </Button>
-               
-              </>
-            )}
+           
           </Box>
 
           {/* Search Bar */}
@@ -127,8 +92,17 @@ const Header = () => {
             <InputBase placeholder="Tìm kiếm..." />
           </Box>
 
+           {/*  Nút "Thong Bao" */}
+           <IconButton color="inherit" component={Link} to="/disaster-warning"
+              sx={{
+                fontWeight: getActiveTab('/disaster-warning') ? 'bold' : 'normal',
+                color: getActiveTab('/disaster-warning') ? 'primary.main' : 'black',
+              }}>
+                <Notifications />
+            </IconButton>
           {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
-           {/* onClick={() => setIsLoggedIn(true)} */}
+          
+          {/* onClick={() => setIsLoggedIn(true)} */}
           {!isLoggedIn ? (
            <Button
            component={Link}
