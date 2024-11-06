@@ -52,9 +52,12 @@ public class WebSecurityConfig {
                                 "/forgot-password/verify-otp",
                                 "/forgot-password/forgot_password/{email}",
                                 "/disaster-management/disaster",
-                                "/swagger-ui/index.html",
-                                "/api-docs",
-                                "/api-docs/**"
+                                "/swagger/api-docs",
+                                "/swagger/api-docs/**",
+                                "/swagger/api-docs/swagger-config",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/index.html"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

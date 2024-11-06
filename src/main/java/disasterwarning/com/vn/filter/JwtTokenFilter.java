@@ -88,7 +88,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/forgot-password/verify-otp", "POST"),
                 Pair.of("/forgot-password/forgot_password/{email}", "POST"),
                 Pair.of("/disaster-management/disaster", "GET"),
-                Pair.of("/swagger-ui.html", "GET")
+                Pair.of("/swagger/api-docs/**","GET"),
+                Pair.of("/swagger/api-docs", "GET"),
+                Pair.of("/swagger/api-docs/swagger-config", "GET"),
+                Pair.of("/swagger-ui/**","GET"),
+                Pair.of("/swagger-ui.html", "GET"),
+                Pair.of("/swagger-ui/index.html", "GET")
         );
 
         String requestPath = request.getServletPath();
