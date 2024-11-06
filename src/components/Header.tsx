@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <>
       {/* Header luôn cố định ở đầu */}
-      <AppBar position="fixed" color="default" elevation={1} sx={{ height: 100 }}>
+      <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#d3f3ff' }}>
         <Toolbar>
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
@@ -38,7 +38,7 @@ const Header = () => {
                   to="/dashboard"
                   sx={{
                     fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
-                    color: getActiveTab('/dashboard') ? 'primary.main' : 'inherit',
+                    color: getActiveTab('/dashboard') ? 'primary.main' : 'black',
                   }}
                 >
                   Admin Dashboard
@@ -50,7 +50,7 @@ const Header = () => {
               to="/"
               sx={{
                 fontWeight: getActiveTab('/') ? 'bold' : 'normal',
-                color: getActiveTab('/') ? 'primary.main' : 'inherit',
+                color: getActiveTab('/') ? 'primary.main' : 'black',
               }}
             >
               Trang chủ
@@ -64,7 +64,7 @@ const Header = () => {
                 to="/disaster"
                 sx={{
                   fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
-                  color: getActiveTab('/disaster') ? 'primary.main' : 'inherit',
+                  color: getActiveTab('/disaster') ? 'primary.main' : 'black',
                 }}
               >
                 Thiên tai
@@ -80,7 +80,7 @@ const Header = () => {
                   to="/location"
                   sx={{
                     fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
-                    color: getActiveTab('/location') ? 'primary.main' : 'inherit',
+                    color: getActiveTab('/location') ? 'primary.main' : 'black',
                   }}
                 >
                   Vị trí của bạn
@@ -91,7 +91,7 @@ const Header = () => {
                   to="/support-info"
                   sx={{
                     fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
-                    color: getActiveTab('/support-info') ? 'primary.main' : 'inherit',
+                    color: getActiveTab('/support-info') ? 'primary.main' : 'black',
                   }}
                 >
                   Thông tin cứu trợ
@@ -112,8 +112,7 @@ const Header = () => {
            <Button
            component={Link}
            to="/auth"
-           color="inherit"
-           sx={{ ml: 2 }}
+           sx={{ ml: 2, color: 'black' }}
           //  onClick={() => setIsLoggedIn(true)}
          >
               Đăng nhập
@@ -121,16 +120,16 @@ const Header = () => {
           ) : (
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-              <Typography sx={{ mr: 1 }}>Trần Đăng Nam</Typography>
+              <Typography sx={{ mr: 1, color: 'black'}}>Trần Đăng Nam</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
                 <Box
                   component="img"
-                  src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFSCA8nWGaRj7a-ptN4zU6ByY0icvQabtXJjSJy9Bpu1QxjhJ_PBqZuHUWJYkXwbCNOADJLwYOMEAPcKdixdGbz&_nc_ohc=-LkzuFMA7UYQ7kNvgFqR6Vp&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=A17KWCCF95kLaJyS-LNvgS_&oh=00_AYBlsO-vGulhciWYVbsPKt9evs4iigNk0rHly9nUWSokkw&oe=67299C86"
+                  src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=00uOCDFmGhsQ7kNvgGBpuEJ&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=ATOo2aG5AfP3HZdec_nkuay&oh=00_AYDzAhzv0RrEproIa6iMWmXlcbxzlI62Zkn81F7xlMdgvA&oe=6730DCC6"
                   alt="User"
                   sx={{  height: 60, borderRadius: '50%', ml: 1 }}
                 />
               </IconButton>
-              <Button color="inherit" onClick={handleLogout} sx={{ ml: 1 }}>
+              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold' }}>
                 Đăng xuất
               </Button>
             </Box>
