@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip } from '@mui/material';
-import { Search } from '@mui/icons-material';
-import { useLocation, Link } from 'react-router-dom';
+import { Search, Notifications } from '@mui/icons-material';
+import { useLocation, Link, useNavigate} from 'react-router-dom';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();  // Hook to handle programmatic navigation to other pages 
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -17,7 +18,7 @@ const Header = () => {
   return (
     <>
       {/* Header luôn cố định ở đầu */}
-      <AppBar position="fixed" color="default" elevation={1} sx={{ height: 100 }}>
+      <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#d3f3ff' }}>
         <Toolbar>
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
@@ -32,73 +33,60 @@ const Header = () => {
           {/* Navigation Buttons */}
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 2, ml: 2 }}>
               {/* Mai mot them logic hide */}
-              <Button
-                  color="inherit"
-                  component={Link}
-                  to="/dashboard"
-                  sx={{
-                    fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
-                    color: getActiveTab('/dashboard') ? 'primary.main' : 'inherit',
-                  }}
-                >
-                  Admin Dashboard
-                </Button>
+              <Button color="inherit" component={Link} to="/dashboard"
+                sx={{
+                  fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
+                  color: getActiveTab('/dashboard') ? 'primary.main' : 'black',
+                }}> 
+                Admin Dashboard 
+              </Button>
 
-            <Button
-              color="inherit"
-              component={Link}
-              to="/"
-              sx={{
-                fontWeight: getActiveTab('/') ? 'bold' : 'normal',
-                color: getActiveTab('/') ? 'primary.main' : 'inherit',
-              }}
-            >
-              Trang chủ
-            </Button>
+              <Button color="inherit" component={Link} to="/"
+                sx={{
+                  fontWeight: getActiveTab('/') ? 'bold' : 'normal',
+                  color: getActiveTab('/') ? 'primary.main' : 'black',
+                }}>
+                Trang chủ
+              </Button>
 
-            {/* Tooltip cho nút "Thiên tai" */}
-            <Tooltip title="Chỉ xem được thông tin chung của các loại thiên tai" arrow>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/disaster"
+              {/*  Nút "Thiên tai" */}
+              <Button color="inherit" component={Link} to="/disaster"
                 sx={{
                   fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
-                  color: getActiveTab('/disaster') ? 'primary.main' : 'inherit',
-                }}
-              >
+                  color: getActiveTab('/disaster') ? 'primary.main' : 'black',
+                }}>
                 Thiên tai
               </Button>
-            </Tooltip>
 
-            {/* Các nút khác chỉ hiển thị nếu người dùng đã đăng nhập */}
-            {isLoggedIn && (
-              <>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/location"
-                  sx={{
-                    fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
-                    color: getActiveTab('/location') ? 'primary.main' : 'inherit',
-                  }}
-                >
-                  Vị trí của bạn
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/support-info"
-                  sx={{
-                    fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
-                    color: getActiveTab('/support-info') ? 'primary.main' : 'inherit',
-                  }}
-                >
-                  Thông tin cứu trợ
-                </Button>
-               
-              </>
-            )}
+              {/* Các nút khác chỉ hiển thị nếu người dùng đã đăng nhập */}
+              {isLoggedIn && (
+                <>
+                  <Button color="inherit" component={Link} to="/location"
+                    sx={{
+                      fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
+                      color: getActiveTab('/location') ? 'primary.main' : 'black',
+                    }}>
+                    Vị trí của bạn
+                  </Button>
+
+                  <Button color="inherit" component={Link} to="/support-info"
+                    sx={{
+                      fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
+                      color: getActiveTab('/support-info') ? 'primary.main' : 'black',
+                    }}>
+                    Thông tin cứu trợ
+                  </Button>
+                </>
+              )}
+
+              {/*  Nút "Thong Bao" */}
+              <IconButton color="inherit" component={Link} to="/disaster-warning"
+                sx={{
+                  fontWeight: getActiveTab('/disaster-warning') ? 'bold' : 'normal',
+                  color: getActiveTab('/disaster-warning') ? 'primary.main' : 'black',
+                }}>
+                  <Notifications />
+              </IconButton>
           </Box>
 
           {/* Search Bar */}
@@ -108,33 +96,28 @@ const Header = () => {
           </Box>
 
           {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
-          {!isLoggedIn ? (
-           <Button
-           component={Link}
-           to="/auth"
-           color="inherit"
-           sx={{ ml: 2 }}
-          //  onClick={() => setIsLoggedIn(true)}
-         >
-              Đăng nhập
-            </Button>
+           {/* onClick={() => setIsLoggedIn(true)} */}
+          {!isLoggedIn ? ( 
+            <Button component={Link} to="/auth" sx={{ ml: 2, color: 'black' }}> Đăng nhập </Button> 
           ) : (
+            
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-              <Typography sx={{ mr: 1 }}>Trần Đăng Nam</Typography>
+              <Typography sx={{ mr: 1, color: 'black'}}>Trần Đăng Nam</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
                 <Box
                   component="img"
-                  src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFSCA8nWGaRj7a-ptN4zU6ByY0icvQabtXJjSJy9Bpu1QxjhJ_PBqZuHUWJYkXwbCNOADJLwYOMEAPcKdixdGbz&_nc_ohc=-LkzuFMA7UYQ7kNvgFqR6Vp&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=A17KWCCF95kLaJyS-LNvgS_&oh=00_AYBlsO-vGulhciWYVbsPKt9evs4iigNk0rHly9nUWSokkw&oe=67299C86"
+                  src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/456515473_1160221798570101_6600422429005067164_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=00uOCDFmGhsQ7kNvgGBpuEJ&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=ATOo2aG5AfP3HZdec_nkuay&oh=00_AYDzAhzv0RrEproIa6iMWmXlcbxzlI62Zkn81F7xlMdgvA&oe=6730DCC6"
                   alt="User"
                   sx={{  height: 60, borderRadius: '50%', ml: 1 }}
                 />
               </IconButton>
-              <Button color="inherit" onClick={handleLogout} sx={{ ml: 1 }}>
+              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold' }}>
                 Đăng xuất
               </Button>
             </Box>
           )}
+
         </Toolbar>
       </AppBar>
 
