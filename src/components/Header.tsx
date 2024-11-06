@@ -18,7 +18,7 @@ const Header = () => {
     <>
       {/* Header luôn cố định ở đầu */}
       <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#d3f3ff' }}>
-        <Toolbar>
+        <Toolbar >
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
             <Box
@@ -39,7 +39,9 @@ const Header = () => {
                   sx={{
                     fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
                     color: getActiveTab('/dashboard') ? 'primary.main' : 'black',
+                    fontSize: '1.2rem', 
                   }}
+                  
                 >
                   Admin Dashboard
                 </Button>
@@ -51,6 +53,7 @@ const Header = () => {
               sx={{
                 fontWeight: getActiveTab('/') ? 'bold' : 'normal',
                 color: getActiveTab('/') ? 'primary.main' : 'black',
+                fontSize: '1.2rem', 
               }}
             >
               Trang chủ
@@ -65,6 +68,7 @@ const Header = () => {
                 sx={{
                   fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
                   color: getActiveTab('/disaster') ? 'primary.main' : 'black',
+                  fontSize: '1rem', 
                 }}
               >
                 Thiên tai
@@ -81,6 +85,7 @@ const Header = () => {
                   sx={{
                     fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
                     color: getActiveTab('/location') ? 'primary.main' : 'black',
+                    fontSize: '1rem', 
                   }}
                 >
                   Vị trí của bạn
@@ -92,6 +97,7 @@ const Header = () => {
                   sx={{
                     fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
                     color: getActiveTab('/support-info') ? 'primary.main' : 'black',
+                    fontSize: '1rem', 
                   }}
                 >
                   Thông tin cứu trợ
@@ -112,14 +118,14 @@ const Header = () => {
            <Button
            component={Link}
            to="/auth"
-           sx={{ ml: 2, color: 'black' }}
+           sx={{ ml: 2, color: 'black',fontSize: '1rem',  }}
           //  onClick={() => setIsLoggedIn(true)}
          >
               Đăng nhập
             </Button>
           ) : (
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
-            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 ,fontSize: '1rem', }}>
               <Typography sx={{ mr: 1, color: 'black'}}>Trần Đăng Nam</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
                 {/* <Box
@@ -130,7 +136,7 @@ const Header = () => {
                 /> */}
                 <Avatar sx={{ bgcolor: "" }}>N</Avatar>
               </IconButton>
-              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold' }}>
+              <Button onClick={handleLogout} sx={{ ml: 1, color:'blue', fontWeight:'bold',fontSize: '1rem',  }}>
                 Đăng xuất
               </Button>
             </Box>

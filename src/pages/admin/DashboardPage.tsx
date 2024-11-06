@@ -15,6 +15,7 @@ import DisasterChart from '../../components/Admin/DisasterChart';
 import AffectedProvincesTable from '../../components/Admin/AffectedProvincesTable';
 import { WeatherData } from '../../interfaces/WeatherType';
 import { useGetWeatherByCityIdQuery, useGetWeatherByCoordsQuery } from '../../services/weather.service';
+import DangerousLocations from '../../components/Admin/DangerousLocations';
 
 const DashboardPage: React.FC = () => {
   const [locationDenied, setLocationDenied] = useState<boolean>(false);
@@ -98,18 +99,19 @@ const DashboardPage: React.FC = () => {
     backgroundColor: '#f5f5f5',
     minHeight: '100vh',
   }}>
-      <Grid container  spacing={10} justifyContent="center">
+<Grid container spacing={10} justifyContent="center">
         <Grid item xs={12} md={3}>
           <UserInfo />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={6}>
           <WeatherInfo data={weatherData} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <DisasterChart />
-        </Grid>
-        <Grid item xs={12}>
           <AffectedProvincesTable />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <DangerousLocations />
         </Grid>
       </Grid>
     </Box>
