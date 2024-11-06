@@ -8,13 +8,17 @@ interface DisasterWarning {
   description: string;
 }
 
-interface WarningDisasterProps {
-  warnings: DisasterWarning[];
-}
+const WarningDisasterPage: React.FC = () => {
+  // Dữ liệu giả
+  const warnings: DisasterWarning[] = [
+    { date: '2024-10-01', type: 'Lũ lụt', location: 'Hà Nội', description: 'Cảnh báo lũ lụt diện rộng' },
+    { date: '2024-10-05', type: 'Động đất', location: 'Đà Nẵng', description: 'Động đất với cường độ 5.6' },
+    { date: '2024-10-10', type: 'Bão', location: 'Hải Phòng', description: 'Bão số 3 tiến vào đất liền' },
+    { date: '2024-10-15', type: 'Sạt lở đất', location: 'Lai Châu', description: 'Cảnh báo nguy cơ sạt lở đất' },
+  ];
 
-const WarningDisaster: React.FC<WarningDisasterProps> = ({ warnings }) => {
   return (
-    <TableContainer >
+    <TableContainer component={Paper}>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -25,8 +29,8 @@ const WarningDisaster: React.FC<WarningDisasterProps> = ({ warnings }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {warnings.map((warning) => (
-            <TableRow key={warning.date}>
+          {warnings.map((warning, index) => (
+            <TableRow key={index}>
               <TableCell component="th" scope="row">
                 {warning.date}
               </TableCell>
@@ -41,4 +45,4 @@ const WarningDisaster: React.FC<WarningDisasterProps> = ({ warnings }) => {
   );
 };
 
-export default WarningDisaster;
+export default WarningDisasterPage;
