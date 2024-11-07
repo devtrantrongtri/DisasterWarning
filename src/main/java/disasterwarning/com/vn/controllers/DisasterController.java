@@ -7,6 +7,7 @@ import disasterwarning.com.vn.services.DisasterService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/disaster-management")
+@SecurityRequirement(name = "bearerAuth")
 public class DisasterController {
 
     @Autowired
@@ -31,7 +33,7 @@ public class DisasterController {
 
     @GetMapping("/disaster")
     public ResponseEntity<ResponseWrapper<Page<DisasterDTO>>> getAllDisaster(
-            @RequestParam(defaultValue = "0") int page,   // Số trang, mặc định là 0
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);

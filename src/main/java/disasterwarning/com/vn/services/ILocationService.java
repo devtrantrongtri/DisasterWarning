@@ -3,6 +3,8 @@ package disasterwarning.com.vn.services;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.LocationDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface ILocationService {
 
     public LocationDTO findLocationByName(String name) throws DataNotFoundException;
 
-    public List<LocationDTO> findAllLocations() throws DataNotFoundException;
+    public Page<LocationDTO> findAllLocations(Pageable pageable) throws DataNotFoundException;
 
     public LocationDTO createLocation(LocationDTO locationDTO) throws DuplicateDataException;
 

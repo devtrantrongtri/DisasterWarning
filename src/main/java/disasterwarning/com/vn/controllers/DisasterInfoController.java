@@ -10,6 +10,7 @@ import disasterwarning.com.vn.services.IDisasterInfoService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/disaster-info-management")
+@SecurityRequirement(name = "bearerAuth")
 public class DisasterInfoController {
     private final IDisasterInfoService disasterInfoService;
 

@@ -4,6 +4,8 @@ import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public interface IUserService {
 
     public UserDTO findUserByEmail(String email) throws DataNotFoundException;
 
-    public List<UserDTO> findAllUsers() throws DataNotFoundException;
+    public Page<UserDTO> findAllUsers(Pageable pageable) throws DataNotFoundException;
 
     public boolean deleteUser(int id) throws DataNotFoundException;
 

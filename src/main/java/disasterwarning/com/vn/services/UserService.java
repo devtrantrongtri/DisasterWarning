@@ -9,6 +9,8 @@ import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.repositories.LocationRepo;
 import disasterwarning.com.vn.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -89,12 +91,12 @@ public class UserService implements IUserService{
         return mapper.convertToDto(user, UserDTO.class);
     }
 
-    public List<UserDTO> findAllUsers() {
-        List<User> users = userRepo.findAll();
+    public Page<UserDTO> findAllUsers(Pageable pageable) {
+        Page<User> users = userRepo.findAll(pageable);
         if (users.isEmpty()) {
             throw new DataNotFoundException("User does not exist");
         }
-        return mapper.convertToDtoList(users, UserDTO.class);
+        return mapper.convertToDtoPage(users, UserDTO.class);
     }
 
     public boolean deleteUser(int id) {

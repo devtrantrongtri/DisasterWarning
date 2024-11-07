@@ -9,6 +9,8 @@ import disasterwarning.com.vn.repositories.DisasterWarningRepo;
 import disasterwarning.com.vn.services.sendMail.IMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -182,12 +184,12 @@ public class DisasterWarningService implements IDisasterWarningService {
     }
 
     @Override
-    public List<DisasterWarningDTO> findAllDisasterWarning(){
-        List<DisasterWarning> disasterWarnings = disasterWarningRepo.findAll();
+    public Page<DisasterWarningDTO> findAllDisasterWarning(Pageable pageable){
+        Page<DisasterWarning> disasterWarnings = disasterWarningRepo.findAll(pageable);
         if(disasterWarnings.isEmpty()){
             throw new RuntimeException("List Disaster Warning not found");
         }
-        return mapper.convertToEntityList(disasterWarnings, DisasterWarningDTO.class);
+        return mapper.convertToDtoPage(disasterWarnings, DisasterWarningDTO.class);
     }
 
     public boolean deleteDisasterWarning(int id){
@@ -199,7 +201,7 @@ public class DisasterWarningService implements IDisasterWarningService {
     }
 
     public boolean sendDisasterWarning() {
-        List<LocationDTO> locations = locationService.findAllLocations();
+        List<LocationDTO> locations = locationService.findAllLocations(Pageable.unpaged()).getContent();
         List<Location> locationList = mapper.convertToEntityList(locations, Location.class);
         boolean warningSent = false;
 

@@ -5,7 +5,11 @@ import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
 import disasterwarning.com.vn.models.dtos.WeatherData;
 import disasterwarning.com.vn.services.DisasterWarningService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,6 +21,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/disaster-warning-management")
+@SecurityRequirement(name = "bearerAuth")
 public class DisasterWarningController {
 
     @Autowired
@@ -28,9 +33,13 @@ public class DisasterWarningController {
     }
 
     @GetMapping("/disaster-warning")
-    public ResponseEntity<ResponseWrapper<List<DisasterWarningDTO>>> getAllDisasterWarnings() {
-        List<DisasterWarningDTO> disasterWarningDTOS = disasterWarningService.findAllDisasterWarning();
-        ResponseWrapper<List<DisasterWarningDTO>> responseWrapper = new ResponseWrapper<>(
+    public ResponseEntity<ResponseWrapper<Page<DisasterWarningDTO>>> getAllDisasterWarnings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DisasterWarningDTO> disasterWarningDTOS = disasterWarningService.findAllDisasterWarning(pageable);
+        ResponseWrapper<Page<DisasterWarningDTO>> responseWrapper = new ResponseWrapper<>(
                 disasterWarningDTOS.isEmpty() ? "Disaster Warning is empty" : "Disaster Warning retrieved successfully",
                 disasterWarningDTOS.isEmpty() ? null : disasterWarningDTOS
         );

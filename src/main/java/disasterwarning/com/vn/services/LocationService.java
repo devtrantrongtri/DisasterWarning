@@ -6,6 +6,8 @@ import disasterwarning.com.vn.models.dtos.LocationDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.repositories.LocationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,19 +40,12 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    public List<LocationDTO> findAllLocations() {
-        List<Location> locations = locationRepo.findAll();
+    public Page<LocationDTO> findAllLocations(Pageable pageable) {
+        Page<Location> locations = locationRepo.findAllLocationActive(pageable);
         if (locations.isEmpty()) {
             throw new DataNotFoundException("Location Not found");
         }
-        List<Location> activeLocations = new ArrayList<>();
-        for (Location location : locations) {
-            if (Objects.equals(location.getStatus(), "active"))
-            {
-                activeLocations.add(location);
-            }
-        }
-        return mapper.convertToDtoList(activeLocations, LocationDTO.class);
+        return mapper.convertToDtoPage(locations, LocationDTO.class);
     }
 
     @Override

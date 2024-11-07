@@ -5,7 +5,11 @@ import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.LocationDTO;
 import disasterwarning.com.vn.services.LocationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/location-management")
+@SecurityRequirement(name = "bearerAuth")
 public class LocationController {
 
     @Autowired
@@ -47,9 +52,13 @@ public class LocationController {
     }
 
     @GetMapping("/location")
-    public ResponseEntity<ResponseWrapper<List<LocationDTO>>> getAllLocations() {
-        List<LocationDTO> locationDTOS = locationService.findAllLocations();
-        ResponseWrapper<List<LocationDTO>> responseWrapper;
+    public ResponseEntity<ResponseWrapper<Page<LocationDTO>>> getAllLocations(
+            @RequestParam(defaultValue = "0") int page,   // Số trang, mặc định là 0
+            @RequestParam(defaultValue = "10") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LocationDTO> locationDTOS = locationService.findAllLocations(pageable);
+        ResponseWrapper<Page<LocationDTO>> responseWrapper;
 
         if (locationDTOS != null && !locationDTOS.isEmpty()) {
             responseWrapper = new ResponseWrapper<>("Locations retrieved successfully", locationDTOS);
