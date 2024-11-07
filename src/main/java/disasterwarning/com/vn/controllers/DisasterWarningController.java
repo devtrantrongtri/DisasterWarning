@@ -14,9 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -28,11 +31,21 @@ public class DisasterWarningController {
     private DisasterWarningService disasterWarningService;
 
     @GetMapping("/{city}")
-    public List<WeatherData> getWeatherData(@PathVariable String city) {
-        return disasterWarningService.getWeatherData(city);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<WeatherData>> getWeatherData(@PathVariable String city) {
+        String decodedCity = URLDecoder.decode(city, StandardCharsets.UTF_8);
+
+        List<WeatherData> weatherData = disasterWarningService.getWeatherData(decodedCity);
+
+        if (weatherData == null || weatherData.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(weatherData);
     }
 
     @GetMapping("/disaster-warning")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<Page<DisasterWarningDTO>>> getAllDisasterWarnings(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size)
@@ -59,6 +72,7 @@ public class DisasterWarningController {
     }
 
     @DeleteMapping("/disaster-warning/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<String>> deleteDisasterWarning(@PathVariable int id) {
         try {
             boolean check = disasterWarningService.deleteDisasterWarning(id);
@@ -77,6 +91,7 @@ public class DisasterWarningController {
 
 
     @PostMapping("/disaster-warning")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> createDisasterWarning(@RequestBody DisasterWarningDTO disasterWarningDTO) {
         DisasterWarningDTO disasterWarningDTONew = disasterWarningService.createDisasterWarning(disasterWarningDTO);
         ResponseWrapper<DisasterWarningDTO> responseWrapper = new ResponseWrapper<>(
@@ -88,6 +103,7 @@ public class DisasterWarningController {
     }
 
     @PutMapping("/disaster-warning/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<DisasterWarningDTO>> updateDisasterWarning(
             @PathVariable int id,
             @RequestBody DisasterWarningDTO disasterWarningDTO) {
