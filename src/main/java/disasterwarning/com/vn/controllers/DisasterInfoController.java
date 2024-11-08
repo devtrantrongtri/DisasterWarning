@@ -90,6 +90,17 @@ public class DisasterInfoController {
         }
     }
 
+    @GetMapping("/disaster-info/{disasterId}")
+    public ResponseEntity<ResponseWrapper<?>> getAllDisasterInfosByName(@PathVariable int disasterId) {
+        try {
+            List<DisasterInfoDTO> disasterInfoDTOList = disasterInfoService.findAllDisasterInfosByName(disasterId);
+            return ResponseEntity.ok(new ResponseWrapper<>("get ok",disasterInfoDTOList));
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>("Disaster info not found.",null));
+        }
+    }
+
     @PutMapping("/disaster-info/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> updateDisasterInfo(@PathVariable int id, @RequestBody DisasterInfoDTO disasterInfoDTO) {

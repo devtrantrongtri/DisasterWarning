@@ -15,4 +15,6 @@ public interface IDisasterInfoService {
     DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO);
 
     boolean deleteDisasterInfo(int id);
+
+    List<DisasterInfoDTO> findAllDisasterInfosByName(int id);
 }

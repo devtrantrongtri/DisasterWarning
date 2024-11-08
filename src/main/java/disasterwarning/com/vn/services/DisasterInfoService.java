@@ -132,4 +132,13 @@ public class DisasterInfoService implements IDisasterInfoService {
         }
     }
 
+    @Override
+    public List<DisasterInfoDTO> findAllDisasterInfosByName(int id) {
+        List<DisasterInfo> disasterInfos = disasterInfoRepo.getDisasterInfos(id);
+        if (disasterInfos.isEmpty()) {
+            throw new RuntimeException("DisasterInfos list is empty");
+        }
+        return mapper.convertToDtoList(disasterInfos, DisasterInfoDTO.class);
+    }
+
 }

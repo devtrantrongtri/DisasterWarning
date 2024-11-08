@@ -141,14 +141,23 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<Boolean>> deleteUser(@PathVariable int id) {
+    public ResponseEntity<ResponseWrapper<?>> deleteUser(@PathVariable int id) {
         try {
-            boolean deleted = userService.deleteUser(id);
-            ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>("User deleted successfully", deleted);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+            boolean isDeleted = userService.deleteUser(id);
+            if (isDeleted) {
+                return ResponseEntity.ok(new ResponseWrapper<>("User deactivated successfully", Boolean.TRUE));
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseWrapper<>("User not found.", Boolean.FALSE));
         } catch (DataNotFoundException e) {
-            ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>("User not found", false);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseWrapper<>(e.getMessage(), Boolean.FALSE));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseWrapper<>(e.getMessage(), Boolean.FALSE));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>("An error occurred: " + e.getMessage(), Boolean.FALSE));
         }
     }
 }
