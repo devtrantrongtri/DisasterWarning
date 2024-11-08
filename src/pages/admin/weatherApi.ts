@@ -5,7 +5,7 @@ export const fetchWeatherDataByCityId = async (cityId: number): Promise<WeatherD
   try {
     const API_KEY = import.meta.env.VITE_API_WEATHER_KEY;
     const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&appid=${API_KEY}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&appid=${API_KEY}&units=metric&lang=vi`
     );
     return response.data;
   } catch (error) {
@@ -18,7 +18,7 @@ export const fetchWeatherData = async (latitude: number, longitude: number): Pro
   try {
     const API_KEY = import.meta.env.VITE_API_WEATHER_KEY;
     const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=vi`
     );
     return response.data;
   } catch (error) {
@@ -27,3 +27,15 @@ export const fetchWeatherData = async (latitude: number, longitude: number): Pro
   }
 };
 
+export const fetchFiveDayForecast = async (latitude: number, longitude: number) => {
+  try {
+    const API_KEY = import.meta.env.VITE_API_WEATHER_KEY;
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=vi`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching 5-day forecast:', error);
+    throw error;
+  }
+};
