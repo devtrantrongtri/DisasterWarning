@@ -96,17 +96,22 @@ public class PasswordService implements IPasswordService {
         helper.setTo(to);
         helper.setSubject("Verify your OTP");
 
-        String logoSrc = "../";
+        String emailContent = "<html><body style=\"margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f2f2f2;\">\n" +
+                "<table role=\"presentation\" style=\"width: 100%; height: 50vh; background-color: #f2f2f2; border-collapse: collapse;\">\n" +
+                "  <tr>\n" +
+                "    <td align=\"center\" style=\"padding: 20px;\">\n" +
+                "      <div style=\"background-color: #fff; padding: 30px; max-width: 320px; width: 100%; text-align: center; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\">\n" +
+                "        <img src=\"https://res.cloudinary.com/dcjkgvmfk/image/upload/v1731037464/logo_ofexva.png\" alt=\"Logo\" style=\"border-radius: 50%; padding: 10px; width: 150px; height: 150px; margin: 0 auto 20px; display: block;\">\n" +
+                "        <h1 style=\"font-size: 24px; color: #333; margin-bottom: 15px;\">Mã Xác Thực</h1>\n" +
+                "        <p>Đây là mã OTP quên mật khẩu của bạn:</p>\n" +
+                "        <div style=\"background-color: #f8f8f8; padding: 15px; font-size: 32px; letter-spacing: 5px; font-weight: bold; color: #3676CA; margin: 20px 0; user-select: none;\">"+ otp +"</div>\n" +
+                "        <p style=\"font-size: 14px; color: #666; line-height: 1.5;\">Nếu bạn không phải là người gửi yêu cầu này, hãy đổi mật khẩu tài khoản ngay lập tức để tránh việc bị truy cập trái phép.</p>\n" +
+                "      </div>\n" +
+                "    </td>\n" +
+                "  </tr>\n" +
+                "</table>\n" +
+                "</body></html>";
 
-        String emailContent = "<body style=\"display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f2f2f2; font-family: Arial, sans-serif; margin: 0; padding: 0; box-sizing: border-box;\">\n" +
-                "<div style=\"background-color: #fff; padding: 30px; width: 320px; text-align: center; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\">\n" +
-                "    <img src=\"/static/images/logo.svg\" alt=\"Logo\" style=\"border-radius: 50%; padding: 10px; width: 150px; height: 150px; margin: 0 auto 20px; display: block;\">\n" +
-                "    <h1 style=\"font-size: 24px; color: #333; margin-bottom: 15px;\">Mã Xác Thực</h1>\n" +
-                "    <p>Đây là mã OTP quên mật khẩu của bạn:</p>\n" +
-                "    <div style=\"background-color: #f8f8f8; padding: 15px; font-size: 32px; letter-spacing: 5px; font-weight: bold; color: #3676CA; margin: 20px 0;\">020645</div>\n" +
-                "    <p style=\"font-size: 14px; color: #666; line-height: 1.5;\"> Nếu bạn không phải là người gửi yêu cầu này, hãy đổi mật khẩu tài khoản ngay lập tức để tránh việc bị truy cập trái phép. </p>\n" +
-                "</div>\n" +
-                "</body>";
 
         helper.setText(emailContent, true);
         emailSender.send(message);

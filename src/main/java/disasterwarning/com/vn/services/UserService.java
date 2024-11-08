@@ -3,6 +3,8 @@ package disasterwarning.com.vn.services;
 import disasterwarning.com.vn.components.JwtTokenUtils;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
+import disasterwarning.com.vn.models.dtos.ChangePasswordDTO;
+import disasterwarning.com.vn.models.dtos.ForgotPasswordDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;
@@ -148,4 +150,37 @@ public class UserService implements IUserService{
         return jwtTokenUtils.generateToken(existingUser);
     }
 
+    public boolean changePassword(String username, ChangePasswordDTO changePasswordDTO) {
+        User user = userRepo.findByEmail(username);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+
+        if (!changePasswordDTO.getPassword().equals(changePasswordDTO.getRetypePassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
+        userRepo.save(user);
+        return true;
+    }
+
+    public boolean changeForgotPassword(String username, ForgotPasswordDTO forgotPasswordDTO) {
+        User user = userRepo.findByEmail(username);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!forgotPasswordDTO.getPassword().equals(forgotPasswordDTO.getRetypePassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(forgotPasswordDTO.getPassword()));
+        userRepo.save(user);
+        return true;
+    }
 }
