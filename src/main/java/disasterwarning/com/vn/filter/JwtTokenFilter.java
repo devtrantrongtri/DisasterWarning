@@ -89,6 +89,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/forgot-password/forgot_password/{email}", "POST"),
                 Pair.of("/disaster-management/disaster", "GET"),
                 Pair.of("/disaster-management/disaster/{id}", "GET"),
+                Pair.of("/disaster-info-management/disaster-info-disasterName/{disasterId}", "GET"),
                 Pair.of("/swagger/api-docs/**","GET"),
                 Pair.of("/swagger/api-docs", "GET"),
                 Pair.of("/swagger/api-docs/swagger-config", "GET"),

@@ -90,7 +90,7 @@ public class DisasterInfoController {
         }
     }
 
-    @GetMapping("/disaster-info/{disasterId}")
+    @GetMapping("/disaster-info-disasterName/{disasterId}")
     public ResponseEntity<ResponseWrapper<?>> getAllDisasterInfosByName(@PathVariable int disasterId) {
         try {
             List<DisasterInfoDTO> disasterInfoDTOList = disasterInfoService.findAllDisasterInfosByName(disasterId);
