@@ -2,6 +2,7 @@ package disasterwarning.com.vn.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.Response.ResponseWrapper;
+import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.models.dtos.DisasterInfoDTO;
 import disasterwarning.com.vn.models.entities.Image;
@@ -105,15 +106,15 @@ public class DisasterInfoController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> deleteDisasterInfo(@PathVariable int id) {
         try {
-            boolean isDeleted = disasterInfoService.deleteDisasterInfo(id);
-
-            if (isDeleted) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // HTTP 204 No Content
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>("Disaster info not found.",null));
-            }
+            disasterInfoService.deleteDisasterInfo(id);
+            return ResponseEntity.ok(new ResponseWrapper<>("Deleted successfully", Boolean.TRUE));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseWrapper<>("Disaster info not found.", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(),null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>("An error occurred: " + e.getMessage(), null));
         }
     }
+
 }

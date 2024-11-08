@@ -56,7 +56,7 @@ public class UserService implements IUserService{
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setStatus("active");
-        newUser.setRole("ROLE_USER");
+        newUser.setRole("user");
         userRepo.save(newUser);
         return mapper.convertToDto(newUser, UserDTO.class);
     }
@@ -105,10 +105,17 @@ public class UserService implements IUserService{
     public boolean deleteUser(int id) {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("User does not exist"));
-        user.setStatus("inactive");
-        userRepo.save(user);
+        if ("user".equals(user.getRole())) {
+            user.setStatus("inactive");
+            userRepo.save(user);
+        } else if ("admin".equals(user.getRole())) {
+            throw new RuntimeException("Cannot delete admin user");
+        } else {
+            throw new RuntimeException("User is not in an inactive role");
+        }
         return true;
     }
+
 
     @Override
     public List<UserDTO> findUsersByProvince(String province) throws DataNotFoundException {

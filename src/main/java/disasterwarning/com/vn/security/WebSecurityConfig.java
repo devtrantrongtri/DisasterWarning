@@ -57,7 +57,9 @@ public class WebSecurityConfig {
                                 "/swagger/api-docs/swagger-config",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/swagger-ui/index.html"
+                                "/swagger-ui/index.html",
+                                "/disaster-management/disaster",
+                                "/disaster-management/disaster/{id}"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -18,7 +18,7 @@ public class Disaster {
     @Column(name = "disaster_id")
     private int disasterId;
 
-    @Column(name = "disaster_name", nullable = false)
+    @Column(name = "disaster_name", nullable = false, unique = true)
     private String disasterName;
 
     @Column(name = "image_url")

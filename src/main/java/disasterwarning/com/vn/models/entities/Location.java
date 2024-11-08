@@ -20,7 +20,7 @@ public class Location {
     @Column(name = "location_id", nullable = false)
     private int locationId;
 
-    @Column(name = "location_name", nullable = false)
+    @Column(name = "location_name", nullable = false, unique = true)
     private String locationName;
 
     @Column(name = "latitude", nullable = false)

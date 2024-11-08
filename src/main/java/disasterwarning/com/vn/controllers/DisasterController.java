@@ -101,10 +101,19 @@ public class DisasterController {
     @PutMapping("disaster/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<DisasterDTO>> updateDisaster
-            (@RequestPart("disaster") DisasterDTO disasterDTO,
+            (@Parameter(description = "Disaster DTO", required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"disasterName\": \"string\", \"description\": \"string\"}"
+                            )
+                    ))
              @PathVariable int id,
+             @RequestParam("disaster") String disasterReq ,
              @RequestPart(value = "images", required = false) MultipartFile images) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            DisasterDTO disasterDTO = objectMapper.readValue(disasterReq, DisasterDTO.class);
             DisasterDTO disaster = disasterService.updateDisaster(id, disasterDTO, images);
             ResponseWrapper<DisasterDTO> responseWrapper;
 

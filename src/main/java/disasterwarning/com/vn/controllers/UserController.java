@@ -145,7 +145,7 @@ public class UserController {
         try {
             boolean deleted = userService.deleteUser(id);
             ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>("User deleted successfully", deleted);
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
         } catch (DataNotFoundException e) {
             ResponseWrapper<Boolean> responseWrapper = new ResponseWrapper<>("User not found", false);
             return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
