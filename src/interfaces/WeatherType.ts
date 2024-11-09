@@ -32,3 +32,23 @@ export interface WeatherData {
     };
   }
   
+  export interface ForecastItem {
+    dt: number; // thời gian dự báo
+    main: {
+      temp: number;
+      feels_like: number;
+      temp_min: number;
+      temp_max: number;
+      pressure: number;
+      humidity: number;
+    };
+    weather: {
+      main: string;
+      description: string;
+      icon: string;
+    }[];
+    wind: {
+      speed: number;
+    };
+    dt_txt: string; // chuỗi thời gian định dạng
+  }

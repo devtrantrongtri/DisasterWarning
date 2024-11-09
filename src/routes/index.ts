@@ -16,6 +16,7 @@ import PersonalInfoPage from "../pages/PersonalInfoPage";
 import SupportPage from "../pages/support/SupportPage";
 import DisasterInfoPage from "../pages/disaster/DisasterInfoPage";
 import WarningDisasterPage from "../pages/disaster/DisasterWarningPage";
+import LocationPage from "../pages/location/Location";
 
 const PublicRoute: RouteType[] = [
   {
@@ -68,6 +69,10 @@ const PublicRoute: RouteType[] = [
     path: "/support-info",
     page: SupportPage,
   },
+  {
+    path: "/location",
+    page: LocationPage,
+  }
 ];
 
 const PrivateRoute: RouteType[] = [

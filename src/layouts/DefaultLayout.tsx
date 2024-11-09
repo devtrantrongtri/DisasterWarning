@@ -10,7 +10,6 @@ function DefaultLayout({ children }: { children: React.ReactNode }) {
       flexDirection="column"
       minHeight="100vh"  
       width="100%" 
- 
     >
       {/* Header luôn nằm ở đầu */}
       <Header />
