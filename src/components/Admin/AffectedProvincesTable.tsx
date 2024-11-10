@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, IconButton } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CitySelector from './CitySelector';
-import { useGetWeatherByCityIdQuery } from '../../services/weather.service';
 import { addProvince, deleteProvince, getProvinces } from '../../pages/admin/indexDB';
+import { City } from '../../interfaces/WeatherType';
+import { useLazyGetWeatherByCityIdQuery } from '../../services/weather.service';
 
 interface ProvinceData {
   id: number;
@@ -26,7 +27,8 @@ const AffectedProvincesTable: React.FC = () => {
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
   const [provinceDataList, setProvinceDataList] = useState<ProvinceData[]>([]);
 
-  const { data: weatherData } = useGetWeatherByCityIdQuery(selectedCityId!, { skip: !selectedCityId });
+  // Sử dụng useLazyQuery để gọi API theo yêu cầu
+  const [triggerGetWeather, { data: weatherData }] = useLazyGetWeatherByCityIdQuery ();
 
   useEffect(() => {
     // Lấy dữ liệu từ IndexedDB khi component được load
@@ -37,11 +39,26 @@ const AffectedProvincesTable: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleCitySelect = (cityId: number) => {
+  const handleCitySelect = (city: City) => {
+    const cityId = city.id;
     // Kiểm tra xem tỉnh này đã tồn tại trong bảng hay chưa
     const exists = provinceDataList.some((province) => province.id === cityId);
     if (!exists) {
       setSelectedCityId(cityId);
+    } else {
+      // Nếu tỉnh đã tồn tại, có thể thông báo cho người dùng biết
+    }
+  };
+
+  const handleGetWeather = () => {
+    if (selectedCityId) {
+      // Kiểm tra xem tỉnh này đã tồn tại trong bảng hay chưa
+      const exists = provinceDataList.some((province) => province.id === selectedCityId);
+      if (!exists) {
+        triggerGetWeather(selectedCityId);
+      } else {
+        // Nếu tỉnh đã tồn tại, có thể thông báo cho người dùng biết
+      }
     }
   };
 
@@ -53,7 +70,7 @@ const AffectedProvincesTable: React.FC = () => {
         const newEntry: ProvinceData = {
           id: selectedCityId,
           name: weatherData.name,
-          disasterType: 'null', 
+          disasterType: 'null',
           date: new Date().toISOString().split('T')[0],
           temperature: weatherData.main.temp,
           feelsLike: weatherData.main.feels_like,
@@ -71,8 +88,8 @@ const AffectedProvincesTable: React.FC = () => {
         setProvinceDataList((prev) => [...prev, newEntry]);
         addProvince(newEntry);
 
-        // Đặt lại `selectedCityId` để tránh lặp lại việc thêm dữ liệu
-        setSelectedCityId(null);
+        // Đặt lại `selectedCityId` nếu cần
+        // setSelectedCityId(null);
       }
     }
   }, [weatherData, selectedCityId, provinceDataList]);
@@ -89,7 +106,18 @@ const AffectedProvincesTable: React.FC = () => {
         Bảng tra cứu các tỉnh/thành bị ảnh hưởng thiên tai
       </Typography>
       <CitySelector onCitySelect={handleCitySelect} />
-  
+
+      {/* Thêm nút "Lấy thời tiết" */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleGetWeather}
+        disabled={!selectedCityId}
+        sx={{ marginTop: 2 }}
+      >
+        Lấy thời tiết
+      </Button>
+
       {/* Thêm overflowX cho Box chứa bảng để có thể cuộn ngang */}
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ marginTop: 2, backgroundColor: '#ffffff', borderRadius: 1, minWidth: '800px' }}>
@@ -147,7 +175,6 @@ const AffectedProvincesTable: React.FC = () => {
       </Box>
     </Box>
   );
-  
 };
 
 export default AffectedProvincesTable;

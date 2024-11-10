@@ -24,4 +24,5 @@ export const weatherApi = createApi({
 export const {
   useGetWeatherByCoordsQuery,
   useGetWeatherByCityIdQuery,
+  useLazyGetWeatherByCityIdQuery
 } = weatherApi;

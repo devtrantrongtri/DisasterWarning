@@ -1,13 +1,35 @@
 import React, { useState } from 'react';
-import { Button, Box } from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
 import AuthLayout from '../../layouts/AuthLayout';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../interfaces/StoreTypes';
+
+/**
+ * 
+ * @TODO 
+ *  chinh sua api verify otp
+ *  them api verify otp
+ *  lay email tu store 
+ *  
+ */
 
 const VerificationCodePage: React.FC = () => {
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
-  const [subtitle,setSubtitle] = useState('We have just sent a verification code to jonathandoe@gmail.com')
+  // Lấy email từ Redux store
+  const email = useSelector((state: RootState) => state.user.email);
+  
+  // Cập nhật subtitle với email từ store
+  const [subtitle, setSubtitle] = useState<string | React.ReactNode >(
+    <>
+      Chúng tôi vừa gửi mã xác thực đến{' '}
+      <Typography component="span" fontWeight="bold">
+        {email || 'email của bạn'}
+      </Typography>
+    </>
+  );
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };

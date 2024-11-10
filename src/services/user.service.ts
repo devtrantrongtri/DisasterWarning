@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
-    CreateLocationRequest,
-    CreateLocationResponse,
+  CreateLocationRequest,
+  CreateLocationResponse,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -19,10 +19,17 @@ export const userApi = createApi({
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
+    responseHandler: async (response) => {
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    },
   }),
+
   endpoints: (build) => ({
-
-
     getUsers: build.query({
       query: ({ page, size }) => ({
         url: `/user-management/user`,
@@ -32,7 +39,6 @@ export const userApi = createApi({
         },
       }),
     }),
-
 
     login: build.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
@@ -57,16 +63,33 @@ export const userApi = createApi({
     }),
 
     createLocation: build.mutation<CreateLocationResponse, CreateLocationRequest>({
-        query: (locationInfo) => ({
-          url: '/location-management/location',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: locationInfo,
-        }),
+      query: (locationInfo) => ({
+        url: '/location-management/location',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: locationInfo,
       }),
+    }),
+
+    sendOtp: build.mutation<void, string>({
+      query: (email) => ({
+        url: `/forgot-password/send-otp`,
+        method: "POST",
+        params: { email },
+        headers: {
+          accept: "*/*",
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useLoginMutation,useRegisterMutation,useCreateLocationMutation } = userApi;
+export const {
+  useGetUsersQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useCreateLocationMutation,
+  useSendOtpMutation, 
+} = userApi;

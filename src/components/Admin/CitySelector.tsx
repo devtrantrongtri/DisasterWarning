@@ -1,18 +1,17 @@
+// CitySelector.tsx
 import React, { useState } from 'react';
-import { Autocomplete, TextField, Button, Box, Typography } from '@mui/material';
+import { Autocomplete, TextField, Box, Typography } from '@mui/material';
 import cityListData from '../../assets/city.list.json';
 import { City } from '../../interfaces/WeatherType';
 
-
 interface CitySelectorProps {
-  onCitySelect: (cityId: number) => void;
+  onCitySelect: (city: City) => void;
 }
 
 const cityList: City[] = cityListData as City[];
 
 const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
   const [cityOptions, setCityOptions] = useState<City[]>([]);
-  const [selectedCity, setSelectedCity] = useState<City | null>(null);
 
   const handleCityInputChange = (
     event: React.SyntheticEvent,
@@ -32,19 +31,15 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
     event: React.SyntheticEvent,
     value: City | null
   ) => {
-    setSelectedCity(value);
-  };
-
-  const handleFetchWeatherByCity = () => {
-    if (selectedCity) {
-      onCitySelect(selectedCity.id);
+    if (value) {
+      onCitySelect(value);
     }
   };
 
   return (
     <Box sx={{ marginTop: 2 }}>
       <Typography>
-        Vui lòng chọn thành phố của bạn để lấy thông tin thời tiết:
+        Vui lòng chọn thành phố của bạn:
       </Typography>
       <Autocomplete
         options={cityOptions}
@@ -63,13 +58,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
         )}
         sx={{ marginBottom: 2 }}
       />
-      <Button
-        variant="contained"
-        onClick={handleFetchWeatherByCity}
-        disabled={!selectedCity}
-      >
-        Lấy thời tiết
-      </Button>
     </Box>
   );
 };

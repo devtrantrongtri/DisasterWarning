@@ -13,7 +13,7 @@ import WeatherInfo from '../../components/Admin/WeatherInfo';
 import CitySelector from '../../components/Admin/CitySelector';
 import DisasterChart from '../../components/Admin/DisasterChart';
 import AffectedProvincesTable from '../../components/Admin/AffectedProvincesTable';
-import { WeatherData } from '../../interfaces/WeatherType';
+import { City, WeatherData } from '../../interfaces/WeatherType';
 import { useGetWeatherByCityIdQuery, useGetWeatherByCoordsQuery } from '../../services/weather.service';
 import DangerousLocations from '../../components/Admin/DangerousLocations';
 
@@ -53,7 +53,8 @@ const DashboardPage: React.FC = () => {
     requestLocation();
   }, []);
 
-  const handleCitySelect = (selectedCityId: number) => {
+  const handleCitySelect = (city: City) => {
+   const  selectedCityId = city.id;
     setCityId(selectedCityId);
     setCoords(null);
   };

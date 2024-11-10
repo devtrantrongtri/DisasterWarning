@@ -50,10 +50,13 @@ const userSlice = createSlice({
       state.email = null;
       state.role = null;
     },
+    setGmail: (state, action: PayloadAction<string | null>) => {
+      state.email = action.payload;
+    },
   },
 });
 
-export const { setUsers, setLoading, setError, loginSuccess, logout } = userSlice.actions;
+export const { setUsers, setLoading, setError, loginSuccess, logout ,setGmail} = userSlice.actions;
 
 const  userReducer =  userSlice.reducer;
 export default  userReducer;

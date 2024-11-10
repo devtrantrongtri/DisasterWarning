@@ -78,8 +78,8 @@ export type UserResponse = {
     password: string;
     role: string;
     location: {
-      locationId: number;
-    };
+      locationId: number ;
+    } | undefined;
   }
   
   export interface RegisterResponse {

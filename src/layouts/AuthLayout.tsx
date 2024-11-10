@@ -3,8 +3,8 @@ import { Box, Grid, Typography } from '@mui/material';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
-  title: string;
-  subtitle?: string;
+  title: string | React.ReactNode;
+  subtitle?: string | React.ReactNode;
 }
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) => {
