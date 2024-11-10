@@ -5,7 +5,6 @@ import './index.css'
 import CustomRoutes from './routes/CustomRoutes'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>

@@ -1,4 +1,3 @@
-// src/api/weatherApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { WeatherData } from '../interfaces/WeatherType';
 
