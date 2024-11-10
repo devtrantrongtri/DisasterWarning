@@ -3,13 +3,14 @@ import { useState } from 'react'
 // import viteLogo from '/vite.svg'
 import './index.css'
 import CustomRoutes from './routes/CustomRoutes'
+import ScrollToTop from './utils/ScrollToTop'
 
 function App() {
 
   return (
-    <>
-     <CustomRoutes/>
-    </>
+    <ScrollToTop>
+    <CustomRoutes />
+  </ScrollToTop>
   )
 }
 
