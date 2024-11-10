@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Tooltip, Avatar } from '@mui/material';
 import { Search, Notifications } from '@mui/icons-material';
 import { useLocation, Link, useNavigate} from 'react-router-dom';
+import Logo from './Logo';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -22,12 +23,7 @@ const Header = () => {
         <Toolbar >
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
-            <Box
-              component="img"
-              src="https://cdn.pixabay.com/photo/2023/11/22/12/05/climate-change-8405380_1280.png"
-              alt="Logo"
-              sx={{ width: 80, height: 80, borderRadius: '50%' }}
-            />
+          <Logo/>
           </IconButton>
 
           {/* Navigation Buttons */}
@@ -37,6 +33,7 @@ const Header = () => {
                 sx={{
                   fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
                   color: getActiveTab('/dashboard') ? 'primary.main' : 'black',
+                  fontSize: '1rem', 
                 }}> 
                 Admin Dashboard 
               </Button>
@@ -45,6 +42,7 @@ const Header = () => {
                 sx={{
                   fontWeight: getActiveTab('/') ? 'bold' : 'normal',
                   color: getActiveTab('/') ? 'primary.main' : 'black',
+                  fontSize: '1rem', 
                 }}>
                 Trang chủ
               </Button>
@@ -67,6 +65,8 @@ const Header = () => {
                     sx={{
                       fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
                       color: getActiveTab('/location') ? 'primary.main' : 'black',
+                      fontSize: '1rem', 
+
                     }}>
                     Vị trí của bạn
                   </Button>
@@ -75,6 +75,8 @@ const Header = () => {
                     sx={{
                       fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
                       color: getActiveTab('/support-info') ? 'primary.main' : 'black',
+                      fontSize: '1rem', 
+
                     }}>
                     Thông tin cứu trợ
                   </Button>
@@ -97,6 +99,8 @@ const Header = () => {
               sx={{
                 fontWeight: getActiveTab('/disaster-warning') ? 'bold' : 'normal',
                 color: getActiveTab('/disaster-warning') ? 'primary.main' : 'black',
+                fontSize: '1rem', 
+
               }}>
                 <Notifications />
             </IconButton>

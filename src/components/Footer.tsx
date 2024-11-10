@@ -6,6 +6,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import Logo from './Logo';
 
 
 function Footer() {
@@ -23,12 +24,7 @@ function Footer() {
     >
       {/* Phần Giới thiệu */}
       <Box sx={{alignSelf: 'center'}}>
-        <Box
-          component="img"
-          src="https://cdn.pixabay.com/photo/2023/11/22/12/05/climate-change-8405380_1280.png"
-          alt="Logo"
-          sx={{ width: 70, height: 60, mb: 1, marginTop: '20px'}}
-        />
+        <Logo/>
         <Typography variant="h6"
               sx={{
                 float: 'right',
