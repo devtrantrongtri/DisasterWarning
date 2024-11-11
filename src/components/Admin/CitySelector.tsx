@@ -21,7 +21,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
       const filteredOptions = cityList.filter((city) =>
         city.name.toLowerCase().includes(value.toLowerCase())
       );
-      setCityOptions(filteredOptions.slice(0, 100)); // Giới hạn 100 kết quả
+      setCityOptions(filteredOptions.slice(0, 100)); // Limit to 100 results
     } else {
       setCityOptions([]);
     }
@@ -38,9 +38,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
 
   return (
     <Box sx={{ marginTop: 2 }}>
-      <Typography>
-        Vui lòng chọn thành phố của bạn:
-      </Typography>
+      <Typography>Vui lòng chọn thành phố của bạn:</Typography>
       <Autocomplete
         options={cityOptions}
         getOptionLabel={(option) =>
@@ -48,6 +46,11 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
         }
         onInputChange={handleCityInputChange}
         onChange={handleCitySelection}
+        renderOption={(props, option) => (
+          <li {...props} key={option.id}>
+            {`${option.name}, ${option.state ? option.state + ', ' : ''}${option.country}`}
+          </li>
+        )}
         renderInput={(params) => (
           <TextField
             {...params}

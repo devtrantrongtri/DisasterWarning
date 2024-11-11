@@ -19,20 +19,38 @@ export type UserResponse = {
     userId: number;
     userName: string;
     email: string;
-    password: string;
+    password?: string;
     role: string;
     status: string;
     location: Location;
   };
   
+  
+  export type GetUserByIdResponse = {
+    message: string;
+    data: User
+  };
+  
   export type Location = {
     locationId: number;
-    status: string;
-    disasterWarnings: string[];
-    locationName: string;
-    latitude: number;
-    longitude: number;
+    status?: string;
+    disasterWarnings?: string[];
+    locationName?: string;
+    latitude?: number;
+    longitude?: number;
   };
+  
+
+  export type UserUpdate = {
+    userId: number;
+    userName?: string;
+    email?: string;
+    password?: string;
+    role?: string;
+    status?: string;
+    location?: { locationId: number };
+  };
+    
   
   export type Pageable = {
     pageNumber: number;

@@ -2,10 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   CreateLocationRequest,
   CreateLocationResponse,
+  GetUserByIdResponse,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
+  User,
+  UserUpdate,
 } from "../interfaces/AuthType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
@@ -83,6 +86,30 @@ export const userApi = createApi({
         },
       }),
     }),
+
+    updateUser: build.mutation<void, User>({
+      query: (user) => ({
+        url: `/user-management/user/${user.userId}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: user,
+      }),
+    }),
+
+
+    getUserById: build.query<GetUserByIdResponse, number>({
+      query: (userId) => ({
+        url: `/user-management/user/${userId}`,
+        method: "GET",
+        headers: {
+          accept: "*/*",
+        },
+      }),
+    }),
+
+
   }),
 });
 
@@ -92,4 +119,6 @@ export const {
   useRegisterMutation,
   useCreateLocationMutation,
   useSendOtpMutation, 
+  useUpdateUserMutation,
+  useGetUserByIdQuery
 } = userApi;
