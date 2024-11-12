@@ -81,6 +81,36 @@ public class LocationController {
         }
     }
 
+    @GetMapping("/location/name/{locationName}")
+    public ResponseEntity<ResponseWrapper<LocationDTO>> getLocationByName(@PathVariable String locationName) {
+        try {
+            LocationDTO locationDTO = locationService.findLocationByName(locationName);
+            ResponseWrapper<LocationDTO> responseWrapper = new ResponseWrapper<>("Location retrieved successfully", locationDTO);
+            return ResponseEntity.ok(responseWrapper);
+        } catch (DataNotFoundException e) {
+            ResponseWrapper<LocationDTO> responseWrapper = new ResponseWrapper<>("Location not found", null);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/location/create")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<LocationDTO>> createOrGetLocation(@RequestBody LocationDTO locationDTO) throws DuplicateDataException {
+        try {
+            // Kiểm tra xem địa điểm đã tồn tại chưa
+            LocationDTO existingLocation = locationService.findLocationByName(locationDTO.getLocationName());
+            // Nếu tồn tại, trả về địa điểm đó
+            ResponseWrapper<LocationDTO> responseWrapper = new ResponseWrapper<>("Location already exists", existingLocation);
+            return ResponseEntity.ok(responseWrapper);
+        } catch (DataNotFoundException e) {
+            // Nếu không tồn tại, tạo mới
+            LocationDTO createdLocation = locationService.createLocation(locationDTO);
+            ResponseWrapper<LocationDTO> responseWrapper = new ResponseWrapper<>("Location created successfully", createdLocation);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
+        }
+    }
+
+
     @DeleteMapping("/location/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<Boolean>> deleteLocation(@PathVariable int id) {
