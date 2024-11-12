@@ -7,6 +7,7 @@ import EmergencyIcon from '@mui/icons-material/Emergency';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import Logo from './Logo';
+import { Link } from 'react-router-dom';
 
 
 function Footer() {
@@ -41,9 +42,15 @@ function Footer() {
       </Box>
 
       {/* Phần Hỗ trợ */}
-      <Box sx={{ alignSelf: 'center', width: '200px'}}>
-        <AccountCircleIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Đăng nhập</Typography>
-        <EditIcon sx={{ mr: 1, float: 'left'}} />  <Typography variant="body2" sx={{ fontSize: '18px'}}>Đăng ký</Typography>
+      <Box sx={{ alignSelf: 'center', width: '200px' }}>
+        <Link to="/auth" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <AccountCircleIcon sx={{ mr: 1, float: 'left' }} />
+          <Typography variant="body2" sx={{ mb: 1, fontSize: '18px' }}>Đăng nhập</Typography>
+        </Link>
+        <Link to="/auth/register" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <EditIcon sx={{ mr: 1, float: 'left' }} />
+          <Typography variant="body2" sx={{ fontSize: '18px' }}>Đăng ký</Typography>
+        </Link>
       </Box>
 
       {/* Phần Liên hệ */}
