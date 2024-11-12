@@ -9,7 +9,7 @@ function DisasterWarning() {
         padding: '16px', 
         maxWidth: '500px',
         margin: '0 auto',
-        color: "white",
+        // color: "white",
       }}
     >
       <Typography variant="h6" sx={{ fontWeight: 'bold',fontSize: '1.5rem' }}>

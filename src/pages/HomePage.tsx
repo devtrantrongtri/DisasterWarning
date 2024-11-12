@@ -13,8 +13,17 @@ function HomePage() {
   };
 
   return (
-    <Box>
+    <Box >
+      <Box  
+      sx={{ 
+        margin: '64px', 
+        boxShadow: 3, 
+        padding: '10px', 
+        borderRadius: '8px' ,
+        backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+      }}>
       <DisasterInfo {...disasterData} />
+      </Box>
       <Box>
         <Grid container spacing={2}>
           <Grid item xs={8}>
@@ -38,7 +47,7 @@ function HomePage() {
                 boxShadow: 3, 
                 padding: '32px', 
                 borderRadius: '8px' ,
-                backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+                backdropFilter: 'blur(20px)', // Làm mờ ảnh nền phía sau
               }}>
               <DisasterWarning /> 
             </Box>
