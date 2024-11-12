@@ -23,7 +23,8 @@ function HomePage() {
                 margin: '16px', 
                 boxShadow: 3, 
                 padding: '16px', 
-                borderRadius: '8px' 
+                borderRadius: '8px' ,
+                backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
               }}
             >
               <WeatherDashboard />

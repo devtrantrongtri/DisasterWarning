@@ -14,9 +14,9 @@ function Footer() {
   return (
     <Box
       sx={{
-        marginTop: 4,
+        // marginTop: 4,
         padding: 3,
-        borderTop: '1px solid #ccc',
+        // borderTop: '1px solid #ccc',
         display: 'flex',
         justifyContent: 'space-between',
         backgroundColor: '#2d3a54',
@@ -24,14 +24,14 @@ function Footer() {
       }}
     >
       {/* Phần Giới thiệu */}
-      <Box sx={{alignSelf: 'center'}}>
+      <Box sx={{alignSelf: 'center',display:'flex'}}>
         <Logo/>
         <Typography variant="h6"
               sx={{
                 float: 'right',
                 fontWeight: 'bold',
                 marginLeft: '10px',
-              }}>QUẢN LÝ <br></br>VÀ <br></br> CẢNH BÁO THIÊN TAI</Typography>
+              }}>QUẢN LÝ <br></br>vs <br></br> CẢNH BÁO THIÊN TAI</Typography>
       </Box>
 
       <Box sx={{ alignSelf: 'center', width: '250px' }}>
