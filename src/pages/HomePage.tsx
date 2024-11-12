@@ -20,7 +20,7 @@ function HomePage() {
           <Grid item xs={8}>
             <Box 
               sx={{ 
-                margin: '16px', 
+                margin: '64px', 
                 boxShadow: 3, 
                 padding: '16px', 
                 borderRadius: '8px' ,
@@ -33,7 +33,13 @@ function HomePage() {
 
           <Grid item xs={3} display="flex" alignItems="center" justifyContent="center"  >
             {/* De test */}
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ 
+                margin: '16px', 
+                boxShadow: 3, 
+                padding: '32px', 
+                borderRadius: '8px' ,
+                backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+              }}>
               <DisasterWarning /> 
             </Box>
           </Grid>

@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/logo.svg'
-// import viteLogo from '/vite.svg'
-import './index.css'
-import CustomRoutes from './routes/CustomRoutes'
-import ScrollToTop from './utils/ScrollToTop'
+import React from 'react';
+import DynamicBackground from './layouts/DynamicBackground';
+import ScrollToTop from './utils/ScrollToTop';
+import CustomRoutes from './routes/CustomRoutes';
+
 
 function App() {
-
   return (
-    <ScrollToTop>
-    <CustomRoutes />
-  </ScrollToTop>
-  )
+    <DynamicBackground>
+      <ScrollToTop>
+        <CustomRoutes />
+      </ScrollToTop>
+    </DynamicBackground>
+  );
 }
 
-export default App
+export default App;
