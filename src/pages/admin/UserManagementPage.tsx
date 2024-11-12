@@ -62,19 +62,18 @@ const UserManagementPage: React.FC = () => {
   const [createLocation] = useCreateLocationMutation();
 
   // Fetch user data when opening the edit dialog
-  const {
-    data: userData,
-    isLoading: isUserLoading,
-    isError: isUserError,
-  } = useGetUserByIdQuery(selectedUserId!, {
+  const { data: userData, isLoading: isUserLoading, isError: isUserError } = useGetUserByIdQuery(selectedUserId!, {
     skip: selectedUserId === null,
+    refetchOnMountOrArgChange: true,
   });
+  
 
   React.useEffect(() => {
     if (userData) {
+      
       setSelectedUser(userData.data);
     }
-  }, [userData]);
+  }, [userData,openLocationDialog]);
 
   const handleOpenEditDialog = (userId: number) => {
     setSelectedUserId(userId);

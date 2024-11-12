@@ -67,7 +67,7 @@ export const userApi = createApi({
 
     createLocation: build.mutation<CreateLocationResponse, CreateLocationRequest>({
       query: (locationInfo) => ({
-        url: '/location-management/location',
+        url: '/location-management/location/create',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
