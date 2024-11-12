@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import WeatherDashboard from '../components/Home/WeatherDashboard'; // Import WeatherDashboard
 import DisasterInfo from '../components/Home/DisasrerInfo';
 import homeChayRung from '../assets/chayrung.png';
+import DisasterWarning from '../components/Home/DisasterWarning';
 
 function HomePage() {
   // Đối tượng chứa thông tin về hình ảnh và mô tả thiên tai
@@ -14,8 +15,29 @@ function HomePage() {
   return (
     <Box>
       <DisasterInfo {...disasterData} />
-      <WeatherDashboard />
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <Box 
+              sx={{ 
+                margin: '16px', 
+                boxShadow: 3, 
+                padding: '16px', 
+                borderRadius: '8px' 
+              }}
+            >
+              <WeatherDashboard />
+            </Box>
+          </Grid>
 
+          <Grid item xs={3} display="flex" alignItems="center" justifyContent="center"  >
+            {/* De test */}
+            <Box sx={{ width: '100%' }}>
+              <DisasterWarning /> 
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </Box>
   );
 }
