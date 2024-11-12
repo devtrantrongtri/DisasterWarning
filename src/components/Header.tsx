@@ -27,7 +27,7 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#d3f3ff' }}>
+      <AppBar position="fixed" elevation={1} sx={{ height: 100, backgroundColor: '#2d3a54' }}>
         <Toolbar>
           {/* Logo */}
           <IconButton edge="start" color="inherit" aria-label="logo">
@@ -35,14 +35,14 @@ const Header = () => {
           </IconButton>
 
           {/* Navigation Buttons */}
-          <Box sx={{ flexGrow: 1, display: 'flex', gap: 2, ml: 2 }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', gap: 4, ml: 2 }}>
             <Button
               color="inherit"
               component={Link}
               to="/dashboard"
               sx={{
                 fontWeight: getActiveTab('/dashboard') ? 'bold' : 'normal',
-                color: getActiveTab('/dashboard') ? 'primary.main' : 'black',
+                color: getActiveTab('/dashboard') ? '#B0E2FF' : '#e6eff5',
                 fontSize: '1rem',
               }}
             >
@@ -55,7 +55,7 @@ const Header = () => {
               to="/"
               sx={{
                 fontWeight: getActiveTab('/') ? 'bold' : 'normal',
-                color: getActiveTab('/') ? 'primary.main' : 'black',
+                color: getActiveTab('/') ? '#CAE1FF' : '#e6eff5',
                 fontSize: '1rem',
               }}
             >
@@ -69,7 +69,7 @@ const Header = () => {
               to="/disaster"
               sx={{
                 fontWeight: getActiveTab('/disaster') ? 'bold' : 'normal',
-                color: getActiveTab('/disaster') ? 'primary.main' : 'black',
+                color: getActiveTab('/disaster') ? '#B0E2FF' : '#e6eff5',
                 fontSize: '1rem',
               }}
             >
@@ -85,7 +85,7 @@ const Header = () => {
                   to="/location"
                   sx={{
                     fontWeight: getActiveTab('/location') ? 'bold' : 'normal',
-                    color: getActiveTab('/location') ? 'primary.main' : 'black',
+                    color: getActiveTab('/location') ? '#B0E2FF' : '#e6eff5',
                     fontSize: '1rem',
                   }}
                 >
@@ -98,7 +98,7 @@ const Header = () => {
                   to="/support-info"
                   sx={{
                     fontWeight: getActiveTab('/support-info') ? 'bold' : 'normal',
-                    color: getActiveTab('/support-info') ? 'primary.main' : 'black',
+                    color: getActiveTab('/support-info') ? '#B0E2FF' : '#e6eff5',
                     fontSize: '1rem',
                   }}
                 >
@@ -118,7 +118,7 @@ const Header = () => {
               p: '0 16px',
               display: 'flex',
               alignItems: 'center',
-              maxWidth: 200,
+              maxWidth: 250,
             }}
           >
             <Search sx={{ color: '#757575', mr: 1 }} />
@@ -132,7 +132,7 @@ const Header = () => {
             to="/disaster-warning"
             sx={{
               fontWeight: getActiveTab('/disaster-warning') ? 'bold' : 'normal',
-              color: getActiveTab('/disaster-warning') ? 'primary.main' : 'black',
+              color: getActiveTab('/disaster-warning') ? '#B0E2FF' : '#e6eff5',
               fontSize: '1rem',
             }}
           >
@@ -144,14 +144,14 @@ const Header = () => {
             <Button
               component={Link}
               to="/auth"
-              sx={{ ml: 2, color: 'black', fontSize: '1rem' }}
+              sx={{ ml: 2, color: '#e6eff5', fontSize: '1rem' }}
             >
               Đăng nhập
             </Button>
           ) : (
             /* Hiển thị thông tin người dùng và nút Đăng xuất nếu đã đăng nhập */
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2, fontSize: '1rem' }}>
-              <Typography sx={{ mr: 1, color: 'black' }}>{userName}</Typography>
+              <Typography sx={{ mr: 1, color: '#e6eff5' }}>{userName}</Typography>
               <IconButton edge="end" color="inherit" component={Link} to="/info">
                 <Avatar sx={{ bgcolor: '' }}>{userName ? userName.charAt(0).toUpperCase() : ''}</Avatar>
               </IconButton>

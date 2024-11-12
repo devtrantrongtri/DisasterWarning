@@ -1,0 +1,150 @@
+import React, { useState, useEffect } from 'react';
+import { CloudRain, Navigation, Globe } from 'lucide-react';
+import { fetchWeatherData, WeatherData } from '../../services/weatherDashboard.service';
+
+const WeatherDashboard = () => {
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+
+  useEffect(() => {
+    const getWeatherData = async () => {
+      const data = await fetchWeatherData('Quang Tri');
+      setWeatherData(data);
+    };
+
+    getWeatherData();
+  }, []);
+
+  if (!weatherData) {
+    return <div>Loading...</div>;
+  }
+
+  // Kiểm tra có dữ liệu trong `forecast` hay không trước khi xử lý
+  const hourlyForecast = weatherData.forecast?.forecastday[0]?.hour?.map((hour) => ({
+    time: new Date(hour.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    icon: <img src={`${hour.condition.icon}`} alt={hour.condition.text} className="w-6 h-6" />,
+    temp: hour.temp_c,
+  })) || [];
+
+  // Dữ liệu ngày
+  const dailyForecast = weatherData.forecast?.forecastday.map((day) => ({
+    day: new Date(day.date).toLocaleDateString('en-GB', { weekday: 'long' }),
+    high: day.day.maxtemp_c,
+    low: day.day.mintemp_c,
+  })) || [];
+
+  // Định nghĩa các kiểu inline cho các phần tử
+  const containerStyle: React.CSSProperties = {
+    minHeight: '50vh',
+  };
+
+  const cardStyle: React.CSSProperties = {
+    width: '100%',
+    margin: '0',
+    backgroundImage: `url('../../assets/sunny.jpeg')`,
+    borderRadius: '0.5rem',
+  };
+
+  const sectionStyle: React.CSSProperties = {
+    padding: '1.5rem',
+    marginBottom: '1.5rem',
+  };
+
+  const headerStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  };
+
+  const weatherInfoStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'baseline',
+    marginBottom: '1rem',
+  };
+
+  const dayStyle: React.CSSProperties = {
+    textAlign: 'center',
+    padding: '0.75rem',
+    backgroundColor: '#f7fafc',
+    borderRadius: '0.375rem',
+  };
+
+  return (
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        <div style={sectionStyle}>
+          {/* Header */}
+          <div style={headerStyle}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Navigation className="w-5 h-5" />
+              <span>{weatherData.location.name}, {weatherData.location.country}</span>
+            </div>
+          </div>
+
+          {/* Current Weather */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem',  marginBottom: '1.5rem' }}>
+            <div>
+              <div style={{ fontSize: '0.875rem', color: '#4a5568' }}>
+                {new Date(weatherData.current.last_updated).toLocaleString()}
+              </div>
+              <div style={weatherInfoStyle}>
+                <span style={{ fontSize: '3rem', fontWeight: 'bold' }}>
+                  {weatherData.current.temp_c}°C
+                </span>
+                <span style={{ fontSize: '1.25rem', color: '#4a5568' }}>
+                  /{weatherData.current.feelslike_c}°
+                </span>
+              </div>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Chance of Rain: 85%</span>
+                </div>
+                <div style={{ fontSize: '0.875rem', color: '#4a5568' }}>
+                  Wind-speed: {weatherData.current.wind_kph} kph {weatherData.current.wind_dir}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+                {weatherData.current.condition.text}
+              </h2>
+              <div style={{ marginTop: '1rem', color: '#4a5568' }}>
+                {weatherData.current.condition.text}
+              </div>
+            </div>
+          </div>
+
+          {/* 6-Day Forecast */}
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600',  marginBottom: '1.5rem'}}>6-Day Forecast</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem',  marginBottom: '1.5rem' }}>
+              {dailyForecast.map((day) => (
+                <div key={day.day} style={dayStyle}>
+                  <div style={{ fontWeight: '500' }}>{day.day}</div>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
+                    {day.high}°<span style={{ color: '#cbd5e0', fontSize: '1rem' }}>/ {day.low}°</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hourly Forecast */}
+          <div>
+            <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem',  marginBottom: '1.5rem' }}>
+              {hourlyForecast.map((hour) => (
+                <div key={hour.time} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '80px' }}>
+                  <span style={{ fontSize: '0.875rem', color: '#4a5568' }}>{hour.time}</span>
+                  {hour.icon}
+                  <span style={{ color: '#4a5568' }}>{hour.temp}°C</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WeatherDashboard;
