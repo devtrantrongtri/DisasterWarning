@@ -2,13 +2,13 @@ import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import backgroundImageSunny from '../assets/sunny.jpeg';
 import backgroundImageRainy from '../assets/rain.jpg';
-import backgroundImageCloudy from '../assets/clouds.jpeg';
-import backgroundImageSnow from '../assets/snow.jpeg';
+import backgroundImageCloudy from '../assets/cloud1.jpg';
+import backgroundImageSnow from '../assets/snow.jpg';
 import { useGetWeatherByCoordsQuery } from '../services/weather.service';
 
 const DynamicBackground: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
-  const [backgroundImage, setBackgroundImage] = useState(backgroundImageSunny);
+  const [backgroundImage, setBackgroundImage] = useState(backgroundImageSnow);
   const [textColor, setTextColor] = useState('white'); // Trạng thái cho màu chữ
 
   // Lấy tọa độ hiện tại của người dùng

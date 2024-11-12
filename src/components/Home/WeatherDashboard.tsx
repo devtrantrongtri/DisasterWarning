@@ -40,7 +40,7 @@ const WeatherDashboard = () => {
   const cardStyle: React.CSSProperties = {
     width: '100%',
     margin: '0',
-    backgroundImage: `url('../../assets/sunny.jpeg')`,
+    // backgroundImage: `url('../../assets/sunny.jpeg')`,
     borderRadius: '0.5rem',
   };
 
@@ -120,9 +120,9 @@ const WeatherDashboard = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem',  marginBottom: '1.5rem' }}>
               {dailyForecast.map((day) => (
                 <div key={day.day} style={dayStyle}>
-                  <div style={{ fontWeight: '500' }}>{day.day}</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
-                    {day.high}°<span style={{ color: '#cbd5e0', fontSize: '1rem' }}>/ {day.low}°</span>
+                  <div style={{ fontWeight: '500', color: '#737475' }}>{day.day}</div>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginTop: '0.5rem', color: '#737475' }}>
+                    {day.high}°<span style={{ color: '#989a9c', fontSize: '1rem' }}>/ {day.low}°</span>
                   </div>
                 </div>
               ))}
