@@ -3,7 +3,7 @@ import { Box, Typography, Grid, Paper } from '@mui/material';
 
 const DisasterInfoPage: React.FC = () => {
   return (//padding 4 tương đương 32px --> 1 = 8px
-    <Box sx={{ padding: 6, paddingTop:0 , backgroundColor: '#989898', marginTop :'37px', position: 'relative'}}> 
+    <Box sx={{ padding: 6, paddingTop:0 , backgroundColor: '#F8F8FF', marginTop :'37px', position: 'relative'}}> 
       {/* Hình ảnh lớn với tiêu đề NGUYÊN NHÂN HÌNH THÀNH */}
       <Paper
         elevation={0}
@@ -71,7 +71,7 @@ const DisasterInfoPage: React.FC = () => {
               backgroundColor: 'transparent',
               position: 'relative',
               padding: '15px 20px',
-              color: 'white',
+              color: '#4F4F4F',
             }}
           >
             
@@ -91,7 +91,7 @@ const DisasterInfoPage: React.FC = () => {
               backgroundColor: 'transparent',
               position: 'relative',
               padding: '15px 20px',
-              color: 'white',
+              color: '#4F4F4F',
             }}
           >
             
@@ -189,7 +189,7 @@ const DisasterInfoPage: React.FC = () => {
               backgroundColor: 'transparent',
               position: 'relative',
               padding: '15px 20px',
-              color: 'white',
+              color: '#4F4F4F',
             }}
           >
             

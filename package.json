@@ -22,6 +22,7 @@
     "chart.js": "^4.4.6",
     "idb": "^8.0.0",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.456.0",
     "mui-one-time-password-input": "^2.0.3",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",

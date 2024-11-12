@@ -18,8 +18,8 @@ function Footer() {
         borderTop: '1px solid #ccc',
         display: 'flex',
         justifyContent: 'space-between',
-        backgroundColor: '#d3f3ff',
-        color: '#333',
+        backgroundColor: '#2d3a54',
+        color: '#e6eff5'
       }}
     >
       {/* Phần Giới thiệu */}
@@ -28,30 +28,29 @@ function Footer() {
         <Typography variant="h6"
               sx={{
                 float: 'right',
-                color: 'black',
                 fontWeight: 'bold',
                 marginLeft: '10px',
               }}>QUẢN LÝ <br></br>VÀ <br></br> CẢNH BÁO THIÊN TAI</Typography>
       </Box>
 
-      <Box sx={{ alignSelf: 'center', width: '200px' }}>
-        <HomeIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1 }}>Trang chủ</Typography>
-        <InfoIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1}}>Thông tin về thiên tai</Typography>
-        <LocationOnIcon sx={{ mr: 1, float: 'left' }} /><Typography variant="body2" sx={{ mb: 1 }}>Vị trí của bạn</Typography>
-        <EmergencyIcon sx={{ mr: 1, float: 'left' }} /><Typography variant="body2">Thông tin cứu trợ</Typography>
+      <Box sx={{ alignSelf: 'center', width: '250px' }}>
+        <HomeIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Trang chủ</Typography>
+        <InfoIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Thông tin về thiên tai</Typography>
+        <LocationOnIcon sx={{ mr: 1, float: 'left' }} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Vị trí của bạn</Typography>
+        <EmergencyIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ fontSize: '18px'}}>Thông tin cứu trợ</Typography>
       </Box>
 
       {/* Phần Hỗ trợ */}
       <Box sx={{ alignSelf: 'center', width: '200px'}}>
-        <AccountCircleIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1 }}>Đăng nhập</Typography>
-        <EditIcon sx={{ mr: 1, float: 'left'}} />  <Typography variant="body2">Đăng ký</Typography>
+        <AccountCircleIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Đăng nhập</Typography>
+        <EditIcon sx={{ mr: 1, float: 'left'}} />  <Typography variant="body2" sx={{ fontSize: '18px'}}>Đăng ký</Typography>
       </Box>
 
       {/* Phần Liên hệ */}
       <Box sx={{ textAlign: 'center', alignSelf: 'center' }}>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>Liên hệ chúng tôi</Typography>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>Email: vuontamthegioi@ut.com.vn</Typography>
-        <Typography variant="body2">© 2024 Vươn Tầm Thế Giới</Typography>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '18px' }}>Liên hệ chúng tôi</Typography>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '18px' }}>Email: vuontamthegioi@ut.com.vn</Typography>
+        <Typography variant="body2" sx={{ fontSize: '18px' }}>© 2024 Vươn Tầm Thế Giới</Typography>
       </Box>
     </Box>
   );
