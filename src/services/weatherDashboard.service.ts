@@ -1,9 +1,9 @@
 const API_KEY = '3e1141883f7b46f9986103021241011';
   
-export const fetchWeatherData = async (cityName: string): Promise<WeatherData | null> => {
+export const fetchWeatherData = async (lat: number, lon: number): Promise<WeatherData | null> => {
     try {
       const response = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(cityName)}&days=6`
+        `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=6`
       );
   
       if (!response.ok) {
@@ -16,6 +16,24 @@ export const fetchWeatherData = async (cityName: string): Promise<WeatherData | 
       console.error(error);
       return null; // Trả về null nếu có lỗi
     }
+};
+
+export const onSearch = async (city: string): Promise<WeatherData | null> => {
+  try {
+    const response = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(city)}&days=6`
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch weather data');
+    }
+
+    const data: WeatherData = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export interface WeatherData {

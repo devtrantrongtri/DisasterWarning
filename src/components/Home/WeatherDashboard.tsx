@@ -1,18 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { CloudRain, Navigation, Globe } from 'lucide-react';
-import { fetchWeatherData, WeatherData } from '../../services/weatherDashboard.service';
+import { Navigation } from 'lucide-react';
+import { fetchWeatherData, WeatherData, onSearch} from '../../services/weatherDashboard.service';
 
 const WeatherDashboard = () => {
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [city, setCity] = useState('');
 
-  useEffect(() => {
-    const getWeatherData = async () => {
-      const data = await fetchWeatherData('Quang Tri');
+  const handleSearch = () => {
+    if (city && onSearch) {
+      onSearch(city).then((data) => {
+        if (data) {
+          setWeatherData(data);
+        } else {
+          console.error('Weather data could not be fetched.');
+        }
+      });
+    }
+  };
+  
+
+// Get the user's current location
+useEffect(() => {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      setCoords({
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+      });
+    },
+    (error) => console.error("Lỗi lấy tọa độ:", error),
+    { enableHighAccuracy: true }
+  );
+}, []);
+
+useEffect(() => {
+  const getWeatherData = async () => {
+    if (coords) {
+      const data = await fetchWeatherData(coords.lat, coords.lon);
       setWeatherData(data);
-    };
+    }
+  };
 
-    getWeatherData();
-  }, []);
+  getWeatherData();
+}, [coords]);
 
   if (!weatherData) {
     return <div>Loading...</div>;
@@ -32,7 +63,6 @@ const WeatherDashboard = () => {
     low: day.day.mintemp_c,
   })) || [];
 
-  // Định nghĩa các kiểu inline cho các phần tử
   const containerStyle: React.CSSProperties = {
     minHeight: '50vh',
   };
@@ -40,7 +70,6 @@ const WeatherDashboard = () => {
   const cardStyle: React.CSSProperties = {
     width: '100%',
     margin: '0',
-    // backgroundImage: `url('../../assets/sunny.jpeg')`,
     borderRadius: '0.5rem',
   };
 
@@ -72,6 +101,40 @@ const WeatherDashboard = () => {
     <div style={containerStyle}>
       <div style={cardStyle}>
         <div style={sectionStyle}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <input 
+              type="text" 
+              placeholder="Enter city name" 
+              value={city} 
+              onChange={(e) => setCity(e.target.value)} 
+              style={{
+                padding: '0.75rem',
+                fontSize: '1rem',
+                flex: '1',
+                marginRight: '1rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                backgroundColor: 'transparent',
+                transition: 'all 0.3s ease',
+              }}
+            />
+            <button
+              onClick={handleSearch}
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                backgroundColor: '#2d3a54',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              Search
+            </button>
+          </div>
+
           {/* Header */}
           <div style={headerStyle}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -96,7 +159,7 @@ const WeatherDashboard = () => {
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Chance of Rain: 85%</span>
+                  <span>Chance of Rain: {weatherData.current.humidity}%</span>
                 </div>
                 <div style={{ fontSize: '0.875rem', color: '#4a5568' }}>
                   Wind-speed: {weatherData.current.wind_kph} kph {weatherData.current.wind_dir}

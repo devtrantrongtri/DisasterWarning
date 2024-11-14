@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import backgroundImageSunny from '../assets/sunny.jpeg';
 import backgroundImageRainy from '../assets/rain.jpg';
 import backgroundImageCloudy from '../assets/cloud1.jpg';
-import backgroundImageSnow from '../assets/snow.jpg';
+import backgroundImageSnow from '../assets/snow1.jpg';
 import { useGetWeatherByCoordsQuery } from '../services/weather.service';
 
 const DynamicBackground: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,8 +35,8 @@ const DynamicBackground: React.FC<{ children: React.ReactNode }> = ({ children }
       
       if (weatherMain.includes('rain')) {
         setBackgroundImage(backgroundImageRainy);
-        setTextColor('white');
-      } else if (weatherMain.includes('cloud')) {
+        setTextColor('black');
+      } else if (weatherMain.includes('clouds')) {
         setBackgroundImage(backgroundImageCloudy);
         setTextColor('white');
       } else if (weatherMain.includes('clear')) {

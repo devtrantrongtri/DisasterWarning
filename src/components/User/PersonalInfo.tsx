@@ -16,7 +16,7 @@ const PersonalInfo = () => {
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4 }}>
       {/* Avatar và tên tài khoản */}
       <Box sx={{ textAlign: 'center', marginRight: 4 }}>
-        <Avatar sx={{ width: 600, height: 600, margin: '0 auto' }} />
+        <Avatar sx={{ width: 100, height: 100, margin: '0 auto' }} />
         <Typography variant="h4" sx={{ mt: 2 }}>hieulen1402</Typography>
       </Box>
 
