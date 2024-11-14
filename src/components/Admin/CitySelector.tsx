@@ -56,7 +56,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({ onCitySelect }) => {
             {...params}
             label="Tên thành phố"
             variant="outlined"
-            sx={{ width: 300, marginTop: 1 }}
+            sx={{ width: '100%', marginTop: 1 }}
           />
         )}
         sx={{ marginBottom: 2 }}
