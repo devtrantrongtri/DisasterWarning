@@ -5,6 +5,7 @@ import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
 import disasterwarning.com.vn.models.dtos.ChangePasswordDTO;
 import disasterwarning.com.vn.models.dtos.ForgotPasswordDTO;
+import disasterwarning.com.vn.models.dtos.GoogleTokenDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.models.entities.User;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +44,10 @@ public class UserService implements IUserService{
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtDecoder jwtDecoder;
+
 
     public UserDTO createUser(UserDTO userDTO) throws DuplicateDataException {
         User newUser = mapper.convertToEntity(userDTO, User.class);
@@ -157,7 +164,8 @@ public class UserService implements IUserService{
         return jwtTokenUtils.generateToken(existingUser);
     }
 
-    public boolean changePassword(String username, ChangePasswordDTO changePasswordDTO) {
+    @Override
+    public void changePassword(String username, ChangePasswordDTO changePasswordDTO) {
         User user = userRepo.findByEmail(username);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
@@ -173,10 +181,10 @@ public class UserService implements IUserService{
 
         user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
         userRepo.save(user);
-        return true;
     }
 
-    public boolean changeForgotPassword(String username, ForgotPasswordDTO forgotPasswordDTO) {
+    @Override
+    public void changeForgotPassword(String username, ForgotPasswordDTO forgotPasswordDTO) {
         User user = userRepo.findByEmail(username);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
@@ -188,6 +196,32 @@ public class UserService implements IUserService{
 
         user.setPassword(passwordEncoder.encode(forgotPasswordDTO.getPassword()));
         userRepo.save(user);
-        return true;
+    }
+
+    @Override
+    public String GoogleLogin(GoogleTokenDTO tokenRequest) {
+        try {
+            String token = tokenRequest.getToken();
+            // Decode JWT token
+            Jwt jwt = jwtDecoder.decode(token);
+            String email = jwt.getClaim("email");
+            String name = jwt.getClaim("name");
+
+            User existingUser = userRepo.findByEmail(email);
+            if (existingUser == null) {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setEmail(email);
+                userDTO.setUserName(name);
+                userDTO.setPassword("GOOGLE_USER");
+                userDTO.setRole("user");
+
+                UserDTO newUser = createUser(userDTO);
+                return loginUser(newUser.getEmail(), "GOOGLE_USER");
+            }
+            return loginUser(existingUser.getEmail(), "GOOGLE_USER");
+        } catch (Exception e) {
+            System.err.println("Lỗi khi đăng nhập bằng Google: " + e.getMessage());
+            throw new RuntimeException("Đã xảy ra lỗi trong quá trình đăng nhập bằng Google", e);
+        }
     }
 }

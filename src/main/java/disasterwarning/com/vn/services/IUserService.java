@@ -2,6 +2,9 @@ package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
+import disasterwarning.com.vn.models.dtos.ChangePasswordDTO;
+import disasterwarning.com.vn.models.dtos.ForgotPasswordDTO;
+import disasterwarning.com.vn.models.dtos.GoogleTokenDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.entities.User;
 import org.springframework.data.domain.Page;
@@ -28,4 +31,10 @@ public interface IUserService {
     public User getUserDetailsFromToken(String token) throws Exception;
 
     public String loginUser(String email, String password) throws DataNotFoundException;
+
+    public void changePassword(String username, ChangePasswordDTO changePasswordDTO);
+
+    public void changeForgotPassword(String username, ForgotPasswordDTO forgotPasswordDTO);
+
+    public String GoogleLogin(GoogleTokenDTO tokenRequest);
 }

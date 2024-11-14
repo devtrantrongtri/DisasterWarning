@@ -4,6 +4,7 @@ import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.components.JwtTokenUtils;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.exceptions.DuplicateDataException;
+import disasterwarning.com.vn.models.dtos.GoogleTokenDTO;
 import disasterwarning.com.vn.models.dtos.LoginDTO;
 import disasterwarning.com.vn.models.dtos.TokenDTO;
 import disasterwarning.com.vn.models.dtos.UserDTO;
@@ -56,7 +57,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/loginGoogle")
     public ResponseEntity<ResponseWrapper<?>> login(@RequestBody LoginDTO loginDTO) {
         try {
             String token = userService.loginUser(loginDTO.getEmail(), loginDTO.getPassword());
@@ -83,6 +84,43 @@ public class UserController {
             tokenDTO.setEmail(userDetail.getEmail());
 
             ResponseWrapper<TokenDTO> responseWrapper = new ResponseWrapper<>("Login successful", tokenDTO);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            ResponseWrapper<String> responseWrapper = new ResponseWrapper<>("An error occurred during login", e.getMessage());
+            return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseWrapper<?>> loginGoogle(@RequestBody GoogleTokenDTO googleTokenDTO) {
+        try {
+            String token = userService.GoogleLogin(googleTokenDTO);
+
+            if (token == null) {
+                return new ResponseEntity<>(new ResponseWrapper<>("Login failed", null), HttpStatus.UNAUTHORIZED);
+            }
+
+            User userDetail = userService.getUserDetailsFromToken(token);
+
+            if (userDetail == null) {
+                return new ResponseEntity<>(new ResponseWrapper<>("Login failed", null), HttpStatus.UNAUTHORIZED);
+            }
+
+            Token jwt = tokenService.addToken(userDetail, token);
+            TokenDTO tokenDTO = new TokenDTO();
+            tokenDTO.setToken(jwt.getToken());
+            tokenDTO.setRefreshToken(jwt.getRefreshToken());
+            tokenDTO.setRole(userDetail.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList().toString());
+            tokenDTO.setTokenType(jwt.getTokenType());
+            tokenDTO.setUserName(userDetail.getUserName());
+            tokenDTO.setEmail(userDetail.getEmail());
+
+            ResponseWrapper<TokenDTO> responseWrapper = new ResponseWrapper<>("Login Google successful", tokenDTO);
             return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 
         } catch (Exception e) {

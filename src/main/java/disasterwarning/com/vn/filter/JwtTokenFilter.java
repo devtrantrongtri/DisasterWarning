@@ -83,7 +83,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/user-management/generate-secret-key", "GET"),
                 Pair.of("/user-management/register", "POST"),
                 Pair.of("/user-management/login", "POST"),
-                Pair.of("/user-management/GoogleLogin", "POST"),
+                Pair.of("/user-management/loginGoogle", "POST"),
                 Pair.of("/forgot-password/send-otp", "POST"),
                 Pair.of("/forgot-password/verify-otp", "POST"),
                 Pair.of("/forgot-password/forgot_password/{email}", "POST"),
