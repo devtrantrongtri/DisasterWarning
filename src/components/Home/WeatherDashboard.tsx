@@ -3,10 +3,13 @@ import { Navigation } from 'lucide-react';
 import { City } from '../../interfaces/WeatherType';
 import CitySelector from '../Admin/CitySelector';
 import { useGetWeatherByParamsQuery } from '../../services/weatherNew.service';
+import { useDispatch } from 'react-redux';
+import { setType } from '../../stores/slices/weather.slice';
 
 const WeatherDashboard = () => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [city, setCity] = useState<City | null>(null);
+  const dispatch = useDispatch();
 
   // Automatically fetch user's current location
   useEffect(() => {
@@ -26,13 +29,13 @@ const WeatherDashboard = () => {
     ? {
         q: `${coords.lat},${coords.lon}`,
         days: 6,
-        lang: 'vi',
+        lang: 'en',
         // hour: new Date().getHours(),
       }
     : {
       q: `,`,
       days: 6,
-      lang: 'vi',
+      lang: 'en',
       // hour: new Date().getHours(),
     };
 
@@ -40,7 +43,17 @@ const WeatherDashboard = () => {
     skip: !coords && !city,
   });
 
-  console.log(weatherData?.forecast.forecastday)
+
+  useEffect(() => {
+    if (weatherData) {
+      const currentCondition = weatherData.current.condition.text;
+      const type = determineWeatherType(currentCondition);
+      dispatch(setType(type));
+    }
+  }, [weatherData]);
+
+
+  console.log(weatherData)
   const handleCitySelect = (selectedCity: City) => {
     setCity(selectedCity);
     setCoords({
@@ -145,7 +158,20 @@ const hourlyForecast =
       flexShrink: 0,
     } as React.CSSProperties,
   };
+
   const repeatedHourlyForecast = [...hourlyForecast, ...hourlyForecast];
+
+
+  const determineWeatherType = (conditionText: string) => {
+    const lowerText = conditionText.toLowerCase();
+    if (lowerText.includes('rain')) return 'rainy';
+    if (lowerText.includes('cloud')) return 'cloudy';
+    if (lowerText.includes('clear')) return 'sunny';
+    if (lowerText.includes('snow')) return 'snowy';
+    return 'default'; // Mặc định nếu không xác định được
+  };
+
+  
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>

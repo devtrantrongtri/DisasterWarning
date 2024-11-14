@@ -7,12 +7,14 @@ interface WeatherState {
   data: WeatherData | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  typeWeather:string;
 }
 
 const initialState: WeatherState = {
   data: null,
   status: 'idle',
   error: null,
+  typeWeather:'sunset'
 };
 
 const weatherSlice = createSlice({
@@ -37,9 +39,12 @@ const weatherSlice = createSlice({
       state.status = 'idle';
       state.error = null;
     },
+    setType(state,action){
+      state.typeWeather = action.payload;
+    }
   },
 });
 
-export const { setWeatherData, setLoading, setError, resetWeather } = weatherSlice.actions;
+export const { setWeatherData, setLoading, setError, resetWeather,setType } = weatherSlice.actions;
 
 export default weatherSlice.reducer;
