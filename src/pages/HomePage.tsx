@@ -13,22 +13,24 @@ function HomePage() {
   };
 
   return (
-    <Box >
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box  
-      sx={{ 
-        margin: '64px', 
-        boxShadow: 3, 
-        padding: '10px', 
-        borderRadius: '8px' ,
-        backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
-      }}>
-      <DisasterInfo {...disasterData} />
+        sx={{ 
+          margin: '64px', 
+          boxShadow: 3, 
+          padding: '10px', 
+          borderRadius: '8px' ,
+          backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+        }}
+      >
+        <DisasterInfo {...disasterData} />
       </Box>
-      <Box>
-        <Grid container spacing={2}>
-          <Grid item xs={8}>
+      <Box sx={{ flex: 1 }}>
+        <Grid container spacing={2} sx={{ height: '100%' }}>
+          <Grid item xs={8} sx={{ display: 'flex', flexDirection: 'column' }}>
             <Box 
               sx={{ 
+                flex: 1, // Chiếm toàn bộ chiều cao cha
                 margin: '64px', 
                 boxShadow: 3, 
                 padding: '16px', 
@@ -40,16 +42,20 @@ function HomePage() {
             </Box>
           </Grid>
 
-          <Grid item xs={3} display="flex" alignItems="center" justifyContent="center"  >
-            {/* De test */}
-            <Box sx={{ 
-                margin: '16px', 
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'stretch' }}>
+            <Box 
+              sx={{ 
+                flex: 1, // Chiếm toàn bộ chiều cao cha
+                margin: '64px ', 
                 boxShadow: 3, 
                 padding: '32px', 
                 borderRadius: '8px' ,
                 backdropFilter: 'blur(20px)', // Làm mờ ảnh nền phía sau
-              }}>
+                overflow:'auto'
+              }}
+            >
               <DisasterWarning /> 
+
             </Box>
           </Grid>
         </Grid>

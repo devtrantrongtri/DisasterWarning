@@ -8,7 +8,7 @@ function DisasterWarning() {
         borderRadius: '8px', 
         padding: '16px', 
         maxWidth: '500px',
-        margin: '0 auto',
+        margin: '0 0',
         // color: "white",
       }}
     >
