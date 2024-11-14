@@ -3,7 +3,7 @@ import { Box, Typography, Grid, Paper } from '@mui/material';
 
 const DisasterInfoPage: React.FC = () => {
   return (//padding 4 tương đương 32px --> 1 = 8px
-    <Box sx={{ padding: 6, paddingTop:0 , backgroundColor: '#F8F8FF', marginTop :'37px', position: 'relative'}}> 
+    <Box sx={{ padding: 6, paddingTop:0 , marginTop :'37px', position: 'relative'}}> 
       {/* Hình ảnh lớn với tiêu đề NGUYÊN NHÂN HÌNH THÀNH */}
       <Paper
         elevation={0}
@@ -71,11 +71,13 @@ const DisasterInfoPage: React.FC = () => {
               backgroundColor: 'transparent',
               position: 'relative',
               padding: '15px 20px',
-              color: '#4F4F4F',
+              color: 'black',
+              backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+                
             }}
           >
             
-            <Typography variant="body1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
+            <Typography variant="h6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
           </Paper>
         </Grid>
       </Grid>
@@ -88,14 +90,15 @@ const DisasterInfoPage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'transparent',
+              backgroundColor: 'white',
               position: 'relative',
               padding: '15px 20px',
-              color: '#4F4F4F',
+              color: 'black',
+              backdropFilter: 'blur(100px)', // Làm mờ ảnh nền phía sau
             }}
           >
             
-            <Typography variant="body1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
+            <Typography variant="h6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
           </Paper>
         </Grid>
         
@@ -189,11 +192,12 @@ const DisasterInfoPage: React.FC = () => {
               backgroundColor: 'transparent',
               position: 'relative',
               padding: '15px 20px',
-              color: '#4F4F4F',
+              color: 'black',
+              backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
             }}
           >
             
-            <Typography variant="body1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
+            <Typography variant="h6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
           </Paper>
         </Grid>
       </Grid>
