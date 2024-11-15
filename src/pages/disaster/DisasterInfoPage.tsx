@@ -1,11 +1,12 @@
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
+import ImageCarousel from '../../components/Test/ImageCarousel';
 
 const DisasterInfoPage: React.FC = () => {
   return (//padding 4 tương đương 32px --> 1 = 8px
     <Box sx={{ padding: 6, paddingTop:0 , marginTop :'37px', position: 'relative'}}> 
       {/* Hình ảnh lớn với tiêu đề NGUYÊN NHÂN HÌNH THÀNH */}
-      <Paper
+      {/* <Paper
         elevation={0}
         sx={{
           marginBottom: 4,
@@ -19,8 +20,29 @@ const DisasterInfoPage: React.FC = () => {
 
       <img src = "https://www.sify.com/wp-content/uploads/2024/01/natural_disaster_collage_flickr.jpg"
       style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius:'40px' ,border:'3px solid white' }}></img>
-      </Paper>
+      </Paper> */}
+      <Paper
+        elevation={0}
+        sx={{
+          marginTop:10,
+          marginBottom: 5,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          position: 'relative',
+          borderBottom:2,
+          // boxShadow:3,
+          padding:6,
+          backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
 
+        }}
+      >      
+
+<ImageCarousel/>
+      {/* <img src = "https://www.sify.com/wp-content/uploads/2024/01/natural_disaster_collage_flickr.jpg"
+      style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius:'40px' ,border:'3px solid white' }}></img> */}
+      </Paper>
       {/* Các phần khác với hình ảnh và tiêu đề */}
       <Grid container spacing={4} justifyContent="center">
         <Grid item xs={12} sm={6} md={6}>
