@@ -60,7 +60,7 @@ const DynamicBackground: React.FC<{ children: React.ReactNode }> = ({ children }
       } else if (weatherMain.includes('clear')) {
         dispatch(setType('sunny'));
       } else if (weatherMain.includes('snow')) {
-        dispatch(setType('snowy'));
+        dispatch(setType('snow'));
       } else {
         dispatch(setType('sunny')); // Mặc định là sunny
       }

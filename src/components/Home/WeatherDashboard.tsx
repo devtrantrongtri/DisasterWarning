@@ -48,6 +48,7 @@ const WeatherDashboard = () => {
     if (weatherData) {
       const currentCondition = weatherData.current.condition.text;
       const type = determineWeatherType(currentCondition);
+      console.log("weatherData v1 : ",currentCondition)
       dispatch(setType(type));
     }
   }, [weatherData]);
@@ -164,10 +165,10 @@ const hourlyForecast =
 
   const determineWeatherType = (conditionText: string) => {
     const lowerText = conditionText.toLowerCase();
-    if (lowerText.includes('rain')) return 'rainy';
-    if (lowerText.includes('cloud')) return 'cloudy';
+    if (lowerText.includes('rain')) return 'rain';
+    if (lowerText.includes('cloudy')) return 'cloudy';
     if (lowerText.includes('clear')) return 'sunny';
-    if (lowerText.includes('snow')) return 'snowy';
+    if (lowerText.includes('snow')) return 'snow';
     return 'default'; // Mặc định nếu không xác định được
   };
 
