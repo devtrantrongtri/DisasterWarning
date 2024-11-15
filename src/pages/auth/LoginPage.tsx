@@ -93,42 +93,88 @@ const LoginPage: React.FC = () => {
       }
       subtitle="Tiếp tục với Google hoặc nhập thông tin của bạn"
     >
-      <Box sx={{ mt: 2, px: 3, py: 4, borderRadius: 2, boxShadow: 3, bgcolor: 'background.paper' }}>
+
+      <Box sx={{ mt: 2, px: 5, py: 10, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
         <Button
           variant="outlined"
           startIcon={<GoogleIcon />}
           fullWidth
-          sx={{ mb: 2, py: 1, fontSize: '1rem', fontWeight: 'bold', color: 'primary.main' }}
+          sx={{ mb: 2, py: 1, fontSize: '1.2rem', fontWeight: 'bold', color: 'primary.main', backgroundColor: '#f7fafc' }}
         >
           Tiếp tục với Google
         </Button>
-        <Divider sx={{ my: 3 }}>hoặc</Divider>
+        <Divider sx={{ fontSize: '1.2rem', my: 3, color: '#f7fafc','&::before, &::after': { borderColor: '#ffffff' }}}>hoặc</Divider>
         <TextField
           label="Địa chỉ Email"
           fullWidth
           margin="normal"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#dce9f5',
+              },
+              '&:hover fieldset': {
+                borderColor: '#e5e5e5',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#e5e5e5',
+              },
+            },
+            '& .MuiInputLabel-root': {
+              color: '#e5e5e5', // Đổi màu label
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#e5e5e5', // Đổi màu label khi có focus
+            },
+          }}
         />
-        <TextField
-          label="Mật khẩu"
-          type="password"
-          fullWidth
-          margin="normal"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          sx={{ mb: 2 }}
-        />
+<TextField
+  label="Mật khẩu"
+  type="password"
+  fullWidth
+  margin="normal"
+  value={formData.password}
+  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+  sx={{
+        mb: 2,
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: '#dce9f5',
+          },
+          '&:hover fieldset': {
+            borderColor: '#e5e5e5',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#e5e5e5',
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: '#e5e5e5', // Đổi màu label
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: '#e5e5e5', // Đổi màu label khi có focus
+        },
+      }}
+    />
+
         <FormControlLabel
           control={
             <Checkbox
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              sx={{ color: 'primary.main' }}
+              sx={{ color: '#f7fafc' }}
             />
           }
           label="Ghi nhớ đăng nhập"
+          sx={{
+            '& .MuiFormControlLabel-label': {
+              color: '#e5e5e5',
+              fontWeight: 'bold',
+            },
+          }}
         />
       {error && (
         <Typography color="error" variant="body2">
@@ -141,9 +187,18 @@ const LoginPage: React.FC = () => {
         )}
         <Button
           variant="contained"
-          color="primary"
           fullWidth
-          sx={{ mt: 3, py: 1.2, fontSize: '1rem', fontWeight: 'bold' }}
+          sx={{
+            mt: 3,
+            py: 1.2,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#f7fafc',
+            color: 'primary.main',
+            '&:hover': {
+              backgroundColor: '#e2e8f0',
+            },
+          }}
           onClick={handleLogin}
           disabled={isLoading}
         >
@@ -151,13 +206,13 @@ const LoginPage: React.FC = () => {
         </Button>
         <Typography variant="body2" mt={3} textAlign="center">
           Chưa có tài khoản?{' '}
-          <Link to="/auth/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link to="/auth/register" style={{ textDecoration: 'none', color: '#dce9f5' }}>
             Tạo tài khoản
           </Link>
         </Typography>
         <Typography variant="body2" mt={2} textAlign="center">
           Quên mật khẩu?{' '}
-          <Link to="/auth/forgot-password" style={{ textDecoration: 'none', color: '#1976d2' }}>
+          <Link to="/auth/forgot-password" style={{ textDecoration: 'none', color: '#dce9f5' }}>
             Nhấn vào đây
           </Link>
         </Typography>

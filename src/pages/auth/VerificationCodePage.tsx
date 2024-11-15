@@ -72,7 +72,7 @@ const VerificationCodePage: React.FC = () => {
 
   return (
     <AuthLayout title="Nhập mã xác thực" subtitle={subtitle}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      <Box sx={{ mt: 2, px: 5, py: 10, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
         <MuiOtpInput
           value={otp}
           onChange={handleChange}
@@ -102,7 +102,17 @@ const VerificationCodePage: React.FC = () => {
         variant="contained"
         color="primary"
         fullWidth
-        sx={{ mt: 2 }}
+        sx={{
+          mt: 3,
+          py: 1.2,
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          backgroundColor: '#f7fafc',
+          color: 'primary.main',
+          '&:hover': {
+            backgroundColor: '#e2e8f0',
+          },
+        }}
         onClick={handleVerifyCode}
       >
         Xác thực
@@ -111,7 +121,17 @@ const VerificationCodePage: React.FC = () => {
         variant="text"
         onClick={handleResend}
         fullWidth
-        sx={{ mt: 2 }}
+        sx={{
+          mt: 3,
+          py: 1.2,
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          backgroundColor: '#f7fafc',
+          color: 'primary.main',
+          '&:hover': {
+            backgroundColor: '#e2e8f0',
+          },
+        }}
         disabled={timer > 0 || isLoading} // Vô hiệu hóa nếu timer > 0 hoặc đang gửi
       >
         {timer > 0 ? `Gửi lại mã trong ${timer}s` : 'Gửi lại mã'}
