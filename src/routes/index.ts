@@ -17,6 +17,7 @@ import SupportPage from "../pages/support/SupportPage";
 import DisasterInfoPage from "../pages/disaster/DisasterInfoPage";
 import WarningDisasterPage from "../pages/disaster/DisasterWarningPage";
 import LocationPage from "../pages/location/Location";
+import TestPage from "../pages/TestPage";
 
 const PublicRoute: RouteType[] = [
   {
@@ -72,7 +73,12 @@ const PublicRoute: RouteType[] = [
   {
     path: "/location",
     page: LocationPage,
-  }
+  },
+  { 
+    path: "test",
+    page: TestPage,
+    layout: NoneLayout,
+  },
 ];
 
 const PrivateRoute: RouteType[] = [
@@ -106,6 +112,7 @@ const PrivateRoute: RouteType[] = [
         page: UserManagementPage,
         layout: NoneLayout,
       },
+
     ],
   },
 ];
