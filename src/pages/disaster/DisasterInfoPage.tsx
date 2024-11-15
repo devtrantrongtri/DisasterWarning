@@ -202,6 +202,66 @@ const DisasterInfoPage: React.FC = () => {
         </Grid>
       </Grid>
 
+      <Grid container spacing={4} justifyContent="center">
+      
+        <Grid item xs={12} sm={6} md={6} marginTop={6}>
+        <Paper
+            elevation={7}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'white',
+              position: 'relative',
+              padding: '15px 20px',
+              color: 'black',
+              backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+            }}
+          >
+            
+            <Typography variant="h6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iste corrupti ea facilis repellat a debitis pariatur inventore ratione voluptatum. Molestias aperiam provident laboriosam totam tenetur ullam odit quas voluptate?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam sequi molestiae nisi, doloribus quia, explicabo aut dolorum consequatur a dolorem temporibus cumque eveniet vel culpa id praesentium? Voluptatibus, non repellat. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet cumque ex quo magni voluptates, assumenda quasi perferendis nemo doloremque provident cum molestiae consectetur facere quae, vel illum exercitationem expedita ullam! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloribus, itaque voluptate quidem totam voluptatum sapiente? Aperiam, saepe accusantium. Ipsum id quidem rem quasi ab impedit iusto illo repellendus eveniet ea!</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} >
+          <Paper
+            elevation={0}
+            sx={{
+              height: 400,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              position: 'relative',
+            }}
+          >
+            <Typography
+              sx={{
+                position: 'absolute',
+                color: 'white',
+                padding: '160px 320px',
+                borderRadius: '40px',
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                fontWeight: 'bold',
+              }}
+            >
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                position: 'absolute',
+                color: 'white',
+                fontWeight: 'bold',
+              }}
+            >
+              CÁCH PHÒNG CHỐNG
+            </Typography>
+
+            <img src = "https://cdn.pixabay.com/photo/2024/03/15/15/23/ai-generated-8635240_640.jpg"
+            style={{ maxHeight: '320px', maxWidth: '700px', objectFit: 'cover', borderRadius:'40px' }}></img>
+          </Paper>
+        </Grid>
+
+      </Grid>
 
     </Box>
   );

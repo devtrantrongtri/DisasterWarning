@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, IconButton, InputBase, Box, Typography, Button, Avatar } from '@mui/material';
 import { Search, Notifications } from '@mui/icons-material';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { notification, Modal } from 'antd'; // Import Ant Design
 import Logo from './Logo';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../stores/slices/user.slice';
@@ -14,12 +15,31 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
+  // Hàm xử lý khi người dùng xác nhận đăng xuất
+  const confirmLogout = () => {
     dispatch(logout());
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
     localStorage.removeItem('username');
-    navigate('/'); // Chuyển hướng đến trang chủ hoặc trang đăng nhập
+    navigate('/'); // Chuyển hướng đến trang chủ
+    notification.success({
+      message: 'Đăng xuất thành công',
+      description: 'Bạn đã đăng xuất khỏi hệ thống.',
+      placement: 'top'
+    });
+  };
+
+  // Hiển thị hộp thoại xác nhận đăng xuất
+  const handleLogout = () => {
+    Modal.confirm({
+      title: 'Xác nhận đăng xuất',
+      content: 'Bạn có chắc chắn muốn đăng xuất không?',
+      okText: 'Đồng ý',
+      cancelText: 'Hủy',
+      onOk: confirmLogout, // Gọi hàm xác nhận đăng xuất
+      okButtonProps: { style: { backgroundColor: '#4CAF50', color: 'white', fontWeight:'bold'  } }, // Nút Đồng ý
+      cancelButtonProps: { style: { color: '#FF5733', fontWeight:'bold' } }, // Nút Hủy
+    });
   };
 
   // Xác định tab đang hoạt động dựa trên đường dẫn hiện tại
@@ -155,7 +175,7 @@ const Header = () => {
               <IconButton edge="end" color="inherit" component={Link} to="/info">
                 <Avatar sx={{ bgcolor: '' }}>{userName ? userName.charAt(0).toUpperCase() : ''}</Avatar>
               </IconButton>
-              <Button onClick={handleLogout} sx={{ ml: 1, color: 'blue', fontWeight: 'bold', fontSize: '1rem' }}>
+              <Button onClick={handleLogout} sx={{ ml: 1, color: '#E6EFF5', fontWeight: 'bold', fontSize: '1rem' }}>
                 Đăng xuất
               </Button>
             </Box>
