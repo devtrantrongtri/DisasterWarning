@@ -14,17 +14,7 @@ function HomePage() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box  
-        sx={{ 
-          margin: '64px', 
-          boxShadow: 3, 
-          padding: '10px', 
-          borderRadius: '8px' ,
-          backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
-        }}
-      >
-        <DisasterInfo {...disasterData} />
-      </Box>
+
       <Box sx={{ flex: 1 }}>
         <Grid container spacing={2} sx={{ height: '100%' }}>
           <Grid item xs={8} sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -59,6 +49,18 @@ function HomePage() {
             </Box>
           </Grid>
         </Grid>
+      </Box>
+
+      <Box  
+        sx={{ 
+          margin: '20px 64px 64px 64px', 
+          boxShadow: 3, 
+          padding: '10px', 
+          borderRadius: '8px' ,
+          backdropFilter: 'blur(10px)', // Làm mờ ảnh nền phía sau
+        }}
+      >
+        <DisasterInfo {...disasterData} />
       </Box>
     </Box>
   );

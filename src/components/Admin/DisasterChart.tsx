@@ -3,6 +3,8 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { Scale } from 'lucide-react';
+import { Grid } from 'antd';
 
 const DisasterChart: React.FC = () => {
   const disasterData = {
@@ -11,11 +13,26 @@ const DisasterChart: React.FC = () => {
       {
         label: 'Số lượng',
         data: [5, 8, 2, 10, 4, 6], // dữ liệu mẫu
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        backgroundColor: 'rgba(75, 192, 192)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
     ],
+  };
+  const options = {
+    responsive: true,
+    scales: {
+      y: {
+        grid: {
+          display: false, // Tắt lưới trên trục Y
+        },
+      },
+      x: {
+        grid: {
+          display: false, // Tắt lưới trên trục X
+        },
+      },
+    },
   };
 
   return (
@@ -23,7 +40,7 @@ const DisasterChart: React.FC = () => {
       <Typography variant="h6" gutterBottom>
         Thống kê số lượng thiên tai mỗi loại trong năm
       </Typography>
-      <Bar data={disasterData} />
+      <Bar data={disasterData} options={options} />
     </Box>
   );
 };
