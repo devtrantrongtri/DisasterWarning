@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -51,6 +52,7 @@ public class WebSecurityConfig {
                                 "/forgot-password/send-otp",
                                 "/forgot-password/verify-otp",
                                 "/forgot-password/forgot_password/{email}",
+                                "/disaster-warning-management/{city}",
                                 "/disaster-management/disaster",
                                 "/swagger/api-docs",
                                 "/swagger/api-docs/**",

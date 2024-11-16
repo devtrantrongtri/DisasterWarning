@@ -6,11 +6,14 @@ import disasterwarning.com.vn.models.dtos.LocationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ILocationService {
 
     public LocationDTO findLocationById(int id) throws DataNotFoundException;
+
+    public LocationDTO findByLatAndLon(BigDecimal lat, BigDecimal lon) throws DataNotFoundException;
 
     public LocationDTO findLocationByName(String name) throws DataNotFoundException;
 

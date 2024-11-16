@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +34,15 @@ public class LocationService implements ILocationService {
     @Override
     public LocationDTO findLocationByName(String name) {
         Location location = locationRepo.findByName(name);
+        if(location == null || Objects.equals(location.getStatus(), "inactive")) {
+            throw new DataNotFoundException("Location Not found");
+        }
+        return mapper.convertToDto(location, LocationDTO.class);
+    }
+
+    @Override
+    public LocationDTO findByLatAndLon(BigDecimal lat, BigDecimal lon) {
+        Location location = locationRepo.findByLatAndLon(lat,lon);
         if(location == null || Objects.equals(location.getStatus(), "inactive")) {
             throw new DataNotFoundException("Location Not found");
         }

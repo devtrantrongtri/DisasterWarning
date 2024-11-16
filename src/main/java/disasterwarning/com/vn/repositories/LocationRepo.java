@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
+
 public interface LocationRepo extends JpaRepository<Location, Integer> {
 
     @Query("select l from Location l where l.locationName=:name")
     Location findByName(@Param("name") String name);
+
+    @Query("select l from Location l where l.latitude = :lat and l.longitude = :lon")
+    Location findByLatAndLon(@Param("lat") BigDecimal lat, @Param("lon") BigDecimal lon);
 
     @Query("select l from Location l where l.status = 'active'")
     Page<Location> findAllLocationActive(Pageable pageable);
