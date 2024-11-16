@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.models.dtos.*;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
+import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.repositories.DisasterWarningRepo;
 import disasterwarning.com.vn.services.sendMail.IMailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,83 +233,83 @@ public class DisasterWarningService implements IDisasterWarningService {
         return true;
     }
 
-//    public boolean sendDisasterWarning() {
-//        List<LocationDTO> locations = locationService.findAllLocations(Pageable.unpaged()).getContent();
-//        List<Location> locationList = mapper.convertToEntityList(locations, Location.class);
-//        boolean warningSent = false;
-//
-//        if (locationList.isEmpty()) {
-//            System.out.println("Location List is empty");
-//            return false;
-//        }
-//
-//        for (Location location : locationList) {
-//            List<WeatherData> weatherData = getWeatherData(location.getLocationName());
-//
-//            if (weatherData.isEmpty()) {
-//                System.out.println("Weather data is empty for location: " + location.getLocationName());
-//                continue;
-//            }
-//
-//            DisasterWarningDTO disasterWarningDTO = CheckDisasterWarning(weatherData);
-//
-//            if (disasterWarningDTO.getDisaster() != null) {
-//                List<UserDTO> userDTOList = userService.findUsersByProvince(location.getLocationName());
-//                List<UserDTO> userActiveList = userDTOList.stream()
-//                        .filter(user -> "active".equals(user.getStatus()))
-//                        .toList();
-//
-//                for (UserDTO user : userActiveList) {
-//                    mailService.sendMail(user.getEmail(), disasterWarningDTO);
-//                    warningSent = true;
-//                }
-//            }
-//        }
-//        return warningSent;
-//    }
+    public boolean sendDisasterWarning() {
+        List<LocationDTO> locations = locationService.findAllLocations(Pageable.unpaged()).getContent();
+        List<Location> locationList = mapper.convertToEntityList(locations, Location.class);
+        boolean warningSent = false;
+
+        if (locationList.isEmpty()) {
+            System.out.println("Location List is empty");
+            return false;
+        }
+
+        for (Location location : locationList) {
+            List<WeatherData> weatherData = getWeatherData(location.getLocationName());
+
+            if (weatherData.isEmpty()) {
+                System.out.println("Weather data is empty for location: " + location.getLocationName());
+                continue;
+            }
+
+            DisasterWarningDTO disasterWarningDTO = CheckDisasterWarning(weatherData);
+
+            if (disasterWarningDTO.getDisaster() != null) {
+                List<UserDTO> userDTOList = userService.findUsersByProvince(location.getLocationName());
+                List<UserDTO> userActiveList = userDTOList.stream()
+                        .filter(user -> "active".equals(user.getStatus()))
+                        .toList();
+
+                for (UserDTO user : userActiveList) {
+                    mailService.sendMail(user.getEmail(), disasterWarningDTO);
+                    warningSent = true;
+                }
+            }
+        }
+        return warningSent;
+    }
 
 
-//    public DisasterWarningDTO CheckDisasterWarning(List<WeatherData> weatherDataList) {
-//        if (weatherDataList.isEmpty()) {
-//            throw new RuntimeException("Weather data is empty");
-//        }
-//
-//        for (WeatherData weatherData : weatherDataList) {
-//            // Kiểm tra nếu các giá trị
-//            if (weatherData.getMain() == null && weatherData.getWind() == null) {
-//                throw new RuntimeException("Incomplete weather data");
-//            }
-//
-//            DisasterWarningDTO warning;
-//
-//            // 1. Tornado warnings
-//            warning = checkTornadoWarning(weatherData);
-//            if (warning != null) return warning;
-//
-//            // 2. Storm warnings
-//            warning = checkStormWarning(weatherData);
-//            if (warning != null) return warning;
-//
-//            // 3. Pressure Warnings
-//            warning = checkPressureWarning(weatherData);
-//            if (warning != null) return warning;
-//
-//            // 4. Rain Warnings
-//            if (weatherData.getRain() != null) {
-//                warning = checkRainWarning(weatherData, weatherDataList);
-//                if (warning != null) return warning;
-//            }
-//
-//            // 5. Temperature Warnings
-//            warning = checkTemperatureWarning(weatherData);
-//            if (warning != null) return warning;
-//
-//            // 6. Visibility Warnings
-//            warning = checkVisibilityWarning(weatherData);
-//            if (warning != null) return warning;
-//        }
-//        return null;
-//    }
+    public DisasterWarningDTO CheckDisasterWarning(List<WeatherData> weatherDataList) {
+        if (weatherDataList.isEmpty()) {
+            throw new RuntimeException("Weather data is empty");
+        }
+
+        for (WeatherData weatherData : weatherDataList) {
+            // Kiểm tra nếu các giá trị
+            if (weatherData.getMaxwind_kph() == null) {
+                throw new RuntimeException("Incomplete weather data");
+            }
+
+            DisasterWarningDTO warning;
+
+            // 1. Tornado warnings
+            warning = checkTornadoWarning(weatherData);
+            if (warning != null) return warning;
+
+            // 2. Storm warnings
+            warning = checkStormWarning(weatherData);
+            if (warning != null) return warning;
+
+            // 3. Pressure Warnings
+            warning = checkPressureWarning(weatherData);
+            if (warning != null) return warning;
+
+            // 4. Rain Warnings
+            if (weatherData.getTotalprecip_mm() != null) {
+                warning = checkRainWarning(weatherData, weatherDataList);
+                if (warning != null) return warning;
+            }
+
+            // 5. Temperature Warnings
+            warning = checkTemperatureWarning(weatherData);
+            if (warning != null) return warning;
+
+            // 6. Visibility Warnings
+            warning = checkVisibilityWarning(weatherData);
+            if (warning != null) return warning;
+        }
+        return null;
+    }
 //
     private DisasterWarningDTO checkTornadoWarning(WeatherData weatherData) {
         // Lấy tốc độ gió giật từ dữ liệu thời tiết

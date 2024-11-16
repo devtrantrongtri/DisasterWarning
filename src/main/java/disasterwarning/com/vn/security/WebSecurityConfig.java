@@ -62,7 +62,8 @@ public class WebSecurityConfig {
                                 "/swagger-ui/index.html",
                                 "/disaster-management/disaster",
                                 "/disaster-management/disaster/{id}",
-                                "/disaster-info-management/disaster-info-disasterName/{disasterId}"
+                                "/disaster-info-management/disaster-info-disasterName/{disasterId}",
+                                "/ws-disaster-warning/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

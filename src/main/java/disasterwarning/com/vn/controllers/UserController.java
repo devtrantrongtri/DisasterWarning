@@ -57,7 +57,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/loginGoogle")
+    @PostMapping("/login")
     public ResponseEntity<ResponseWrapper<?>> login(@RequestBody LoginDTO loginDTO) {
         try {
             String token = userService.loginUser(loginDTO.getEmail(), loginDTO.getPassword());
@@ -94,7 +94,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/loginGoogle")
     public ResponseEntity<ResponseWrapper<?>> loginGoogle(@RequestBody GoogleTokenDTO googleTokenDTO) {
         try {
             String token = userService.GoogleLogin(googleTokenDTO);
