@@ -3,9 +3,11 @@ package disasterwarning.com.vn.controllers;
 import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
+import disasterwarning.com.vn.models.dtos.UserLocation;
 import disasterwarning.com.vn.models.dtos.WeatherData;
 import disasterwarning.com.vn.services.DisasterWarningService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/disaster-warning-management")
 @SecurityRequirement(name = "bearerAuth")
+@Slf4j
 public class DisasterWarningController {
 
     @Autowired
@@ -129,4 +132,13 @@ public class DisasterWarningController {
             return new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
         }
     }
+
+    @MessageMapping("/location") // Nhận tin nhắn từ /app/location
+    @SendTo("/topic/locations") // Gửi tin nhắn tới /topic/locations
+    public UserLocation sendLocation(UserLocation location) {
+        //TODO :  Xử lý hoặc lưu trữ vị trí
+        log.info("New user access :{}",location);
+        return location;
+    }
+
 }
