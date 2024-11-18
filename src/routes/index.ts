@@ -18,6 +18,7 @@ import DisasterInfoPage from "../pages/disaster/DisasterInfoPage";
 import WarningDisasterPage from "../pages/disaster/DisasterWarningPage";
 import LocationPage from "../pages/location/Location";
 import TestPage from "../pages/TestPage";
+import RealTimeMap from "../components/Socket/RealTimeMap";
 
 const PublicRoute: RouteType[] = [
   {
@@ -72,7 +73,7 @@ const PublicRoute: RouteType[] = [
   },
   {
     path: "/location",
-    page: LocationPage,
+    page: RealTimeMap,
   },
   { 
     path: "test",
