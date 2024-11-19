@@ -18,7 +18,7 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
