@@ -18,9 +18,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
         textAlign: 'center',
       }}
     >
-      <Box sx={{ width: '80%', maxWidth: 500 }}>
+      <Box sx={{ width: '80%', maxWidth: 500, color: '#e5e5e5'}}>
         <Typography variant="h4" gutterBottom>{title}</Typography>
-        {subtitle && <Typography variant="body1" color="textSecondary" mb={4}>{subtitle}</Typography>}
+        {subtitle && <Typography variant="body1" color='#e5e5e5' mb={4}>{subtitle}</Typography>}
         {children}
       </Box>
     </Box>

@@ -119,7 +119,7 @@ const RegistrationPage: React.FC = () => {
       subtitle="Vui lòng nhập thông tin để tạo tài khoản mới"
     >
       <form onSubmit={handleRegister}>
-        <Box sx={{ mt: 2, px: 3, py: 4, borderRadius: 2, boxShadow: 3, bgcolor: 'background.paper' }}>
+        <Box sx={{ mt: 2, px: 5, py: 10, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
           <TextField
             label="Tên người dùng"
             type="text"
@@ -128,7 +128,26 @@ const RegistrationPage: React.FC = () => {
             required
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#dce9f5',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#e5e5e5', // Đổi màu label
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#e5e5e5', // Đổi màu label khi có focus
+              },
+            }}
           />
           <TextField
             label="Email"
@@ -138,7 +157,26 @@ const RegistrationPage: React.FC = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#dce9f5',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#e5e5e5', // Đổi màu label
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#e5e5e5', // Đổi màu label khi có focus
+              },
+            }}
           />
           <TextField
             label="Mật khẩu"
@@ -148,7 +186,26 @@ const RegistrationPage: React.FC = () => {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#dce9f5',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#e5e5e5', // Đổi màu label
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#e5e5e5', // Đổi màu label khi có focus
+              },
+            }}
           />
           <TextField
             label="Xác nhận mật khẩu"
@@ -158,7 +215,26 @@ const RegistrationPage: React.FC = () => {
             required
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#dce9f5',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#e5e5e5',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: '#e5e5e5', // Đổi màu label
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#e5e5e5', // Đổi màu label khi có focus
+              },
+            }}
           />
 
           <Divider sx={{ my: 3 }} />
@@ -168,11 +244,15 @@ const RegistrationPage: React.FC = () => {
             fullWidth
             onClick={() => setOpenLocationDialog(true)}
             sx={{
-              mt: 2,
-              color: locationOptionSelected ? 'primary.main' : 'text.secondary',
-              fontWeight: locationOptionSelected ? 'bold' : 'normal',
-              backgroundColor: locationOptionSelected ? 'background.default' : 'transparent',
-              ':hover': { bgcolor: 'primary.light' },
+              mt: 3,
+              py: 1.2,
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              backgroundColor: '#f7fafc',
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: '#e2e8f0',
+              },
             }}
           >
             {locationOptionSelected ? 'Địa điểm đã chọn' : 'Chọn phương thức cung cấp địa điểm'}
@@ -184,7 +264,17 @@ const RegistrationPage: React.FC = () => {
             color="primary"
             fullWidth
             disabled={isLoading}
-            sx={{ mt: 3, py: 1.2, fontSize: '1rem', fontWeight: 'bold' }}
+            sx={{
+              mt: 3,
+              py: 1.2,
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              backgroundColor: '#f7fafc',
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: '#e2e8f0',
+              },
+            }}
           >
             {isLoading ? 'Đang đăng ký...' : 'Đăng Ký'}
           </Button>
@@ -199,7 +289,7 @@ const RegistrationPage: React.FC = () => {
             </Typography>
           )}
           <Typography variant="body2" mt={3} textAlign="center">
-            Đã có tài khoản? <Link to="/auth" style={{ textDecoration: 'none', color: '#1976d2' }}>Đăng nhập</Link>
+            Đã có tài khoản? <Link to="/auth" style={{ textDecoration: 'none', color: '#e5e5e5' }}>Đăng nhập</Link>
           </Typography>
         </Box>
       </form>

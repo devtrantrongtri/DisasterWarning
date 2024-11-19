@@ -97,16 +97,20 @@ const DashboardPage: React.FC = () => {
   return (
     <Box  sx={{
     padding: 2, // Giảm padding xung quanh
-    backgroundColor: '#f5f5f5',
+    
+    // backgroundColor: '#f5f5f5',
     minHeight: '100vh',
   }}>
 <Grid container spacing={10} justifyContent="center">
-        <Grid item xs={12} md={3}>
+        <Grid item sx={{display:'flex', justifyContent:'space-around', backdropFilter: 'blur(10px)', ml:'120px'}} xs={12} md={12}>
           <UserInfo />
+          <Box sx={{minWidth:'60rem'}}>
+            <WeatherInfo data={weatherData} />
+          </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <WeatherInfo data={weatherData} />
-        </Grid>
+        {/* <Grid item xs={12} md={6}>
+        </Grid> */}
+        
         <Grid item xs={12} md={8}>
           <DisasterChart />
           <AffectedProvincesTable />

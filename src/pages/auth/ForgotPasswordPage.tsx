@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, TextField, Box} from '@mui/material';
 import AuthLayout from '../../layouts/AuthLayout';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -39,26 +39,58 @@ const ForgotPasswordPage: React.FC = () => {
 
   return (
     <AuthLayout title="Quên mật khẩu? 🤔" subtitle="Đừng lo, chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu cho bạn">
-      <TextField
-        label="Địa chỉ Email"
-        fullWidth
-        margin="normal"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ mt: 2 }}
-        onClick={handleSendOtp}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Đang gửi OTP...' : 'Lấy mã OTP'}
-      </Button>
-      <Button component={Link} to="/auth" variant="text" sx={{ mt: 2 }}>
-        ← Quay lại đăng nhập
-      </Button>
+      <Box sx={{ mt: 2, px: 5, py: 5, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
+        <TextField
+          label="Địa chỉ Email"
+          fullWidth
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{
+            mb: 2,
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#dce9f5',
+              },
+              '&:hover fieldset': {
+                borderColor: '#e5e5e5',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#e5e5e5',
+              },
+            },
+            '& .MuiInputLabel-root': {
+              color: '#e5e5e5', // Đổi màu label
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#e5e5e5', // Đổi màu label khi có focus
+            },
+          }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleSendOtp}
+          disabled={isLoading}
+          sx={{
+            mt: 3,
+            py: 1.2,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#f7fafc',
+            color: 'primary.main',
+            '&:hover': {
+              backgroundColor: '#e2e8f0',
+            },
+          }}
+        >
+          {isLoading ? 'Đang gửi OTP...' : 'Lấy mã OTP'}
+        </Button>
+        <Button component={Link} to="/auth" variant="text" sx={{ mt: 2, color: '#e5e5e5' }}>
+          ← Quay lại đăng nhập
+        </Button>
+      </Box>
     </AuthLayout>
   );
 };

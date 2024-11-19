@@ -93,16 +93,17 @@ const LoginPage: React.FC = () => {
       }
       subtitle="Tiếp tục với Google hoặc nhập thông tin của bạn"
     >
-      <Box sx={{ mt: 2, px: 3, py: 4, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
+
+      <Box sx={{ mt: 2, px: 5, py: 10, borderRadius: 2, boxShadow: 3, backdropFilter: 'blur(20px)' }}>
         <Button
           variant="outlined"
           startIcon={<GoogleIcon />}
           fullWidth
-          sx={{ mb: 2, py: 1, fontSize: '1rem', fontWeight: 'bold', color: 'primary.main', backgroundColor: '#f7fafc' }}
+          sx={{ mb: 2, py: 1, fontSize: '1.2rem', fontWeight: 'bold', color: 'primary.main', backgroundColor: '#f7fafc' }}
         >
           Tiếp tục với Google
         </Button>
-        <Divider sx={{ my: 3 }}>hoặc</Divider>
+        <Divider sx={{ fontSize: '1.2rem', my: 3, color: '#f7fafc','&::before, &::after': { borderColor: '#ffffff' }}}>hoặc</Divider>
         <TextField
           label="Địa chỉ Email"
           fullWidth
@@ -116,36 +117,49 @@ const LoginPage: React.FC = () => {
                 borderColor: '#dce9f5',
               },
               '&:hover fieldset': {
-                borderColor: '#a7c0d9', // Đổi màu khi hover nếu muốn
+                borderColor: '#e5e5e5',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#a7c0d9', // Đổi màu khi có focus
+                borderColor: '#e5e5e5',
               },
+            },
+            '& .MuiInputLabel-root': {
+              color: '#e5e5e5', // Đổi màu label
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#e5e5e5', // Đổi màu label khi có focus
             },
           }}
         />
-        <TextField
-          label="Mật khẩu"
-          type="password"
-          fullWidth
-          margin="normal"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          sx={{
-            mb: 2,
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#dce9f5',
-              },
-              '&:hover fieldset': {
-                borderColor: '#a7c0d9',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#a7c0d9',
-              },
-            },
-          }}
-        />
+<TextField
+  label="Mật khẩu"
+  type="password"
+  fullWidth
+  margin="normal"
+  value={formData.password}
+  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+  sx={{
+        mb: 2,
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: '#dce9f5',
+          },
+          '&:hover fieldset': {
+            borderColor: '#e5e5e5',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#e5e5e5',
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: '#e5e5e5', // Đổi màu label
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: '#e5e5e5', // Đổi màu label khi có focus
+        },
+      }}
+    />
+
         <FormControlLabel
           control={
             <Checkbox
@@ -155,6 +169,12 @@ const LoginPage: React.FC = () => {
             />
           }
           label="Ghi nhớ đăng nhập"
+          sx={{
+            '& .MuiFormControlLabel-label': {
+              color: '#e5e5e5',
+              fontWeight: 'bold',
+            },
+          }}
         />
       {error && (
         <Typography color="error" variant="body2">
