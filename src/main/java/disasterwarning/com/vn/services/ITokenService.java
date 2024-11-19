@@ -1,5 +1,6 @@
 package disasterwarning.com.vn.services;
 
+import disasterwarning.com.vn.models.dtos.TokenDTO;
 import disasterwarning.com.vn.models.entities.Token;
 import disasterwarning.com.vn.models.entities.User;
 
@@ -13,4 +14,6 @@ public interface ITokenService {
     public void deleteToken(String token);
 
     public Token refreshToken(String refreshToken, User user) throws Exception;
+
+    public Number getCountToken(int id) throws Exception;
 }

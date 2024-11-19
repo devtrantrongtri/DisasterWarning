@@ -1,6 +1,7 @@
 package disasterwarning.com.vn.services;
 
 import disasterwarning.com.vn.components.JwtTokenUtils;
+import disasterwarning.com.vn.models.dtos.TokenDTO;
 import disasterwarning.com.vn.models.entities.Token;
 import disasterwarning.com.vn.models.entities.User;
 import disasterwarning.com.vn.repositories.TokenRepo;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class TokenService implements ITokenService {
 
     private static final int MAX_TOKENS = 3;
+    private final Mapper mapper;
     @Value("${jwt.expiration}")
     private int expiration;
 
@@ -88,5 +90,18 @@ public class TokenService implements ITokenService {
         existingToken.setRefreshToken(UUID.randomUUID().toString());
         existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
         return existingToken;
+    }
+
+    @Override
+    public Number getCountToken(int id) throws Exception {
+        List<Token> tokens = tokenRepository.findByUser(id);
+        if (tokens.isEmpty()) {
+            throw new Exception("Token not found");
+        }
+        Integer countToken = 0;
+        for (Token token : tokens) {
+            countToken = countToken + 1;
+        }
+        return countToken;
     }
 }

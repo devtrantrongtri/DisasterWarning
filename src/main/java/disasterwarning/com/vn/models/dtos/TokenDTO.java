@@ -15,6 +15,9 @@ public class TokenDTO {
 
     private String email;
 
-    private String role;
+    private String expirationDate;
 
+    private int userId;
+
+    private String role;
 }

@@ -76,10 +76,12 @@ public class UserController {
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setToken(jwt.getToken());
             tokenDTO.setRefreshToken(jwt.getRefreshToken());
+            tokenDTO.setExpirationDate(jwt.getExpirationDate().toString());
             tokenDTO.setRole(userDetail.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .toList().toString());
             tokenDTO.setTokenType(jwt.getTokenType());
+            tokenDTO.setUserId(userDetail.getUserId());
             tokenDTO.setUserName(userDetail.getUserName());
             tokenDTO.setEmail(userDetail.getEmail());
 
@@ -164,19 +166,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<ResponseWrapper<UserDTO>> getUser(@PathVariable int id) {
-        try {
-            UserDTO userDTO = userService.findUserById(id);
-            ResponseWrapper<UserDTO> responseWrapper = new ResponseWrapper<>("User retrieved successfully", userDTO);
-            return ResponseEntity.ok(responseWrapper);
-        } catch (DataNotFoundException e) {
-            ResponseWrapper<UserDTO> responseWrapper = new ResponseWrapper<>("User not found", null);
-            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
-        }
-    }
-
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> deleteUser(@PathVariable int id) {
@@ -196,6 +185,33 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>("An error occurred: " + e.getMessage(), Boolean.FALSE));
+        }
+    }
+
+
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<ResponseWrapper<UserDTO>> getUser(@PathVariable int id) {
+        try {
+            UserDTO userDTO = userService.findUserById(id);
+            ResponseWrapper<UserDTO> responseWrapper = new ResponseWrapper<>("User retrieved successfully", userDTO);
+            return ResponseEntity.ok(responseWrapper);
+        } catch (DataNotFoundException e) {
+            ResponseWrapper<UserDTO> responseWrapper = new ResponseWrapper<>("User not found", null);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/user/CountToken/{userId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<ResponseWrapper<Number>> getToken(@PathVariable int userId) {
+        try {
+            Number countToken = tokenService.getCountToken(userId);
+            ResponseWrapper<Number> responseWrapper = new ResponseWrapper<>("Token retrieved successfully", countToken);
+            return ResponseEntity.ok(responseWrapper);
+        } catch (Exception e) {
+            ResponseWrapper<Number> responseWrapper = new ResponseWrapper<>("Token not found", 0);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
         }
     }
 }
