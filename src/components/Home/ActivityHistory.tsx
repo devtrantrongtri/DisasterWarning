@@ -31,14 +31,17 @@ const ActivityHistory = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', mt: 4 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+    <Box sx={{ width: '100%', mt: 4, }} >
+      <Typography variant="h6" sx={{ mb: 2, fontSize: '20px' }}>
         Lịch sử hoạt động
       </Typography>
       <List>
         {activities.map((activity, index) => (
           <ListItem key={index}>
-            <ListItemText primary={activity.action} secondary={`Ngày ${activity.date} - Thành công`} />
+            <ListItemText
+              primary={activity.action}
+              secondary={`Ngày ${activity.date} - Thành công`}
+            />
           </ListItem>
         ))}
       </List>

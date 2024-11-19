@@ -88,12 +88,13 @@ export const userApi = createApi({
       }),
     }),
 
-    updateUser: build.mutation<void, User>({
+    updateUser: build.mutation<void, UserUpdate>({
       query: (user) => ({
         url: `/user-management/user/${user.userId}`,
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
         body: user,
       }),
