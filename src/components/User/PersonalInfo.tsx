@@ -23,7 +23,7 @@ const PersonalInfo = () => {
         username: user.data.userName || '',
         country: '',
         password: user.data.password || '',
-        city: user.data.userName || '',
+        city: user.data.location.locationName || '',
         email: user.data.email || '',
       });
     }

@@ -1,5 +1,3 @@
-import { TokenMap } from "@ant-design/cssinjs-utils";
-
 export type UserResponse = {
     message: string;
     data: {
