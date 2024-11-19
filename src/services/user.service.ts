@@ -8,6 +8,7 @@ import {
   RegisterRequest,
   RegisterResponse,
   User,
+  CountTokenRequest,
   UserUpdate,
 } from "../interfaces/AuthType";
 
@@ -98,17 +99,33 @@ export const userApi = createApi({
       }),
     }),
 
-
     getUserById: build.query<GetUserByIdResponse, number>({
-      query: (userId) => ({
-        url: `/user-management/user/${userId}`,
-        method: "GET",
-        headers: {
-          accept: "*/*",
-        },
-      }),
+      query: (userId) => {
+        const token = sessionStorage.getItem("token");
+        return {
+          url: `/user-management/user/${userId}`,
+          method: "GET",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
     }),
 
+    CountToken: build.query<CountTokenRequest, number>({
+      query: (userId) => {
+        const token = sessionStorage.getItem("token");
+        return {
+          url: `/user-management/user/CountToken/${userId}`,
+          method: "GET",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+    }),
 
   }),
 });
@@ -120,5 +137,6 @@ export const {
   useCreateLocationMutation,
   useSendOtpMutation, 
   useUpdateUserMutation,
-  useGetUserByIdQuery
+  useGetUserByIdQuery,
+  useCountTokenQuery
 } = userApi;

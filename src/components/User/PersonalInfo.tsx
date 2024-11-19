@@ -1,8 +1,33 @@
 import { Box, Typography, TextField, Button, Grid, Avatar } from '@mui/material';
 import React, { useState } from 'react';
-
+import {useGetUserByIdQuery } from '../../services/user.service';
 const PersonalInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const userId = Number(sessionStorage.getItem("userID"));
+
+  // Lấy dữ liệu người dùng từ API
+  const { data: user } = useGetUserByIdQuery(userId);
+
+  const [formData, setFormData] = useState({
+    username: '',
+    country: '',
+    password: '',
+    city: '',
+    email: '',
+  });
+
+  // Khi có dữ liệu, gán vào formData
+  React.useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.data.userName || '',
+        country: '',
+        password: user.data.password || '',
+        city: user.data.userName || '',
+        email: user.data.email || '',
+      });
+    }
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -17,7 +42,7 @@ const PersonalInfo = () => {
       {/* Avatar và tên tài khoản */}
       <Box sx={{ textAlign: 'center', marginRight: 4 }}>
         <Avatar sx={{ width: 100, height: 100, margin: '0 auto' }} />
-        <Typography variant="h4" sx={{ mt: 2 }}>hieulen1402</Typography>
+        <Typography variant="h4" sx={{ mt: 2 }}>{formData.username}</Typography>
       </Box>
 
       {/* Form thông tin cá nhân */}
@@ -45,6 +70,7 @@ const PersonalInfo = () => {
               fullWidth
               variant="outlined"
               disabled={!isEditing}
+              value={formData.username}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -53,6 +79,7 @@ const PersonalInfo = () => {
               fullWidth
               variant="outlined"
               disabled={!isEditing}
+              value={"Việt Nam"}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -62,6 +89,7 @@ const PersonalInfo = () => {
               fullWidth
               variant="outlined"
               disabled={!isEditing}
+              value={formData.password}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -70,6 +98,7 @@ const PersonalInfo = () => {
               fullWidth
               variant="outlined"
               disabled={!isEditing}
+              value={formData.city}
             />
           </Grid>
           <Grid item xs={12}>
@@ -78,6 +107,7 @@ const PersonalInfo = () => {
               fullWidth
               variant="outlined"
               disabled={!isEditing}
+              value={formData.email}
             />
           </Grid>
         </Grid>

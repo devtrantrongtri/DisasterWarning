@@ -31,9 +31,9 @@ const PersonalInfoPage = () => {
     >
       <PersonalInfo />
       <ActivityHistory />
-      <SecuritySettings />
-      <Preferences />
-      <UserStatistics />
+      {/* <SecuritySettings /> */}
+      {/* <Preferences /> */}
+      {/* <UserStatistics /> */}
     </Box>
   );
 };

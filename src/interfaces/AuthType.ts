@@ -1,3 +1,5 @@
+import { TokenMap } from "@ant-design/cssinjs-utils";
+
 export type UserResponse = {
     message: string;
     data: {
@@ -30,6 +32,7 @@ export type UserResponse = {
     message: string;
     data: User
   };
+
   
   export type Location = {
     locationId: number;
@@ -82,12 +85,19 @@ export type UserResponse = {
     message: string;
     data: {
       token: string;
+      expirationDate: string;
       refreshToken: string;
       tokenType: string;
+      userId: Number;
       userName: string;
       email: string;
       role: string;
     };
+  }
+
+  export interface CountTokenRequest {
+    message: string;
+    data: number;
   }
 
   export interface RegisterRequest {
