@@ -44,15 +44,18 @@ import { Box, Typography } from "@mui/material";
 import LamImage from '../../assets/aboutus/Lam.png';
 import OngButImage from '../../assets/aboutus/ongbut.png';
 import BaoBaoImage from '../../assets/aboutus/baobao.jpg';
+import AnhLenImage from '../../assets/aboutus/anhLen.jpg';
+import VitImage from '../../assets/aboutus/zitzit.png';
+import TriDevImage from '../../assets/aboutus/tridev.png';
 
 const AboutUs: React.FC = () => {
   const members = [
     { name: "Trần Đăng Nam", image: LamImage },
-    { name: "Member 2", image: OngButImage },
-    { name: "Member 3", image: BaoBaoImage },
-    { name: "Member 4", image: "link_to_image_4.jpg" },
-    { name: "Member 5", image: "link_to_image_5.jpg" },
-    { name: "Member 6", image: "link_to_image_6.jpg" },
+    { name: "Phạm Thanh Trúc", image: OngButImage },
+    { name: "Nguyễn Lê Hiếu Nhi", image: AnhLenImage },
+    { name: "Trần Trọng Trí", image: TriDevImage },
+    { name: "Nguyễn Hoàng Việt", image: VitImage },
+    { name: "Huỳnh Nguyễn Quốc Bảo", image: BaoBaoImage },
   ];
 
   return (
@@ -62,8 +65,14 @@ const AboutUs: React.FC = () => {
         padding: 3,
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        About Us
+      <Typography variant="h4" gutterBottom sx={{
+        color:'white', 
+        fontSize:'35px',
+        fontWeight:'bold', 
+        textShadow:'2px 2px 2px rgba(170, 208, 206, 0.5)', 
+        borderBottom: '3px solid #A2BCC6',
+        mb: 3}}>
+        - Tổ chức Vươn tầm thế giới -
       </Typography>
       <Box
         sx={{
@@ -77,7 +86,7 @@ const AboutUs: React.FC = () => {
           <Box
             key={index}
             sx={{
-              width: "150px",
+              width: "200px",
               textAlign: "center",
             }}
           >
@@ -88,12 +97,12 @@ const AboutUs: React.FC = () => {
               sx={{
                 width: "100%",
                 height: "150px",
-                borderRadius: "8px",
+                borderRadius: "60px",
                 objectFit: "cover", // Giữ tỷ lệ ảnh
-                boxShadow: 1,
+                boxShadow: 4,
               }}
             />
-            <Typography variant="subtitle1" sx={{ marginTop: 1 }}>
+            <Typography variant="subtitle1" sx={{ marginTop: 1 , color:'#f5efe7', textShadow:'2px 2px 2px rgba(51, 51, 136, 0.8)', fontWeight:'600', fontSize:'16.2px' }}>
               {member.name}
             </Typography>
           </Box>
