@@ -8,8 +8,11 @@ import {
   RegisterRequest,
   RegisterResponse,
   User,
+  CountTokenRequest,
+  ChangePasswordDTO,
   UserUpdate,
 } from "../interfaces/AuthType";
+import ChangePasswordPopup from "../pages/auth/ChangPassword";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 
@@ -87,28 +90,57 @@ export const userApi = createApi({
       }),
     }),
 
-    updateUser: build.mutation<void, User>({
+    updateUser: build.mutation<void, UserUpdate>({
       query: (user) => ({
         url: `/user-management/user/${user.userId}`,
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
         body: user,
       }),
     }),
 
-
-    getUserById: build.query<GetUserByIdResponse, number>({
-      query: (userId) => ({
-        url: `/user-management/user/${userId}`,
-        method: "GET",
+    changePassword: build.mutation<void, ChangePasswordDTO>({
+      query: (formData) => ({
+        url: "/forgot-password/change_password",
+        method: "POST",
         headers: {
-          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
+        body: formData,  // Send formData directly as the body
       }),
     }),
 
+    getUserById: build.query<GetUserByIdResponse, number>({
+      query: (userId) => {
+        const token = sessionStorage.getItem("token");
+        return {
+          url: `/user-management/user/${userId}`,
+          method: "GET",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+    }),
+
+    CountToken: build.query<CountTokenRequest, number>({
+      query: (userId) => {
+        const token = sessionStorage.getItem("token");
+        return {
+          url: `/user-management/user/CountToken/${userId}`,
+          method: "GET",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+    }),
 
   }),
 });
@@ -119,6 +151,8 @@ export const {
   useRegisterMutation,
   useCreateLocationMutation,
   useSendOtpMutation, 
+  useChangePasswordMutation,
   useUpdateUserMutation,
-  useGetUserByIdQuery
+  useGetUserByIdQuery,
+  useCountTokenQuery
 } = userApi;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import PersonalInfo from '../components/User/PersonalInfo';
-import ActivityHistory from '../components/Home/ActivityHistory';
 import SecuritySettings from '../components/Home/SecuritySettings';
 import Preferences from '../components/Home/Preferences';
 import UserStatistics from '../components/Home/UserStatistics';
@@ -30,10 +29,9 @@ const PersonalInfoPage = () => {
       }}
     >
       <PersonalInfo />
-      <ActivityHistory />
-      <SecuritySettings />
-      <Preferences />
-      <UserStatistics />
+      {/* <SecuritySettings /> */}
+      {/* <Preferences /> */}
+      {/* <UserStatistics /> */}
     </Box>
   );
 };

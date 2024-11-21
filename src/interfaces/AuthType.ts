@@ -30,6 +30,7 @@ export type UserResponse = {
     message: string;
     data: User
   };
+
   
   export type Location = {
     locationId: number;
@@ -48,9 +49,14 @@ export type UserResponse = {
     password?: string;
     role?: string;
     status?: string;
-    location?: { locationId: number };
+    location?: { locationName: string };
   };
-    
+  
+  export type ChangePasswordDTO = {
+    oldPassword: string;
+    password: string;
+    retypePassword: string;
+  };
   
   export type Pageable = {
     pageNumber: number;
@@ -82,12 +88,19 @@ export type UserResponse = {
     message: string;
     data: {
       token: string;
+      expirationDate: string;
       refreshToken: string;
       tokenType: string;
+      userId: Number;
       userName: string;
       email: string;
       role: string;
     };
+  }
+
+  export interface CountTokenRequest {
+    message: string;
+    data: number;
   }
 
   export interface RegisterRequest {
