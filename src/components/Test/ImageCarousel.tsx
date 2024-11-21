@@ -1,35 +1,38 @@
-import React, { useState } from "react";
-import { Box, styled } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, styled, Typography } from "@mui/material";
+import axios from "axios";
 
-// Dữ liệu ảnh mẫu
-const images = [
-  { src: "https://images2.thanhnien.vn/528068263637045248/2023/8/15/thien-tai-16921180266262102166481.png", alt: "Image 1" },
-  { src: "https://ktmt.vnmediacdn.com/images/2023/10/04/13-1696392896-anh-thien-tai-1.jpg", alt: "Image 2" },
-  { src: "https://ktmt.vnmediacdn.com/images/2024/11/13/92-1731488024-cnn-digital-satellite-vis-copy.jpg", alt: "Image 3" },
-  { src: "https://images2.thanhnien.vn/528068263637045248/2023/8/15/thien-tai-16921180266262102166481.png", alt: "Image 4" },
-  { src: "https://ktmt.vnmediacdn.com/images/2024/11/13/92-1731488207-gettyimages-2179622148-12-09-27-pm-copy.jpg", alt: "Image 5" },
-];
+// Định nghĩa kiểu cho hình ảnh
+interface DisasterImage {
+  id: number;
+  src: string;
+  alt: string;
+  name: string; // Thêm trường name để lưu tên thảm họa
+}
 
-// Styled components với Material-UI
+// Styled components
 const ImageWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   overflow: "hidden",
   height: "700px",
+  position: "relative",
 }));
 
 const LargeImage = styled("img")({
-  width: "100vh", // Ảnh lớn chiếm 40%
+  width: "100vh",
   height: "auto",
-  borderRadius: "4rem",
-  transition: "transform 0.3s, opacity 0.3s",
+  transition: "transform 0.3s",
+  "&:hover": {
+    transform: "scale(1.1)",
+  }
 });
 
 const SmallImage = styled("img")({
-  width: "40vh", // Ảnh nhỏ chiếm 20%
+  width: "40vh",
   height: "auto",
-  margin: "0 10px",
+  margin: "0 20px",
   opacity: 0.7,
   borderRadius: "4rem",
   transition: "opacity 0.3s, transform 0.3s",
@@ -39,67 +42,81 @@ const SmallImage = styled("img")({
   },
 });
 
-const ImageCarousel: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(2); // Vị trí ảnh lớn ban đầu
-  const [startX, setStartX] = useState<number | null>(null);
- // Chuyển ảnh sang trái
- const handleNext = () => {
+const Caption = styled(Typography)({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translateX(-50%)", // Đảm bảo căn giữa
+  color: "#ffffff",
+  fontWeight: "bold",
+  fontSize: "36px",
+  backgroundColor: "rgba(45, 58, 84, 0.5)",
+  padding: "20px 20px",
+  borderRadius: 24,
+  boxShadow:'1px 1px 2px 2px rgba(45, 58, 84)'
+});
+
+const ImageCarousel: React.FC<{ onDisasterSelect: (id: number) => void }> = ({
+  onDisasterSelect,
+}) => {
+  const [images, setImages] = useState<DisasterImage[]>([]); // Khai báo kiểu cụ thể
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    // Fetch data từ API
+    axios.get("http://localhost:8080/disaster-management/disaster").then((response) => {
+      const disasters = response.data.data.content; // Dữ liệu từ API
+      const formattedImages: DisasterImage[] = disasters.map((disaster: any) => ({
+        id: disaster.disasterId,
+        src: disaster.imageUrl,
+        alt: disaster.disasterName,
+        name: disaster.disasterName, // Thêm disasterName vào dữ liệu ảnh
+      }));
+      setImages(formattedImages);
+    });
+  }, []);
+
+  const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  // Chuyển ảnh sang phải
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex - 1 < 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (startX !== null) {
-      const endX = e.changedTouches[0].clientX;
-      if (startX - endX > 50) {
-        // Vuốt sang trái
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-      } else if (startX - endX < -50) {
-        // Vuốt sang phải
-        setCurrentIndex((prevIndex) =>
-          prevIndex - 1 < 0 ? images.length - 1 : prevIndex - 1
-        );
-      }
-    }
+  const handleSelect = (id: number) => {
+    onDisasterSelect(id);
   };
 
   return (
-    <ImageWrapper
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-    {/* Ảnh nhỏ bên trái */}
-    <SmallImage
-        src={images[(currentIndex - 1 + images.length) % images.length].src}
-        alt={images[(currentIndex - 1 + images.length) % images.length].alt}
-        onClick={handlePrev}
-        style={{ cursor: "pointer" }}
-      />
-
-      {/* Ảnh lớn ở giữa */}
-      <LargeImage
-        src={images[currentIndex].src}
-        alt={images[currentIndex].alt}
-      />
-
-      {/* Ảnh nhỏ bên phải */}
-      <SmallImage
-        src={images[(currentIndex + 1) % images.length].src}
-        alt={images[(currentIndex + 1) % images.length].alt}
-        onClick={handleNext}
-        style={{ cursor: "pointer" }}
-      />
+    <ImageWrapper>
+      {images.length > 0 && (
+        <>
+          <SmallImage
+            src={images[(currentIndex - 1 + images.length) % images.length].src}
+            alt={images[(currentIndex - 1 + images.length) % images.length].alt}
+            onClick={handlePrev}
+          />
+          <Box position="relative">
+            <LargeImage
+              src={images[currentIndex].src}
+              alt={images[currentIndex].alt}
+              onClick={() => handleSelect(images[currentIndex].id)}
+            />
+            {/* Hiển thị tên thảm họa bên dưới ảnh */}
+            <Caption>{images[currentIndex].name}</Caption>
+          </Box>
+          <SmallImage
+            src={images[(currentIndex + 1) % images.length].src}
+            alt={images[(currentIndex + 1) % images.length].alt}
+            onClick={handleNext}
+          />
+        </>
+      )}
     </ImageWrapper>
   );
 };
+
 export default ImageCarousel;

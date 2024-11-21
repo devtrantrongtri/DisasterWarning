@@ -35,10 +35,14 @@ function Footer() {
       </Box>
 
       <Box sx={{ alignSelf: 'center', width: '250px' }}>
-        <HomeIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Trang chủ</Typography>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <HomeIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Trang chủ</Typography>
+        </Link>
+        <Link to="/disaster" style={{ textDecoration: 'none', color: 'inherit' }}>
         <InfoIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Thông tin về thiên tai</Typography>
-        <LocationOnIcon sx={{ mr: 1, float: 'left' }} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Vị trí của bạn</Typography>
-        <EmergencyIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ fontSize: '18px'}}>Thông tin cứu trợ</Typography>
+        </Link>
+        {/* <LocationOnIcon sx={{ mr: 1, float: 'left' }} /><Typography variant="body2" sx={{ mb: 1, fontSize: '18px'}}>Vị trí của bạn</Typography>
+        <EmergencyIcon sx={{ mr: 1, float: 'left'}} /><Typography variant="body2" sx={{ fontSize: '18px'}}>Thông tin cứu trợ</Typography> */}
       </Box>
 
       {/* Phần Hỗ trợ */}
