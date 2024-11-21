@@ -51,7 +51,12 @@ export type UserResponse = {
     status?: string;
     location?: { locationName: string };
   };
-    
+  
+  export type ChangePasswordDTO = {
+    oldPassword: string;
+    password: string;
+    retypePassword: string;
+  };
   
   export type Pageable = {
     pageNumber: number;

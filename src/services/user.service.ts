@@ -9,8 +9,10 @@ import {
   RegisterResponse,
   User,
   CountTokenRequest,
+  ChangePasswordDTO,
   UserUpdate,
 } from "../interfaces/AuthType";
+import ChangePasswordPopup from "../pages/auth/ChangPassword";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 
@@ -100,6 +102,18 @@ export const userApi = createApi({
       }),
     }),
 
+    changePassword: build.mutation<void, ChangePasswordDTO>({
+      query: (formData) => ({
+        url: "/forgot-password/change_password",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+        body: formData,  // Send formData directly as the body
+      }),
+    }),
+
     getUserById: build.query<GetUserByIdResponse, number>({
       query: (userId) => {
         const token = sessionStorage.getItem("token");
@@ -137,6 +151,7 @@ export const {
   useRegisterMutation,
   useCreateLocationMutation,
   useSendOtpMutation, 
+  useChangePasswordMutation,
   useUpdateUserMutation,
   useGetUserByIdQuery,
   useCountTokenQuery

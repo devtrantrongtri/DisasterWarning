@@ -2,7 +2,7 @@ import { Box, Typography, TextField,Select, Button, Grid, Avatar,MenuItem } from
 import React, { useState } from 'react';
 import {useGetUserByIdQuery,useUpdateUserMutation } from '../../services/user.service';
 import ActivityHistory from '../Home/ActivityHistory';
-
+import ChangePasswordForm from '../../pages/auth/ChangPassword';
 const PersonalInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
@@ -39,13 +39,13 @@ const PersonalInfo = () => {
     setIsEditing(true);
   };
 
-  const handleEditPassword = () => {
-    setIsEditingPassword(true);
-  };
-
   const handleSavePassword = async () => {
-    setIsEditingPassword(false);
+    setIsEditingPassword(true);
   }
+
+  const handleCancelChangePassword = () => {
+    setIsEditingPassword(false);
+  };
 
   const handleSave = async () => {
     try {
@@ -179,7 +179,7 @@ const PersonalInfo = () => {
               type="password"
               fullWidth
               variant="outlined"
-              disabled={!isEditingPassword}
+              disabled={true}
               value={formData.password}
               sx={{
                 mb: 2,
@@ -362,23 +362,7 @@ const PersonalInfo = () => {
               }}>
                 Chỉnh sửa
               </Button>
-              {isEditingPassword ? (
-                <Button variant="contained"  onClick={handleSavePassword}
-                sx={{
-                  mt: 3,
-                  py: 1.2,
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  backgroundColor: '#f7fafc',
-                  color: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: '#e2e8f0',
-                  },
-                }}>
-                  Hoàn tất
-                </Button>
-              ) : (
-              <Button variant="outlined" onClick={handleEditPassword}
+              <Button variant="outlined" onClick={handleSavePassword}
                sx={{
                 mt: 3,
                 py: 1.2,
@@ -392,9 +376,11 @@ const PersonalInfo = () => {
               }}>
                 Đổi mật khẩu
               </Button>
-              )}
             </>
           )}
+          <Box>
+            {isEditingPassword ? <ChangePasswordForm  onClose={handleCancelChangePassword}/>  : null}
+          </Box>
         </Box>
       </Box>
     </Box>
