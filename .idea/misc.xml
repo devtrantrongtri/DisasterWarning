@@ -4,6 +4,7 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
+        <option value="$PROJECT_DIR$/Disaster_Management_And_Warning/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>

@@ -78,12 +78,14 @@ public class UserService implements IUserService{
         existingUser.setUserName(user.getUserName());
         existingUser.setEmail(user.getEmail());
         existingUser.setRole(user.getRole());
-        if(user.getLocation() != null && user.getLocation().getLocationId() != 0){
-            Location existingLocation = locationRepo.findById(user.getLocation().getLocationId())
-                    .orElseThrow(()->new DataNotFoundException("Location not found"));
+        if(user.getLocation() != null && user.getLocation().getLocationName() != null){
+            Location existingLocation = locationRepo.findByName(user.getLocation().getLocationName());
+            if(existingLocation == null){
+                throw new DataNotFoundException("Location does not exist");
+            }
             existingUser.setLocation(existingLocation);
         }
-        userRepo.save(user);
+        userRepo.save(existingUser);
         return mapper.convertToDto(user, UserDTO.class);
     }
 
@@ -165,8 +167,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void changePassword(String username, ChangePasswordDTO changePasswordDTO) {
-        User user = userRepo.findByEmail(username);
+    public void changePassword(String email, ChangePasswordDTO changePasswordDTO) {
+        User user = userRepo.findByEmail(email);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
