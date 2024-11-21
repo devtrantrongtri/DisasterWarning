@@ -63,6 +63,8 @@ const DisasterCategoriesPage: React.FC = () => {
     severity: 'info' as 'success' | 'error' | 'info'
   });
 
+  const [expandedDisasterId, setExpandedDisasterId] = useState<number | null>(null); // Trạng thái để theo dõi hàng mở rộng
+
   const { data: disasters, isLoading, isError } = useGetDisastersQuery({ page: pageReq.page, size: pageReq.size });
   const [createDisaster] = useCreateDisasterMutation();
   const [createDisasterInfo] = useCreateDisasterInfoMutation();
@@ -100,13 +102,25 @@ const DisasterCategoriesPage: React.FC = () => {
       const disasterResponse = await createDisaster(createDisasterRequest).unwrap();
   
       if (disasterResponse?.data) {
+        const disaster = disasterResponse.data;
+  
         const disasterInfos = disasterForm.disasterInfos ?? [];
+        console.log('Disaster Infos:', disasterInfos);
   
         for (let i = 0; i < disasterInfos.length; i++) {
+          const disasterInfoData = disasterInfos[i];
+  
           const createDisasterInfoRequest: CreateDisasterInfoRequest = {
-            disasterInfo: disasterInfos[i],
-            images: disasterInfos[i]?.images || [],
+            disasterInfo: {
+              typeInfo: disasterInfoData.typeInfo || '',
+              information: disasterInfoData.information || '',
+              disaster: disaster,
+            },
+            images: disasterInfoData?.images || []
           };
+  
+          console.log('Create Disaster Info Request:', createDisasterInfoRequest);
+
           await createDisasterInfo(createDisasterInfoRequest).unwrap();
         }
   
@@ -133,8 +147,7 @@ const DisasterCategoriesPage: React.FC = () => {
         severity: 'error'
       });
     }
-  };
-  
+  };  
 
   const handleDeleteDisaster = async (disasterId: number) => {
     try {
@@ -228,6 +241,10 @@ const DisasterCategoriesPage: React.FC = () => {
     });
   };
 
+  const toggleDisasterInfoVisibility = (disasterId: number) => {
+    setExpandedDisasterId((prev) => (prev === disasterId ? null : disasterId));
+  };
+
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -262,40 +279,60 @@ const DisasterCategoriesPage: React.FC = () => {
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {disasters?.content?.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No disasters found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              disasters?.content?.map((disaster: Disaster) => (
-                <TableRow key={disaster.disasterId}>
+            {disasters.content?.map((disaster) => (
+              <React.Fragment key={disaster.disasterId}>
+                <TableRow onClick={() => toggleDisasterInfoVisibility(disaster.disasterId)}>
                   <TableCell>{disaster.disasterId}</TableCell>
                   <TableCell>{disaster.disasterName}</TableCell>
                   <TableCell>{disaster.description}</TableCell>
                   <TableCell>
-                    {disaster.imageUrl && (
-                      <img
-                        src={disaster.imageUrl}
-                        alt={disaster.disasterName}
-                        style={{ width: 50, height: 50, objectFit: 'cover' }}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell align="center">
                     <IconButton onClick={() => handleDeleteDisaster(disaster.disasterId)}>
-                      <DeleteIcon />
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                    <IconButton>
+                      <EditIcon color="primary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
+                {expandedDisasterId === disaster.disasterId && disaster.disasterInfos?.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Type Info</TableCell>
+                            <TableCell>Information</TableCell>
+                            <TableCell>Actions</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {disaster.disasterInfos.map((info, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{disaster.disasterId}</TableCell>
+                              <TableCell>{info.typeInfo}</TableCell>
+                              <TableCell>{info.information}</TableCell>
+                              <TableCell>
+                                <IconButton onClick={() => handleDeleteDisaster(disaster.disasterId)}>
+                                  <DeleteIcon color="error" />
+                                </IconButton>
+                                <IconButton>
+                                  <EditIcon color="primary" />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -303,8 +340,8 @@ const DisasterCategoriesPage: React.FC = () => {
       <Pagination
         count={disasters?.totalPages || 0}
         page={pageReq.page + 1}
-        onChange={handleChangePage}
-        sx={{ mt: 3 }}
+        onChange={handleChangePage} color="primary"
+        sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}
       />
 
       {/* Dialog for adding disaster and disaster info */}
@@ -388,7 +425,6 @@ const DisasterCategoriesPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
