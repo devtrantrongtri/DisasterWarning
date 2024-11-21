@@ -31,7 +31,7 @@ function Footer() {
                 float: 'right',
                 fontWeight: 'bold',
                 marginLeft: '10px',
-              }}>QUẢN LÝ <br></br>vs <br></br> CẢNH BÁO THIÊN TAI</Typography>
+              }}>QUẢN LÝ <br></br> & <br></br> CẢNH BÁO THIÊN TAI</Typography>
       </Box>
 
       <Box sx={{ alignSelf: 'center', width: '250px' }}>
