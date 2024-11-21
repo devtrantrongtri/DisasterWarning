@@ -41,12 +41,15 @@
 
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import LamImage from '../../assets/aboutus/Lam.png';
+import OngButImage from '../../assets/aboutus/ongbut.png';
+import BaoBaoImage from '../../assets/aboutus/baobao.jpg';
 
 const AboutUs: React.FC = () => {
   const members = [
-    { name: "Trần Đăng Nam", image: "../../assets/aboutus/Lam.png" },
-    { name: "Member 2", image: "../../assets/aboutus/ongbut.png" },
-    { name: "Member 3", image: "../../assets/aboutus/baobao.jpg" },
+    { name: "Trần Đăng Nam", image: LamImage },
+    { name: "Member 2", image: OngButImage },
+    { name: "Member 3", image: BaoBaoImage },
     { name: "Member 4", image: "link_to_image_4.jpg" },
     { name: "Member 5", image: "link_to_image_5.jpg" },
     { name: "Member 6", image: "link_to_image_6.jpg" },
