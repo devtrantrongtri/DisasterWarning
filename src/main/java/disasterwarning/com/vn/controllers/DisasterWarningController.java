@@ -34,7 +34,6 @@ public class DisasterWarningController {
     private DisasterWarningService disasterWarningService;
 
     @GetMapping("/{city}")
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<DisasterWarningDTO>> getWeatherData(@PathVariable String city) {
         String decodedCity = URLDecoder.decode(city, StandardCharsets.UTF_8);
 
