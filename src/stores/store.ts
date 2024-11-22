@@ -8,12 +8,15 @@ import { disasterApi } from "../services/disaster.service";
 import userReducer from "./slices/user.slice";
 import weatherNewReducer from "./slices/weatherNew.slice";
 import { weatherNewApi } from "../services/weatherNew.service";
+import { dashboardApi } from '../services/dashboard.service';
 
 export const store = configureStore({
     reducer: {
+        
         weather: weatherReducer,
         weatherNew: weatherNewReducer,
         user : userReducer,
+        [dashboardApi.reducerPath]: dashboardApi.reducer,
         [weatherApi.reducerPath]: weatherApi.reducer, 
         [weatherNewApi.reducerPath]: weatherNewApi.reducer, 
         [userApi.reducerPath] : userApi.reducer,
