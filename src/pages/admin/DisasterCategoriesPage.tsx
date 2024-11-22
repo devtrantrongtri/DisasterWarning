@@ -43,7 +43,6 @@ import {
 
 const DisasterCategoriesPage: React.FC = () => {
   const [pageReq, setPageReq] = useState<PageReq>({ page: 0, size: 5 });
-
   const [openDialog, setOpenDialog] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [editingDisaster, setEditingDisaster] = useState<Partial<Disaster> | null>(null);
@@ -267,8 +266,6 @@ const DisasterCategoriesPage: React.FC = () => {
   };
   
   
- 
-
   const handleCloseDisasterDialog = () => {
     setOpenDisasterDialog(false);
     setEditingDisaster(null);
@@ -416,15 +413,20 @@ const DisasterCategoriesPage: React.FC = () => {
   return (
     <Box 
       sx={{ 
-        backgroundColor: '#f8fafc',
         borderRadius: '16px',
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
         p: { xs: 2, md: 4 },
         mx: 'auto',
         maxWidth: '1400px',
-        minHeight: '90vh'
+        minHeight: '90vh',
+
+        padding: 3,
+        marginBottom: 2,
+        textAlign: 'center',
+       // background: 'transparent', // No background
+        color: '#030302', // Text color
+        marginTop: -20,
       }}
-    >
+    > 
       <Box 
         sx={{ 
           display: 'flex', 
@@ -434,8 +436,6 @@ const DisasterCategoriesPage: React.FC = () => {
           gap: 2,
           mb: 4,
           p: { xs: 2, md: 3 },
-          backgroundColor: 'transparent',
-          borderRadius: '12px',
         }}
       >
         <Typography 
@@ -452,14 +452,19 @@ const DisasterCategoriesPage: React.FC = () => {
           variant="contained"
           onClick={handleOpenDialog}
           sx={{
-            backgroundColor: '#2d3a54',
+            padding: 3,
+            backgroundColor: '#ffffff',
+            borderRadius: 4,
+            marginBottom: 2,
+            textAlign: 'center',
+            background: 'transparent', // No background
+            backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+            boxShadow: 'none',
             color: '#f8fafc',
             px: { xs: 2, md: 4 },
             py: 1.5,
-            borderRadius: '8px',
             fontWeight: 500,
             textTransform: 'none',
-            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
             '&:hover': {
               backgroundColor: '#455880',
               boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
@@ -474,27 +479,38 @@ const DisasterCategoriesPage: React.FC = () => {
 
       <TableContainer 
         component={Paper} 
-        sx={{ 
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          mb: 3
+        sx={{
+
+          // overflow: 'hidden',
+          // mb: 3,
+
+
+
+        padding: 3,
+        borderRadius: 4,
+        marginBottom: 2,
+        textAlign: 'center',
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        color: '#030302', // Text color
+        marginTop: -9,
+          
         }}
       >
         <Table>
           <TableHead 
             sx={{ 
-              backgroundColor: '#2d3a54',
               '& th': {
                 fontWeight: 600,
                 color: '#f8fafc',
                 borderBottom: '2px solid #e2e8f0',
                 fontSize: '0.975rem'
+                
               }
             }}
-          >
-            <TableRow>
-              <TableCell width="10%">ID</TableCell>
+>
+            <TableRow>           
+              <TableCell  width="10%" >ID</TableCell>
               <TableCell width="10%">Name</TableCell>
               <TableCell width="50%">Description</TableCell>
               <TableCell width="15%">Image</TableCell>
@@ -506,17 +522,6 @@ const DisasterCategoriesPage: React.FC = () => {
               <React.Fragment key={disaster.disasterId}>
                 <TableRow 
                   onClick={() => toggleDisasterInfoVisibility(disaster.disasterId)}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f1f5f9',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s ease'
-                    },
-                    '& td': {
-                      color: '#334155',
-                      borderBottom: '1px solid #e2e8f0'
-                    }
-                  }}
                 >
                   <TableCell>{disaster.disasterId}</TableCell>
                   <TableCell sx={{ fontWeight: 500 }}>{disaster.disasterName}</TableCell>
