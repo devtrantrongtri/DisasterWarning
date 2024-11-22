@@ -30,29 +30,35 @@ public class MailService implements IMailService {
             String startDateFormatted = dateFormat.format(disasterWarningDTO.getStartDate());
             String imagePath = getString(disasterWarningDTO);
 
-            String content = "<body style=\"display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;\">\n" +
-                            "  <div class=\"card\" style=\"width: 100%; max-width: 600px; padding: 24px; background: linear-gradient(135deg, #f5eaea 0%, #ccd9ed 100%); border-radius: 24px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);\">\n" +
-                            "    <div class=\"header\" style=\"display: flex; justify-content: space-between; align-items: center; margin: 0; border-radius: 16px;\">\n" +
-                            "      <div class=\"warning\" style=\"display: flex; align-items: center; gap: 8px;\">\n" +
-                            "        <span class=\"notification-text\" style=\"font-size: 25px; font-weight: 600; color: #333;\">Warning</span>\n" +
-                            "        <img src=\"https://res.cloudinary.com/dcjkgvmfk/image/upload/v1731118524/icons8-warning-100_v8eduo.png\" alt=\"warning\" style=\"width: 30px;\">\n" +
-                            "        <div class=\"notification-dot\" style=\"position: relative; top: -6px; width: 8px; height: 8px; background-color: #fd7777; border-radius: 50%; box-shadow: 0 0 4px rgba(255, 64, 64, 0.5);\"></div>\n" +
-                            "      </div>\n" +
-                            "      <div class=\"bell-container\" style=\"position: relative; padding: 4px;\">\n" +
-                            "        <img src=\"https://res.cloudinary.com/dcjkgvmfk/image/upload/v1731037464/logo_ofexva.png\" alt=\"Profile\" class=\"bell-icon\" style=\"width: 80px; height:80px;\">\n" +
-                            "      </div>\n" +
-                            "    </div>\n" +
-                            "\n" +
-                            "    <div class=\"content\" style=\"display: flex; gap: 24px; align-items: center; margin: 0px;\">\n" +
-                            "      <img src="+ imagePath +" alt=\"Profile\" class=\"profile-image\" style=\"width: 120px; height: 120px; object-fit: cover;\">\n" +
-                            "      <div class=\"info\" style=\"flex-grow: 1;\">\n" +
-                            "        <h2 class=\"name\" style=\"font-size: 24px; font-weight: bold; margin: 0px; color: #333;\">CẢNH BÁO THIÊN TAI: " + disasterWarningDTO.getDisaster().getDisasterName() + "</h2>\n" +
-                            "        <p class=\"time\" style=\"color: #666; font-size: 18px; margin-bottom: 8px;\"><strong>Thời gian: </strong>"+ startDateFormatted +"</p>\n" +
-                            "        <p class=\"mutual-friends\" style=\"color: #666; margin-bottom: 16px; line-height: 1.4;\"><strong>Mô tả: </strong> "+ disasterWarningDTO.getDescription() +".<br> Vui lòng chuẩn bị và theo dõi các thông báo từ cơ quan chức năng.</p>\n" +
-                            "      </div>\n" +
-                            "    </div>\n" +
-                            "  </div>\n" +
-                            "</body>";
+            String content = "<body style=\"margin: 0; padding: 20px; background-color: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;\">\n" +
+                    "  <div class=\"card\" style=\"width: 90%; max-width: 600px; margin: 20px auto; padding: 30px; background: linear-gradient(135deg, #f5eaea 0%, #ccd9ed 100%); border-radius: 16px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);\">\n" +
+                    "    <div class=\"header\" style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;\">\n" +
+                    "      <div class=\"warning\" style=\"display: flex; align-items: center; gap: 12px;\">\n" +
+                    "        <span class=\"notification-text\" style=\"font-size: 28px; font-weight: 700; color: #e63946;\">Warning</span>\n" +
+                    "        <img src=\"https://res.cloudinary.com/dcjkgvmfk/image/upload/v1731118524/icons8-warning-100_v8eduo.png\" alt=\"warning\" style=\"width: 35px; height: 35px;\">\n" +
+                    "        <div class=\"notification-dot\" style=\"width: 10px; height: 10px; background-color: #ff4040; border-radius: 50%; box-shadow: 0 0 6px rgba(255, 64, 64, 0.6);\"></div>\n" +
+                    "      </div>\n" +
+                    "      <div class=\"logo-container\" style=\"padding: 4px;\">\n" +
+                    "        <img src=\"https://res.cloudinary.com/dcjkgvmfk/image/upload/v1731037464/logo_ofexva.png\" alt=\"Logo\" style=\"width: 70px; height: 70px; object-fit: contain;\">\n" +
+                    "      </div>\n" +
+                    "    </div>\n" +
+                    "\n" +
+                    "    <div class=\"content\" style=\"display: flex; gap: 24px; align-items: start; background-color: rgba(255, 255, 255, 0.5); padding: 20px; border-radius: 12px;\">\n" +
+                    "      <img src=\""+ imagePath +"\" alt=\"Disaster Image\" style=\"width: 160px; height: 160px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\">\n" +
+                    "      <div class=\"info\" style=\"flex-grow: 1;\">\n" +
+                    "        <h2 style=\"font-size: 22px; font-weight: bold; margin: 0 0 12px 0; color: #1a1a1a; line-height: 1.3;\">CẢNH BÁO THIÊN TAI: " + disasterWarningDTO.getDisaster().getDisasterName() + "</h2>\n" +
+                    "        <p style=\"color: #444; font-size: 16px; margin: 0 0 12px 0; line-height: 1.4;\">\n" +
+                    "          <strong style=\"color: #2b2b2b;\">Thời gian: </strong>"+ startDateFormatted +"\n" +
+                    "        </p>\n" +
+                    "        <p style=\"color: #444; margin: 0; line-height: 1.6;\">\n" +
+                    "          <strong style=\"color: #2b2b2b;\">Mô tả: </strong>"+ disasterWarningDTO.getDescription() +".\n" +
+                    "          <br><br>\n" +
+                    "          <em style=\"color: #666; font-style: italic;\">Vui lòng chuẩn bị và theo dõi các thông báo từ cơ quan chức năng.</em>\n" +
+                    "        </p>\n" +
+                    "      </div>\n" +
+                    "    </div>\n" +
+                    "  </div>\n" +
+                    "</body>";
 
 
             helper.setText(content, true);

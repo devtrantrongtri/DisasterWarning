@@ -130,19 +130,19 @@ public class DisasterWarningController {
         return new ResponseEntity<>(responseWrapper, status);
     }
 
-    @MessageMapping("/disaster.sendWarning")
-    @SendTo("/topic/warnings")
-    public ResponseWrapper<String> sendWarning() {
-        try {
-            boolean warningSent = disasterWarningService.sendDisasterWarning();
-            String message = warningSent ? "Cảnh báo thiên tai đã được gửi thành công" : "Không có cảnh báo thiên tai nào cần gửi";
-            return new ResponseWrapper<>(message, null);
-        } catch (DataNotFoundException e) {
-            return new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
-        } catch (Exception e) {
-            return new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
-        }
-    }
+//    @MessageMapping("/disaster.sendWarning")
+//    @SendTo("/topic/warnings")
+//    public ResponseWrapper<String> sendWarning() {
+//        try {
+//            boolean warningSent = disasterWarningService.sendDisasterWarning();
+//            String message = warningSent ? "Cảnh báo thiên tai đã được gửi thành công" : "Không có cảnh báo thiên tai nào cần gửi";
+//            return new ResponseWrapper<>(message, null);
+//        } catch (DataNotFoundException e) {
+//            return new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
+//        } catch (Exception e) {
+//            return new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
+//        }
+//    }
 
     // Thread-safe map to store user locations
     private Map<String, UserLocation> userLocations = new ConcurrentHashMap<>();
@@ -161,6 +161,20 @@ public class DisasterWarningController {
         messagingTemplate.convertAndSend("/topic/locations", locations);
     }
 
+    @GetMapping("/disaster-warning/sendWarning")
+//    @SendTo("/topic/warnings")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseWrapper<String> sendWarning() {
+        try {
+            boolean warningSent = disasterWarningService.sendDisasterWarning();
+            String message = warningSent ? "Cảnh báo thiên tai đã được gửi thành công" : "Không có cảnh báo thiên tai nào cần gửi";
+            return new ResponseWrapper<>(message, null);
+        } catch (DataNotFoundException e) {
+            return new ResponseWrapper<>("Không tìm thấy dữ liệu", e.getMessage());
+        } catch (Exception e) {
+            return new ResponseWrapper<>("Lỗi khi gửi cảnh báo", e.getMessage());
+        }
+    }
 //Z
 
 }
