@@ -9,8 +9,13 @@ import { logout } from '../stores/slices/user.slice';
 import { RootState } from '../interfaces/StoreTypes';
 
 const Header = () => {
-  const isAuthen = useSelector((state: RootState) => state.user.isAuthen);
-  const userName = useSelector((state: RootState) => state.user.userName);
+  // const isAuthen = useSelector((state: RootState) => state.user.isAuthen);
+  // const userName = useSelector((state: RootState) => state.user.userName);
+  // const roleName = useSelector((state : RootState) => state.user.role);
+
+  const isAuthen = localStorage.getItem('isAuthen');
+  const userName = localStorage.getItem('userName');
+  const roleName = localStorage.getItem('role');
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,8 +24,11 @@ const Header = () => {
   const confirmLogout = () => {
     dispatch(logout());
     localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userID');
+    localStorage.removeItem('role');
+    localStorage.removeItem('isAuthen');
     sessionStorage.removeItem('token');
-    localStorage.removeItem('username');
     navigate('/'); // Chuyển hướng đến trang chủ
     notification.success({
       message: 'Đăng xuất thành công',
@@ -56,6 +64,8 @@ const Header = () => {
 
           {/* Navigation Buttons */}
           <Box sx={{ flexGrow: 1, display: 'flex', gap: 4, ml: 2 }}>
+
+            { roleName === "[ROLE_ADMIN]" &&(
             <Button
               color="inherit"
               component={Link}
@@ -68,6 +78,7 @@ const Header = () => {
             >
               Admin Dashboard
             </Button>
+            )}
 
             <Button
               color="inherit"
@@ -160,7 +171,7 @@ const Header = () => {
           </IconButton>
 
           {/* Hiển thị nút "Đăng nhập" nếu chưa đăng nhập */}
-          {!isAuthen ? (
+          {!isAuthen || isAuthen !== 'true'  ? (
             <Button
               component={Link}
               to="/auth"

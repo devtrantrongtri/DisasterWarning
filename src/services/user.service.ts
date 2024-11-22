@@ -62,9 +62,6 @@ export const userApi = createApi({
       query: (userInfo) => ({
         url: "/user-management/register",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: userInfo,
       }),
     }),

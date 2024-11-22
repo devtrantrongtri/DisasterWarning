@@ -45,6 +45,7 @@ const AdminLayout: React.FC = () => {
     sessionStorage.removeItem("expirationDate");
     sessionStorage.removeItem("userID");
     sessionStorage.removeItem("role");
+    localStorage.removeItem('isAuthen');
 
     // Chuyển hướng người dùng về trang đăng nhập
     navigate("/auth");
