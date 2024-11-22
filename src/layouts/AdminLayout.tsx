@@ -25,6 +25,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Outlet, Link } from 'react-router-dom';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 
 const AdminLayout: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -101,6 +103,7 @@ const AdminLayout: React.FC = () => {
               { text: 'Disaster Details', icon: <InfoIcon />, path: '/dashboard/disaster-details' },
               { text: 'Disaster Categories', icon: <CategoryIcon />, path: '/dashboard/disaster-categories' },
               { text: 'User Management', icon: <PeopleIcon />, path: '/dashboard/user-management' },
+              { text: 'User Management', icon: <WarningAmberIcon />, path: '/dashboard/disaster-warning' },
             ].map((item) => (
               <Tooltip title={isSidebarOpen ? '' : item.text} key={item.text} placement="right">
                 <ListItem
