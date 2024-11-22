@@ -188,14 +188,33 @@ const UserManagementPage: React.FC = () => {
   const totalPages = data.data.totalPages;
 
   return (
-    <Box>
+    <Box 
+      sx={{
+        padding: 3,
+        borderRadius: 4,
+        marginBottom: 2,
+        textAlign: 'center',
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        color: '#030302', // Text color
+        marginTop: -9,
+    }}>
       <Typography variant="h4" gutterBottom>
         Quản lý người dùng
       </Typography>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper}
+        sx={{
+          padding: 3,
+            borderRadius: 4,
+            marginBottom: 2,
+            textAlign: 'center',
+            background: 'transparent', // No background
+            minHeight:"440px",
+
+        }}>
         <Table>
-          <TableHead>
-            <TableRow>
+          <TableHead >
+            <TableRow >
               <TableCell sx={{ fontWeight: 'bold' }} />
               <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Tên người dùng</TableCell>
@@ -205,7 +224,7 @@ const UserManagementPage: React.FC = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody >
             {users.map((user) => (
               <React.Fragment key={user.userId}>
                 <TableRow hover>
@@ -218,26 +237,33 @@ const UserManagementPage: React.FC = () => {
                       {openRow === user.userId ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                   </TableCell>
-                  <TableCell>{user.userId}</TableCell>
-                  <TableCell>{user.userName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
+                  <TableCell sx={{ color:"#fff" }}>{user.userId}</TableCell>
+                  <TableCell sx={{ color:"#fff" }}>{user.userName}</TableCell>
+                  <TableCell sx={{ color:"#fff" }}>{user.email}</TableCell>
+                  <TableCell sx={{ color:"#fff" }}>
                     {user.location
                       ? `${user.location.locationName} (${user.location.latitude}, ${user.location.longitude})`
                       : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    <Box
-                      sx={{
-                        padding: 1,
-                        color: '#fff',
-                        borderRadius: 1,
-                        textAlign: 'center',
-                        backgroundColor: user.status === 'active' ? 'green' : 'red',
-                      }}
-                    >
-                      {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
-                    </Box>
+                  <Box
+                    sx={{
+                      padding: 1,
+                      borderRadius: 4,
+                      background: '#0066CC',
+                      backdropFilter: 'blur(10px)',
+                      textAlign: 'center',
+                      color: '#fff',
+                      transition: 'background 0.3s, color 0.3s', // Smooth transition
+                      '&:hover': {
+                        background: '#fff', // Hover background color
+                        color: '#0066CC', // Hover text color
+                      },
+                    }}
+                  >
+                    {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
+                  </Box>
+
                   </TableCell>
                   <TableCell>
                     <IconButton color="primary" onClick={() => handleOpenEditDialog(user.userId)}>
@@ -250,7 +276,19 @@ const UserManagementPage: React.FC = () => {
                       variant="contained"
                       color="warning"
                       startIcon={<WarningIcon />}
-                      sx={{ marginLeft: 1 }}
+                      sx={{ 
+                        padding: 1,
+                      borderRadius: 1,
+                      background: '#CC0000',
+                      backdropFilter: 'blur(10px)',
+                      textAlign: 'center',
+                      color: '#fff',
+                      transition: 'background 0.3s, color 0.3s', // Smooth transition
+                      '&:hover': {
+                        background: '#f0f0f0', // Hover background color
+                        color: '#000', // Hover text color
+                      },
+                      }}
                     >
                       Tạo cảnh báo
                     </Button>
@@ -290,13 +328,45 @@ const UserManagementPage: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        marginTop: 2,
+        }}>
         <Pagination count={totalPages} page={page} onChange={handleChangePage} color="primary" />
       </Box>
 
       {/* Dialog chỉnh sửa người dùng */}
-      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="sm">
-        <DialogTitle>Chỉnh sửa thông tin người dùng</DialogTitle>
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="sm"
+        sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        padding: 3,
+        backgroundColor: '#ffffff',
+        borderRadius: 4,
+        textAlign: 'center',
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        boxShadow: 'none',
+        }}>
+        
+        <DialogTitle
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          marginTop: 2,
+          padding: 3,
+          backgroundColor: '#ffffff',
+          borderRadius: 4,
+          marginBottom: 2,
+          textAlign: 'center',
+          background: 'transparent', // No background
+          backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+          color: '#0066CC', // Text color
+          boxShadow: 'none',
+          fontWeight: 'bold'
+          }}>
+          Chỉnh sửa thông tin</DialogTitle>
         <DialogContent>
           {isUserLoading ? (
             <Typography>Đang tải thông tin người dùng...</Typography>
