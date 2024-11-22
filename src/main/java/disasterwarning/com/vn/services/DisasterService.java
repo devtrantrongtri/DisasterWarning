@@ -55,7 +55,7 @@ public class DisasterService implements IDisasterService{
         Disaster existingDisaster = disasterRepo.findById(id)
                 .orElseThrow(()-> new RuntimeException("Disaster not found"));
 
-        if(!image.isEmpty()){
+        if (image != null && !image.isEmpty()) {
             String imageURL = fileUploadService.uploadImage(image);
             existingDisaster.setImageUrl(imageURL);
         }

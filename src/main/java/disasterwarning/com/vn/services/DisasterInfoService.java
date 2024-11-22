@@ -7,6 +7,7 @@ import disasterwarning.com.vn.models.entities.DisasterInfo;
 import disasterwarning.com.vn.models.entities.Image;
 import disasterwarning.com.vn.repositories.DisasterInfoRepo;
 import disasterwarning.com.vn.repositories.DisasterRepo;
+import disasterwarning.com.vn.repositories.ImageRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,12 +23,14 @@ public class DisasterInfoService implements IDisasterInfoService {
     private final FileUploadService fileUploadService;
     private final DisasterRepo disasterRepo;
     private final Mapper mapper;
+    private final ImageRepo imageRepo;
 
-    public DisasterInfoService(DisasterInfoRepo disasterInfoRepo, Mapper mapper,FileUploadService fileUploadService,DisasterRepo disasterRepo) {
+    public DisasterInfoService(DisasterInfoRepo disasterInfoRepo, Mapper mapper,FileUploadService fileUploadService,DisasterRepo disasterRepo, ImageRepo imageRepo) {
         this.disasterInfoRepo = disasterInfoRepo;
         this.fileUploadService = fileUploadService;
         this.disasterRepo = disasterRepo;
         this.mapper = mapper;
+        this.imageRepo = imageRepo;
     }
 
     @Override
@@ -46,6 +49,8 @@ public class DisasterInfoService implements IDisasterInfoService {
 
         // Save disasterInfo
         DisasterInfo savedDisasterInfo = disasterInfoRepo.save(disasterInfo);
+        System.out.println("Saved DisasterInfo ID: " + savedDisasterInfo.getDisasterInfoId());
+
 
         // upload ảnh và lưu vào cơ sở dữ liệu
         if (images != null && !images.isEmpty()) {
@@ -56,11 +61,16 @@ public class DisasterInfoService implements IDisasterInfoService {
                     // Upload từng file ảnh lên Cloudinary và lấy URL
                     ImageCloudinaryResponse mageCloudinaryResponse = fileUploadService.uploadImagev2(imageFile);
 
+                    System.out.println("Uploaded URL: " + mageCloudinaryResponse.getSecureUrl());
+                    System.out.println("Public ID: " + mageCloudinaryResponse.getPublicId());
                     //Image và  disasterInfo
                     Image imageEntity = new Image();
                     imageEntity.setImageUrl(mageCloudinaryResponse.getSecureUrl());
                     imageEntity.setImagePublicId(mageCloudinaryResponse.getPublicId());
                     imageEntity.setDisasterInfo(savedDisasterInfo);  //  Linking Image và DisasterInfo
+
+                    imageRepo.save(imageEntity);
+                    System.out.println("Saved Image URL: " + imageEntity.getImageUrl());
 
                     // add image to images
                     imageEntities.add(imageEntity);
