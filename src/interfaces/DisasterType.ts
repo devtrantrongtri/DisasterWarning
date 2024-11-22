@@ -39,7 +39,7 @@ export interface CreateDisasterInfoRequest {
     disasterInfo: {
         typeInfo: string;
         information: string;
-        disaster: Disaster;
+        disaster: Disaster | null;
     };
     images?: DisasterImage[];
 }
