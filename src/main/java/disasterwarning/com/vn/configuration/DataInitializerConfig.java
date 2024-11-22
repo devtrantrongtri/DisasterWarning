@@ -18,23 +18,23 @@ public class DataInitializerConfig {
     CommandLineRunner initDatabase(UserRepo userRepo, PasswordEncoder passwordEncoder, LocationRepo locationRepo) {
         return args -> {
 
-            Location location = locationRepo.findByName("Quang Tri");
+            Location location = locationRepo.findByName("Quảng Trị");
             if (location == null) {
                 location = new Location();
-                location.setLocationName("Quang Tri");
+                location.setLocationName("Quảng Trị");
                 location.setLatitude(BigDecimal.valueOf(16.6904));
                 location.setLongitude(BigDecimal.valueOf(107.1897));
                 location.setStatus("active");
                 locationRepo.save(location);
             }
 
-            if (userRepo.findByEmail("admin@gmail.com") == null) {
+            if (userRepo.findByEmail("nlhieunhi1402@gmail.com") == null) {
                 User newUser = new User();
-                newUser.setEmail("admin@gmail.com");
+                newUser.setEmail("nlhieunhi1402@gmail.com");
                 newUser.setPassword(passwordEncoder.encode("admin"));
                 newUser.setRole("admin");
                 newUser.setUserName("Nguyễn Lê Hiếu Nhi");
-                newUser.setLocation(location); // Gán location cho user
+                newUser.setLocation(location);
                 newUser.setStatus("active");
                 userRepo.save(newUser);
             }

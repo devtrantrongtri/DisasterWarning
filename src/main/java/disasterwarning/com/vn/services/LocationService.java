@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -93,6 +94,14 @@ public class LocationService implements ILocationService {
         existingLocation.setStatus("inactive");
         locationRepo.save(existingLocation);
         return true;
+    }
+
+    @Override
+    public List<LocationDTO> findLocationHaveWarning() throws DataNotFoundException {
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysFromNow = today.plusDays(7);
+        List<Location> locations = locationRepo.findAllLocationWithWarning(today, sevenDaysFromNow);
+        return mapper.convertToDtoList(locations, LocationDTO.class);
     }
 
 }

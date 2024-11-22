@@ -25,7 +25,7 @@ public class DisasterInfo {
     @Column(name = "type_info", nullable = false)
     private String typeInfo;
 
-    @Column(name = "information", nullable = false)
+    @Column(name = "information", nullable = false, columnDefinition = "TEXT")
     private String information;
 
     @OneToMany(mappedBy = "disasterInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

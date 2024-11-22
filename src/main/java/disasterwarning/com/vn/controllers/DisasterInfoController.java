@@ -103,14 +103,27 @@ public class DisasterInfoController {
 
     @PutMapping("/disaster-info/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<?>> updateDisasterInfo(@PathVariable int id, @RequestBody DisasterInfoDTO disasterInfoDTO) {
+    public ResponseEntity<ResponseWrapper<?>> updateDisasterInfo(
+            @PathVariable int id,
+            @Parameter(description = "Disaster Info DTO", required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                            value = "{\"typeInfo\": \"Wildfire\", \"information\": \"A wildfire is spreading rapidly in the northern region.\", \"disaster\": {\"disasterId\": 1}}"
+                    )
+            ))
+                                                                 @RequestParam("disasterInfo") String disasterInfo,
+                                                                 @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles) {
         try {
-            DisasterInfoDTO updatedInfo = disasterInfoService.updateDisasterInfo(id, disasterInfoDTO);
-            return ResponseEntity.ok(new ResponseWrapper<>("updated ok",updatedInfo));
+            ObjectMapper objectMapper = new ObjectMapper();
+            DisasterInfoDTO disasterInfoDTO = objectMapper.readValue(disasterInfo, DisasterInfoDTO.class);
+            System.out.println(disasterInfoDTO);
+            DisasterInfoDTO updatedInfo = disasterInfoService.updateDisasterInfo(id, disasterInfoDTO, imageFiles);
+            return ResponseEntity.ok(new ResponseWrapper<>("updated ok", updatedInfo));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>("Disaster info not found.",null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>("Disaster info not found.", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(),null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(), null));
         }
     }
 

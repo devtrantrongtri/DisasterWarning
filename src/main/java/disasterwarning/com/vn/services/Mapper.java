@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class Mapper {
         }
     }
 
+    @Transactional
     public <E, D> D convertToDto(E entity, Class<D> dtoClass) {
         try {
             if (entity == null) {
@@ -39,6 +41,7 @@ public class Mapper {
     }
 
 
+    @Transactional
     public <D, E> List<E> convertToEntityList(List<D> dtoList, Class<E> entityClass) {
         return dtoList.stream()
                 .map(dto -> convertToEntity(dto, entityClass))
@@ -51,6 +54,7 @@ public class Mapper {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public <E, D> Page<D> convertToDtoPage(Page<E> entityPage, Class<D> dtoClass) {
         List<D> dtoList = entityPage.getContent().stream()
                 .map(entity -> convertToDto(entity, dtoClass))
