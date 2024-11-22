@@ -7,7 +7,7 @@ export const dashboardApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl, // Đảm bảo baseUrl đúng với backend của bạn
     prepareHeaders: (headers) => {
-      const token = sessionStorage.getItem('token');
+      const token = localStorage.getItem('token');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
