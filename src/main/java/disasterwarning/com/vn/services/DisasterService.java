@@ -3,7 +3,9 @@ import disasterwarning.com.vn.models.dtos.DisasterDTO;
 import disasterwarning.com.vn.models.entities.Disaster;
 import disasterwarning.com.vn.models.entities.DisasterInfo;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
+import disasterwarning.com.vn.repositories.DisasterInfoRepo;
 import disasterwarning.com.vn.repositories.DisasterRepo;
+import disasterwarning.com.vn.repositories.DisasterWarningRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +22,12 @@ public class DisasterService implements IDisasterService{
 
     @Autowired
     private DisasterRepo disasterRepo;
+
+    @Autowired
+    private DisasterInfoRepo disasterInfoRepo;
+
+    @Autowired
+    private DisasterWarningRepo disasterWarningRepo;
 
     @Autowired
     private Mapper mapper;
@@ -47,7 +55,7 @@ public class DisasterService implements IDisasterService{
         Disaster existingDisaster = disasterRepo.findById(id)
                 .orElseThrow(()-> new RuntimeException("Disaster not found"));
 
-        if(!image.isEmpty()){
+        if (image != null && !image.isEmpty()) {
             String imageURL = fileUploadService.uploadImage(image);
             existingDisaster.setImageUrl(imageURL);
         }
@@ -94,11 +102,13 @@ public class DisasterService implements IDisasterService{
 
         List<DisasterInfo> disasterInfos = disasterRepo.getDisasterInfos();
         if(!disasterInfos.isEmpty()){
-            throw new RuntimeException("Disaster info is not empty");
+            System.out.println("DisasterInfo count: " + disasterInfos.size());
+            disasterInfoRepo.deleteAll(disasterInfos);
         }
 
-        List<DisasterWarning> disasterWarnings = disasterRepo.getDisasterWarnings();
+        List<DisasterWarning> disasterWarnings = disasterWarningRepo.findDisasterWarningByDisasterName(disaster.getDisasterName());
         if(!disasterWarnings.isEmpty()){
+            System.out.println("DisasterInfo count: " + disasterInfos.size());
             throw new RuntimeException("Disaster warnings is not empty");
         }
 

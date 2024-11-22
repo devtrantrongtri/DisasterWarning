@@ -42,17 +42,16 @@ public class DisasterWarningController {
 
 
     @GetMapping("/{city}")
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<WeatherData>> getWeatherData(@PathVariable String city) {
+    public ResponseEntity<List<DisasterWarningDTO>> getWeatherData(@PathVariable String city) {
         String decodedCity = URLDecoder.decode(city, StandardCharsets.UTF_8);
 
-        List<WeatherData> weatherData = disasterWarningService.getWeatherData(decodedCity);
+        List<DisasterWarningDTO> disasterWarningDTOS = disasterWarningService.getWeatherData(decodedCity);
 
-        if (weatherData == null || weatherData.isEmpty()) {
+        if (disasterWarningDTOS == null || disasterWarningDTOS.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(weatherData);
+        return ResponseEntity.ok(disasterWarningDTOS);
     }
 
     @GetMapping("/disaster-warning")

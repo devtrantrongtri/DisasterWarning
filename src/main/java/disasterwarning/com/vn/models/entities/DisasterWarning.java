@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
@@ -34,16 +34,9 @@ public class DisasterWarning {
     private String description;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private String status; // Trạng thái: active, inactive, etc.
 
-    /**
-     * Constructor tùy chỉnh với các tham số chính
-     * @param disaster Disaster entity liên quan
-     * @param location Location entity liên quan
-     * @param startDate Ngày bắt đầu
-     * @param description Mô tả cảnh báo
-     * @param status Trạng thái của cảnh báo
-     */
+    // Constructor không có trường `disasterWarningId` (thường dùng cho khởi tạo entity mới)
     public DisasterWarning(Disaster disaster, Location location, Date startDate, String description, String status) {
         this.disaster = disaster;
         this.location = location;
