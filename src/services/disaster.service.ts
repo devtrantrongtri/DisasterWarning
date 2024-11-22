@@ -93,6 +93,52 @@ export const disasterApi = createApi({
         };
       },
     }),
+
+    updateDisaster: builder.mutation<CreateDisasterResponse, { disasterId: number; newDisaster: CreateDisasterRequest }>({
+      query: ({ disasterId, newDisaster }) => {
+        const formData = new FormData();
+    
+        formData.append('disaster', JSON.stringify(newDisaster.disaster));
+    
+        if (newDisaster.images && Array.isArray(newDisaster.images)) {
+          newDisaster.images.forEach((image, index) => {
+            formData.append(`images[${index}]`, image);
+          });
+        } else if (newDisaster.images) {
+          formData.append('images', newDisaster.images);
+        }
+    
+        return {
+          url: `/disaster-management/disaster/${disasterId}`,
+          method: 'PUT',
+          body: formData,
+        };
+      },
+    }),
+    
+
+    updateDisasterInfo: builder.mutation<CreateDisasterInfoResponse, CreateDisasterInfoRequest>({
+      query: (newDisasterInfo) => {
+        const formData = new FormData();
+    
+        formData.append("disasterInfo", JSON.stringify(newDisasterInfo.disasterInfo));
+
+        newDisasterInfo.images?.forEach((image, index) => {
+          if (image.imageFile) {
+            formData.append(`images[${index}]`, image.imageFile);
+          }
+        });
+    
+        return {
+          url: `/disaster-info-management/disaster-info`,
+          method: "POST",
+          body: formData,
+          headers: {
+            accept: "*/*",
+          },
+        };
+      },
+    }),
     
 
     getDisasterWarnings: builder.query<DisasterWarning[], void>({
@@ -105,19 +151,23 @@ export const disasterApi = createApi({
       }),
     }),
 
-    // Delete Disaster Mutation
     deleteDisaster: builder.mutation<void, number>({
       query: (disasterId) => ({
         url: `/disaster-management/disaster/${disasterId}`,
         method: "DELETE",
+        headers: {
+          accept: "*/*",
+        },
       }),
     }),
 
-    // Delete Disaster Info Mutation
     deleteDisasterInfo: builder.mutation<void, number>({
       query: (disasterInfoId) => ({
         url: `/disaster-info-management/disaster-info/${disasterInfoId}`,
         method: "DELETE",
+        headers: {
+          accept: "*/*",
+        },
       }),
     }),
   }),
@@ -128,6 +178,8 @@ export const {
   useGetDisasterByIdQuery,
   useCreateDisasterMutation,
   useCreateDisasterInfoMutation,
+  useUpdateDisasterMutation,
+  useUpdateDisasterInfoMutation,
   useGetDisasterWarningsQuery,
   useDeleteDisasterMutation,
   useDeleteDisasterInfoMutation,

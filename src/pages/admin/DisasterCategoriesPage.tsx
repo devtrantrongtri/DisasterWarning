@@ -27,6 +27,8 @@ import {
   useGetDisastersQuery,
   useCreateDisasterMutation,
   useCreateDisasterInfoMutation,
+  useUpdateDisasterMutation,
+  useUpdateDisasterInfoMutation,
   useDeleteDisasterMutation
 } from '../../services/disaster.service';
 import { 
@@ -42,6 +44,11 @@ const DisasterCategoriesPage: React.FC = () => {
   const [pageReq, setPageReq] = useState<PageReq>({ page: 0, size: 5 });
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [editingDisaster, setEditingDisaster] = useState<Partial<Disaster> | null>(null);
+  const [openDisasterDialog, setOpenDisasterDialog] = useState(false);
+  const [openDisasterInfoDialog, setOpenDisasterInfoDialog] = useState(false);
+  const [editingDisasterInfo, setEditingDisasterInfo] = useState<Partial<DisasterInfo> | null>(null);
   const [disasterForm, setDisasterForm] = useState<Partial<Disaster>>({
     disasterName: '',
     imageUrl: '',
@@ -69,7 +76,7 @@ const DisasterCategoriesPage: React.FC = () => {
   const [createDisaster] = useCreateDisasterMutation();
   const [createDisasterInfo] = useCreateDisasterInfoMutation();
   const [deleteDisaster] = useDeleteDisasterMutation();
-
+  const [updateDisaster] = useUpdateDisasterMutation();
   const handleOpenDialog = () => {
     setDisasterForm({
       disasterName: '',
@@ -164,6 +171,63 @@ const DisasterCategoriesPage: React.FC = () => {
         severity: 'error'
       });
     }
+  };
+
+  const handleEditDisaster = (disaster: Disaster) => {
+    setEditingDisaster(disaster);
+    setOpenDisasterDialog(true);
+  };  
+
+  const handleEditDisasterInfo = (info: DisasterInfo) => {
+    setEditingDisasterInfo(info);
+    setOpenDisasterInfoDialog(true);
+  };  
+
+  const handleCloseDisasterDialog = () => {
+    setOpenDisasterDialog(false);
+    setEditingDisaster(null);
+  };
+  
+  const handleCloseDisasterInfoDialog = () => {
+    setOpenDisasterInfoDialog(false);
+    setEditingDisasterInfo(null);
+  };  
+
+  const handleSaveDisaster = async () => {
+    if (editingDisaster && editingDisaster.disasterId) {
+      const newDisaster = {
+        disaster: {
+          disasterName: editingDisaster.disasterName ?? '',
+          description: editingDisaster.description ?? '', 
+        },
+        images: editingDisaster.imageFile,
+    };
+
+      try {
+        const response = await updateDisaster({
+          disasterId: editingDisaster.disasterId,
+          newDisaster,
+        }).unwrap();
+
+        setSnackbar({
+          open: true,
+          message: 'Disaster updated successfully',
+          severity: 'success'
+        });
+        console.log('Disaster updated successfully', response);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: 'Error updating disaster',
+          severity: 'error'
+        });
+        console.error('Error updating disaster', error);
+      }
+    } else {
+      console.error('Disaster ID is required');
+    }
+
+    handleCloseDisasterDialog();
   };
 
   const handleChangePage = (_: unknown, newPage: number) => {
@@ -264,70 +328,249 @@ const DisasterCategoriesPage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Disaster Categories Management</Typography>
-        <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+    <Box 
+      sx={{ 
+        backgroundColor: '#f8fafc',
+        borderRadius: '16px',
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+        p: { xs: 2, md: 4 },
+        mx: 'auto',
+        maxWidth: '1400px',
+        minHeight: '90vh'
+      }}
+    >
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'stretch', sm: 'center' },
+          gap: 2,
+          mb: 4,
+          p: { xs: 2, md: 3 },
+          backgroundColor: 'transparent',
+          borderRadius: '12px',
+        }}
+      >
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            color: '#1e293b',
+            fontWeight: 600,
+            fontSize: { xs: '1.5rem', md: '2rem' }
+          }}
+        >
+          Disaster Management
+        </Typography>
+        <Button 
+          variant="contained"
+          onClick={handleOpenDialog}
+          sx={{
+            backgroundColor: '#2d3a54',
+            color: '#f8fafc',
+            px: { xs: 2, md: 4 },
+            py: 1.5,
+            borderRadius: '8px',
+            fontWeight: 500,
+            textTransform: 'none',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+            '&:hover': {
+              backgroundColor: '#455880',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+              transform: 'translateY(-1px)',
+            },
+            transition: 'all 0.2s ease',
+          }}
+        >
           Add New Disaster
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          mb: 3
+        }}
+      >
         <Table>
-          <TableHead>
+          <TableHead 
+            sx={{ 
+              backgroundColor: '#2d3a54',
+              '& th': {
+                fontWeight: 600,
+                color: '#f8fafc',
+                borderBottom: '2px solid #e2e8f0',
+                fontSize: '0.975rem'
+              }
+            }}
+          >
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell width="10%">ID</TableCell>
+              <TableCell width="10%">Name</TableCell>
+              <TableCell width="50%">Description</TableCell>
+              <TableCell width="15%">Image</TableCell>
+              <TableCell width="15%">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {disasters.content?.map((disaster) => (
               <React.Fragment key={disaster.disasterId}>
-                <TableRow onClick={() => toggleDisasterInfoVisibility(disaster.disasterId)}>
+                <TableRow 
+                  onClick={() => toggleDisasterInfoVisibility(disaster.disasterId)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#f1f5f9',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease'
+                    },
+                    '& td': {
+                      color: '#334155',
+                      borderBottom: '1px solid #e2e8f0'
+                    }
+                  }}
+                >
                   <TableCell>{disaster.disasterId}</TableCell>
-                  <TableCell>{disaster.disasterName}</TableCell>
+                  <TableCell sx={{ fontWeight: 500 }}>{disaster.disasterName}</TableCell>
                   <TableCell>{disaster.description}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDeleteDisaster(disaster.disasterId)}>
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                    <IconButton>
-                      <EditIcon color="primary" />
-                    </IconButton>
+                    <img 
+                      src={disaster.imageUrl} 
+                      alt={disaster.disasterName || "Disaster Image"} 
+                      style={{ 
+                        width: '80px', 
+                        height: '80px', 
+                        objectFit: 'cover', 
+                        borderRadius: '10px' 
+                      }} 
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      gap: 1,
+                      '& button': {
+                        transition: 'all 0.2s ease',
+                        p: 1
+                      }
+                    }}>
+                      <IconButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteDisaster(disaster.disasterId);
+                        }}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: '#d7e2f7',
+                            transform: 'scale(1.1)'
+                          }
+                        }}
+                      >
+                        <DeleteIcon sx={{ color: '#2d3a54' }} />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditDisaster(disaster);
+                        }}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: '#d7e2f7',
+                            transform: 'scale(1.1)'
+                          }
+                        }}
+                      >
+                        <EditIcon sx={{ color: '#2d3a54' }} />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
-                {expandedDisasterId === disaster.disasterId && disaster.disasterInfos?.length > 0 && (
+                {expandedDisasterId === disaster.disasterId && (
                   <TableRow>
-                    <TableCell colSpan={4}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Type Info</TableCell>
-                            <TableCell>Information</TableCell>
-                            <TableCell>Actions</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {disaster.disasterInfos.map((info, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{disaster.disasterId}</TableCell>
-                              <TableCell>{info.typeInfo}</TableCell>
-                              <TableCell>{info.information}</TableCell>
-                              <TableCell>
-                                <IconButton onClick={() => handleDeleteDisaster(disaster.disasterId)}>
-                                  <DeleteIcon color="error" />
-                                </IconButton>
-                                <IconButton>
-                                  <EditIcon color="primary" />
-                                </IconButton>
-                              </TableCell>
+                    <TableCell colSpan={4} sx={{ p: 0 }}>
+                      <Box sx={{ 
+                        backgroundColor: '#f8fafc',
+                        p: 2,
+                        borderRadius: '8px',
+                        m: 2
+                      }}>
+                        <Table>
+                          <TableHead>
+                            <TableRow sx={{
+                              '& th': {
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: 500,
+                                color: '#475569'
+                              }
+                            }}>
+                              <TableCell>ID</TableCell>
+                              <TableCell>Type Info</TableCell>
+                              <TableCell>Information</TableCell>
+                              <TableCell>Image</TableCell>
+                              <TableCell>Actions</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHead>
+                          <TableBody>
+                            {disaster.disasterInfos?.map((info, index) => (
+                              <TableRow key={index} sx={{
+                                '&:hover': {
+                                  backgroundColor: 'white'
+                                }
+                              }}>
+                                <TableCell>{info.disasterInfoId}</TableCell>
+                                <TableCell>{info.typeInfo}</TableCell>
+                                <TableCell>{info.information}</TableCell>
+                                <TableCell>
+                                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                    {info.images.map((image, index) => (
+                                      <img
+                                        key={index}
+                                        src={image.imageUrl}
+                                        alt={`Image ${index + 1}`}
+                                        style={{
+                                          width: '60px',
+                                          height: '60px',
+                                          objectFit: 'cover',
+                                          borderRadius: '8px',
+                                          border: '1px solid #ccc',
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <Box sx={{ display: 'flex', gap: 1 }}>
+                                    <IconButton sx={{
+                                      '&:hover': {
+                                        backgroundColor: '#d7e2f7',
+                                        transform: 'scale(1.1)'
+                                      }
+                                    }}>
+                                      <DeleteIcon sx={{ color: '#2d3a54' }} />
+                                    </IconButton>
+                                    <IconButton
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditDisasterInfo(info);
+                                      }}
+                                      sx={{
+                                        '&:hover': {
+                                          backgroundColor: '#d7e2f7',
+                                          transform: 'scale(1.1)'
+                                        }
+                                      }}
+                                    >
+                                      <EditIcon sx={{ color: '#2d3a54' }} />
+                                    </IconButton>
+                                  </Box>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 )}
@@ -340,86 +583,481 @@ const DisasterCategoriesPage: React.FC = () => {
       <Pagination
         count={disasters?.totalPages || 0}
         page={pageReq.page + 1}
-        onChange={handleChangePage} color="primary"
-        sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}
+        onChange={handleChangePage}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mt: 3,
+          '& .MuiPaginationItem-root': {
+            borderRadius: '8px',
+            margin: '0 4px',
+            backgroundColor: '#2d3a54',
+            color: '#fff',
+            '&:hover': {
+              backgroundColor: '#f8fafc',
+              color: '#2d3a54',
+            },
+            '&.Mui-selected': {
+              fontWeight: 600,
+              backgroundColor: '#3b4a67',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#4c5c78',
+              },
+            },
+          },
+        }}
       />
 
-      {/* Dialog for adding disaster and disaster info */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Add New Disaster</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Disaster Name"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            value={disasterForm.disasterName || ''}
-            onChange={(e) => setDisasterForm({ ...disasterForm, disasterName: e.target.value })}
-          />
-          <TextField
-            label="Description"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            value={disasterForm.description || ''}
-            onChange={(e) => setDisasterForm({ ...disasterForm, description: e.target.value })}
-          />
-          <input
-            type="file"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              setDisasterForm({ ...disasterForm, imageFile: file });
-            }}
-          />
-          {(disasterForm.disasterInfos?.length || 0) > 0 && disasterForm?.disasterInfos?.map((info, index) => (
-            <Box key={index}>
-              <TextField
-                label="Info Type"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                value={info.typeInfo || ''}
-                onChange={(e) => handleDisasterInfoChange(index, 'typeInfo', e.target.value)}
-              />
-              <TextField
-                label="Information"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                value={info.information || ''}
-                onChange={(e) => handleDisasterInfoChange(index, 'information', e.target.value)}
-              />
+
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: '16px',
+            boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.25)'
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          borderBottom: '1px solid #e2e8f0',
+          px: 3,
+          py: 2,
+          backgroundColor: '#f8fafc'
+        }}>
+          Add New Disaster
+        </DialogTitle>
+        <DialogContent sx={{ p: 3 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 3 
+          }}>
+            <div style={{fontSize: '1.15rem', fontWeight: "bold"}}>Disaster:</div>
+            <TextField
+              label="Disaster Name"
+              fullWidth
+              variant="outlined"
+              value={disasterForm.disasterName || ''}
+              onChange={(e) => setDisasterForm({ 
+                ...disasterForm, 
+                disasterName: e.target.value 
+              })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  marginTop: '8px'
+                }
+              }}
+            />
+            <TextField
+              label="Description"
+              fullWidth
+              variant="outlined"
+              value={disasterForm.description || ''}
+              onChange={(e) => setDisasterForm({ 
+                ...disasterForm, 
+                description: e.target.value 
+              })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px'
+                }
+              }}
+            />
+            <Button
+              variant="outlined"
+              component="label"
+               sx={{
+                    display: 'block',
+                    margin: '16px 0',
+                    padding: '8px',
+                    border: '2px dashed #1976d2',
+                    borderRadius: '8px',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
+                }}
+            >
+              Upload Image
               <input
                 type="file"
-                multiple
-                onChange={(e) => handleImageUpload(e, index)}
+                hidden
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setDisasterForm({ 
+                      ...disasterForm, 
+                      imageFile: file,
+                    });
+                    setUploadedImage(URL.createObjectURL(file));
+                  }
+                }}
               />
-              {info.images && info.images.map((image, imgIndex) => (
-                <Grid container key={imgIndex} alignItems="center">
-                  <Grid item xs={10}>
-                    <Typography variant="body2">{image.imageFile?.name}</Typography>
+            </Button>
+
+            {/* Hiển thị ảnh đã upload */}
+            {uploadedImage && (
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                <p>Preview:</p>
+                <img
+                  src={uploadedImage}
+                  alt="Uploaded"
+                  style={{
+                    maxWidth: '200px',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: '1px solid #ccc',
+                  }}
+                />
+              </div>
+            )}
+            <div style={{fontSize: '1.15rem', fontWeight: "bold"}}>Disaster Info:</div>
+            {disasterForm.disasterInfos?.map((info, index) => (
+              <Box key={index} sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: 2, 
+                p: 3, 
+                backgroundColor: '#f8fafc',
+                borderRadius: '12px',
+                border: '1px solid #e2e8f0'
+              }}>
+                <TextField
+                  label="Info Type"
+                  fullWidth
+                  variant="outlined"
+                  value={info.typeInfo || ''}
+                  onChange={(e) => handleDisasterInfoChange(index, 'typeInfo', e.target.value)}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: 'white'
+                    }
+                  }}
+                />
+                <TextField
+                  label="Information"
+                  fullWidth
+                  variant="outlined"
+                  value={info.information || ''}
+                  onChange={(e) => handleDisasterInfoChange(index, 'information', e.target.value)}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: 'white'
+                    }
+                  }}
+                />
+                <Button
+                  variant="outlined"
+                  component="label"
+                   sx={{
+                    display: 'block',
+                    margin: '16px 0',
+                    padding: '8px',
+                    border: '2px dashed #1976d2',
+                    borderRadius: '8px',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
+                  }}
+                >
+                  Upload Info Images
+                  <input
+                    type="file"
+                    hidden
+                    multiple
+                    onChange={(e) => handleImageUpload(e, index)}
+                  />
+                </Button>
+                {info.images?.map((image, imgIndex) => (
+                  <Grid 
+                    container 
+                    key={imgIndex} 
+                    alignItems="center" 
+                    justifyContent="space-between"
+                    sx={{
+                      backgroundColor: 'white',
+                      p: 1.5,
+                      borderRadius: '8px'
+                    }}
+                  >
+                    <Grid item>
+                      <Typography variant="body2" sx={{ color: '#475569' }}>
+                        {image.imageFile?.name}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <IconButton 
+                        onClick={() => handleDeleteImage(index, imgIndex)}
+                        size="small"
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: '#d7e2f7'
+                          }
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" sx={{ color: '#2d3a54' }} />
+                      </IconButton>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <IconButton onClick={() => handleDeleteImage(index, imgIndex)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              ))}
-            </Box>
-          ))}
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleAddDisasterInfo}
-            sx={{ mt: 2 }}
+                ))}
+              </Box>
+            ))}
+
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleAddDisasterInfo}
+              sx={{ 
+                py: 1.5,
+                borderRadius: '8px',
+                borderWidth: '2px',
+                '&:hover': {
+                  borderWidth: '2px',
+                  backgroundColor: '#f0f9ff'
+                }
+              }}
+            >
+              Add Disaster Info
+            </Button>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ 
+          p: 3, 
+          borderTop: '1px solid #e2e8f0',
+          backgroundColor: '#f8fafc'
+        }}>
+          <Button 
+            onClick={handleCloseDialog}
+            sx={{ 
+              color: '#64748b',
+              '&:hover': {
+                backgroundColor: '#f1f5f9'
+              }
+            }}
           >
-            Add Disaster Info
+            Cancel
           </Button>
+          <Button 
+            onClick={handleSaveDisasterAndInfo} 
+            variant="contained" 
+            sx={{
+              px: 4,
+              py: 1,
+              borderRadius: '8px',
+              textTransform: 'none',
+              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+              '&:hover': {
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+              }
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDisasterDialog} onClose={handleCloseDisasterDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Disaster</DialogTitle>
+        <DialogContent>
+          {editingDisaster && (
+            <Box>
+              <TextField
+                fullWidth
+                label="Disaster Name"
+                value={editingDisaster.disasterName || ''}
+                onChange={(e) =>
+                  setEditingDisaster((prev) => ({
+                    ...prev,
+                    disasterName: e.target.value,
+                  }))
+                }
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Description"
+                value={editingDisaster.description || ''}
+                onChange={(e) =>
+                  setEditingDisaster((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                margin="normal"
+                multiline
+                rows={3}
+              />
+
+              {/* Hiển thị ảnh cũ nếu có */}
+              {editingDisaster.imageUrl && (
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                  <Typography variant="body2" sx={{ marginTop: '8px', color: '#333' }}>
+                    Current Image:
+                  </Typography>
+                  <img
+                    src={editingDisaster.imageUrl}
+                    alt={editingDisaster.disasterName || "Disaster Image"}
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      objectFit: 'cover',
+                      borderRadius: '10px',
+                      marginLeft: '16px',
+                    }}
+                  />
+                </Box>
+              )}
+
+              {/* Hiển thị ảnh mới nếu có */}
+                {editingDisaster.imageFile && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                    <Typography variant="body2" sx={{ marginTop: '8px', color: '#333' }}>
+                      New Image Preview:
+                    </Typography>
+                    <img
+                      src={URL.createObjectURL(editingDisaster.imageFile)}
+                      alt="New Disaster Image"
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        objectFit: 'cover',
+                        borderRadius: '10px',
+                        marginLeft: '16px',
+                      }}
+                    />
+                  </Box>
+                )}
+
+              <Box>
+                <Box
+                  sx={{
+                    display: 'block',
+                    margin: '16px 0',
+                    padding: '8px',
+                    border: '2px dashed #1976d2',
+                    borderRadius: '8px',
+                    backgroundColor: '#f5f5f5',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setEditingDisaster((prev) => ({
+                          ...prev,
+                          imageFile: file,
+                        }));
+                      }
+                    }}
+                    style={{ display: 'none' }}
+                    id="upload-button"
+                  />
+                  <label htmlFor="upload-button" style={{ cursor: 'pointer', fontWeight: 'bold', color: '#1976d2' }}>
+                    Click to upload an image
+                  </label>
+                </Box>
+              </Box>
+
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSaveDisasterAndInfo} variant="contained" color="primary">
+          <Button onClick={handleCloseDisasterDialog} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSaveDisaster}
+            color="primary"
+            variant="contained"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDisasterInfoDialog} onClose={handleCloseDisasterInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Disaster Info</DialogTitle>
+        <DialogContent>
+          {editingDisasterInfo && (
+            <Box>
+              <TextField
+                fullWidth
+                label="Type Info"
+                value={editingDisasterInfo.typeInfo || ''}
+                onChange={(e) =>
+                  setEditingDisasterInfo((prev) => ({
+                    ...prev,
+                    typeInfo: e.target.value,
+                  }))
+                }
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Information"
+                value={editingDisasterInfo.information || ''}
+                onChange={(e) =>
+                  setEditingDisasterInfo((prev) => ({
+                    ...prev,
+                    information: e.target.value,
+                  }))
+                }
+                margin="normal"
+                multiline
+                rows={3}
+              />
+              <TextField
+                fullWidth
+                label="Image URL"
+                value={editingDisasterInfo.images || ''}
+                onChange={(e) =>
+                  setEditingDisasterInfo((prev) => ({
+                    ...prev,
+                    image: e.target.value,
+                  }))
+                }
+                margin="normal"
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDisasterInfoDialog} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (editingDisasterInfo) {
+                // Gửi request cập nhật DisasterInfo
+              }
+              handleCloseDisasterInfoDialog();
+            }}
+            color="primary"
+            variant="contained"
+          >
             Save
           </Button>
         </DialogActions>
@@ -429,10 +1067,12 @@ const DisasterCategoriesPage: React.FC = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
+          sx={{ width: '100%' }}
         >
           {snackbar.message}
         </Alert>
