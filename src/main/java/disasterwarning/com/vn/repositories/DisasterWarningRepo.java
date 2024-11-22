@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface DisasterWarningRepo extends JpaRepository<DisasterWarning, Integer> {
 
+    long countByStatus(String status);
+
     @Query("SELECT d FROM DisasterWarning d WHERE d.location.locationId=:locationId")
     public List<DisasterWarning> findDisasterWarningByLocation(String locationId);
 }
+

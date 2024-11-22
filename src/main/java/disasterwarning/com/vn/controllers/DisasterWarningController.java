@@ -33,6 +33,14 @@ public class DisasterWarningController {
     @Autowired
     private DisasterWarningService disasterWarningService;
 
+    // Endpoint lấy số lượng cảnh báo đã gửi
+    @GetMapping("/sent/count")
+    public ResponseEntity<Long> getAlertCount() {
+        long alertCount = disasterWarningService.countSentWarnings();  // Gọi phương thức countSentWarnings() từ DisasterWarningService
+        return ResponseEntity.ok(alertCount);
+    }
+
+
     @GetMapping("/{city}")
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<WeatherData>> getWeatherData(@PathVariable String city) {

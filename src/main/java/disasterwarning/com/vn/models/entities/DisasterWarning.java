@@ -32,4 +32,23 @@ public class DisasterWarning {
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    /**
+     * Constructor tùy chỉnh với các tham số chính
+     * @param disaster Disaster entity liên quan
+     * @param location Location entity liên quan
+     * @param startDate Ngày bắt đầu
+     * @param description Mô tả cảnh báo
+     * @param status Trạng thái của cảnh báo
+     */
+    public DisasterWarning(Disaster disaster, Location location, Date startDate, String description, String status) {
+        this.disaster = disaster;
+        this.location = location;
+        this.startDate = startDate;
+        this.description = description;
+        this.status = status;
+    }
 }
