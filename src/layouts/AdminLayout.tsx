@@ -97,8 +97,6 @@ const AdminLayout: React.FC = () => {
               { text: 'Home', icon: <HomeIcon />, path: '/' },
               { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
               { text: 'Profile', icon: <AccountCircleIcon />, path: '/info' },
-              { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
-              { text: 'Disaster Details', icon: <InfoIcon />, path: '/dashboard/disaster-details' },
               { text: 'Disaster Categories', icon: <CategoryIcon />, path: '/dashboard/disaster-categories' },
               { text: 'User Management', icon: <PeopleIcon />, path: '/dashboard/user-management' },
             ].map((item) => (

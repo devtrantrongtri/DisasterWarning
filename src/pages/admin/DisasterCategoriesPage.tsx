@@ -266,8 +266,6 @@ const DisasterCategoriesPage: React.FC = () => {
   };
   
   
- 
-
   const handleCloseDisasterDialog = () => {
     setOpenDisasterDialog(false);
     setEditingDisaster(null);
@@ -422,13 +420,11 @@ const DisasterCategoriesPage: React.FC = () => {
         minHeight: '90vh',
 
         padding: 3,
-        borderRadius: 4,
         marginBottom: 2,
         textAlign: 'center',
-        background: 'transparent', // No background
-        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+       // background: 'transparent', // No background
         color: '#030302', // Text color
-        marginTop: -9,
+        marginTop: -20,
       }}
     > 
       <Box 
@@ -485,15 +481,25 @@ const DisasterCategoriesPage: React.FC = () => {
         component={Paper} 
         sx={{
 
-          overflow: 'hidden',
-          mb: 3,
+          // overflow: 'hidden',
+          // mb: 3,
+
+
+
+        padding: 3,
+        borderRadius: 4,
+        marginBottom: 2,
+        textAlign: 'center',
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        color: '#030302', // Text color
+        marginTop: -9,
           
         }}
       >
         <Table>
           <TableHead 
             sx={{ 
-              backgroundColor: '#2d3a54',
               '& th': {
                 fontWeight: 600,
                 color: '#f8fafc',
@@ -503,8 +509,8 @@ const DisasterCategoriesPage: React.FC = () => {
               }
             }}
 >
-            <TableRow>
-              <TableCell width="10%">ID</TableCell>
+            <TableRow>           
+              <TableCell  width="10%" >ID</TableCell>
               <TableCell width="10%">Name</TableCell>
               <TableCell width="50%">Description</TableCell>
               <TableCell width="15%">Image</TableCell>
@@ -516,17 +522,6 @@ const DisasterCategoriesPage: React.FC = () => {
               <React.Fragment key={disaster.disasterId}>
                 <TableRow 
                   onClick={() => toggleDisasterInfoVisibility(disaster.disasterId)}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f1f5f9',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s ease'
-                    },
-                    '& td': {
-                      color: '#334155',
-                      borderBottom: '1px solid #e2e8f0'
-                    }
-                  }}
                 >
                   <TableCell>{disaster.disasterId}</TableCell>
                   <TableCell sx={{ fontWeight: 500 }}>{disaster.disasterName}</TableCell>
