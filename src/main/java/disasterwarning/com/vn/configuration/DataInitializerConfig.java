@@ -28,13 +28,13 @@ public class DataInitializerConfig {
                 locationRepo.save(location);
             }
 
-            if (userRepo.findByEmail("admin@gmail.com") == null) {
+            if (userRepo.findByEmail("nlhieunhi1402@gmail.com") == null) {
                 User newUser = new User();
-                newUser.setEmail("admin@gmail.com");
+                newUser.setEmail("nlhieunhi1402@gmail.com");
                 newUser.setPassword(passwordEncoder.encode("admin"));
                 newUser.setRole("admin");
                 newUser.setUserName("Nguyễn Lê Hiếu Nhi");
-                newUser.setLocation(location); // Gán location cho user
+                newUser.setLocation(location);
                 newUser.setStatus("active");
                 userRepo.save(newUser);
             }

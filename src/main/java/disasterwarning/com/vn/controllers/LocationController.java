@@ -124,4 +124,16 @@ public class LocationController {
         }
     }
 
+    @GetMapping("/location/warning")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<List<LocationDTO>>> getAllLocationWarnings() {
+        try {
+            List<LocationDTO> locationDTOList = locationService.findLocationHaveWarning();
+            ResponseWrapper<List<LocationDTO>> responseWrapper = new ResponseWrapper<>("Locations retrieved successfully", locationDTOList);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            ResponseWrapper<List<LocationDTO>> responseWrapper = new ResponseWrapper<>("Locations not found", null);
+            return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
+        }
+    }
 }
