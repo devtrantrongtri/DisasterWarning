@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Typography, Grid, Paper } from "@mui/material";
 import axios from "axios";
 import ImageCarousel from "../../components/Test/ImageCarousel";
-
+const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 // Định nghĩa kiểu dữ liệu
 interface DisasterImage {
   imageId: number;
@@ -26,7 +26,7 @@ const DisasterInfoPage: React.FC = () => {
     setDisasterInfos([]); // Xóa dữ liệu cũ mỗi lần chọn thảm họa mới
   
     axios
-      .get(`http://localhost:8080/disaster-info-management/disaster-info-disasterName/${id}`)
+      .get(`${baseUrl}/disaster-info-management/disaster-info-disasterName/${id}`)
       .then((response) => {
         setDisasterInfos(response.data.data); // Lấy toàn bộ mảng `data`
       })

@@ -55,7 +55,7 @@ const Caption = styled(Typography)({
   borderRadius: 24,
   boxShadow:'1px 1px 2px 2px rgba(45, 58, 84)'
 });
-
+const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 const ImageCarousel: React.FC<{ onDisasterSelect: (id: number) => void }> = ({
   onDisasterSelect,
 }) => {
@@ -64,7 +64,7 @@ const ImageCarousel: React.FC<{ onDisasterSelect: (id: number) => void }> = ({
 
   useEffect(() => {
     // Fetch data từ API
-    axios.get("http://localhost:8080/disaster-management/disaster").then((response) => {
+    axios.get(`${baseUrl}/disaster-management/disaster`).then((response) => {
       const disasters = response.data.data.content; // Dữ liệu từ API
       const formattedImages: DisasterImage[] = disasters.map((disaster: any) => ({
         id: disaster.disasterId,
