@@ -32,12 +32,12 @@ const ActivityHistory = () => {
 
   return (
     <Box sx={{ width: '100%', mt: 4, }} >
-      <Typography variant="h6" sx={{ mb: 2, fontSize: '20px' }}>
-        Lịch sử hoạt động
+      <Typography variant="h6" sx={{ mb: 1, fontSize: '20px', textShadow:'2px 2px rgba(128, 128, 128, 0.5)', color:'#fcebdd' }}>
+       - Lịch sử hoạt động -
       </Typography>
-      <List>
+      <List sx={{backgroundColor:'rgba(175, 175, 175, 0.8)', borderRadius:10}}>
         {activities.map((activity, index) => (
-          <ListItem key={index}>
+          <ListItem key={index} >
             <ListItemText
               primary={activity.action}
               secondary={`Ngày ${activity.date} - Thành công`}

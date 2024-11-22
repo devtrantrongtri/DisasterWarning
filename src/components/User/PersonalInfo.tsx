@@ -85,12 +85,12 @@ const PersonalInfo = () => {
   
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4,backdropFilter: 'blur(20px)'
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4,backdropFilter: 'blur(4px)'
     ,borderRadius: 2, boxShadow: 3 , mt: 5}}>
       {/* Avatar và tên tài khoản */}
-      <Box sx={{ textAlign: 'center', marginRight: 4 ,flexDirection: 'column',}}>
+      <Box sx={{ textAlign: 'center', marginRight: 4 ,flexDirection: 'column'}}>
         <Avatar sx={{ width: 100, height: 100, margin: '0 auto' }} />
-        <Typography variant="h4" sx={{ mt: 2 }}>{formData.username}</Typography>
+        <Typography variant="h4" sx={{ mt: 3, textShadow:'2px 2px rgba(128, 128, 128, 0.3)', color:'#fff', fontWeight:540 }}>{formData.username}</Typography>
           {/* lich su hoat dong */}
           <ActivityHistory /> 
       </Box>
@@ -98,20 +98,21 @@ const PersonalInfo = () => {
       {/* Form thông tin cá nhân */}
       <Box
         sx={{
-          border: '1px solid #ccc',
+          border: '3px solid #ccc',
           padding: 3,
           borderRadius: 2,
           width: '100%',
           maxWidth: 800,
-          height: 700,
+          height: 600,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor:'rgba(201, 201, 201, 0.1)'
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-          Personal Information
+        <Typography sx={{ fontWeight: 'bold', mb: 4, color:'#fff', textShadow:'2px 2px rgba(128, 128, 128, 0.5)', fontSize: '35px'}}>
+          Thông tin của bạn
         </Typography>
         <Grid container spacing={2} sx={{ width: '80%' }} justifyContent="center">
           <Grid item xs={12} sm={6}>
@@ -338,10 +339,12 @@ const PersonalInfo = () => {
               py: 1.2,
               fontSize: '1rem',
               fontWeight: 'bold',
-              backgroundColor: '#f7fafc',
-              color: 'primary.main',
+              backgroundColor: '#2ccb86',
+              color: '#fff',
+              border:'none',
               '&:hover': {
                 backgroundColor: '#e2e8f0',
+                color:'#2ccb86',
               },
             }} onClick={handleSave}>
               Hoàn tất
@@ -354,10 +357,12 @@ const PersonalInfo = () => {
                 py: 1.2,
                 fontSize: '1rem',
                 fontWeight: 'bold',
-                backgroundColor: '#f7fafc',
-                color: 'primary.main',
+                backgroundColor: '#f3513b',
+                color: '#fff',
+                border:'none',
                 '&:hover': {
                   backgroundColor: '#e2e8f0',
+                  color: '#f3513b',
                 },
               }}>
                 Chỉnh sửa
@@ -368,10 +373,12 @@ const PersonalInfo = () => {
                 py: 1.2,
                 fontSize: '1rem',
                 fontWeight: 'bold',
-                backgroundColor: '#f7fafc',
-                color: 'primary.main',
+                backgroundColor: '#516894',
+                color: '#fff',
+                border:'none',
                 '&:hover': {
                   backgroundColor: '#e2e8f0',
+                  color: '#2D3A54'
                 },
               }}>
                 Đổi mật khẩu
