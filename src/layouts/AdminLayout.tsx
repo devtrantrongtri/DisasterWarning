@@ -3,9 +3,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
   Box,
-  Button,
   Drawer,
   List,
   ListItem,
@@ -13,145 +11,168 @@ import {
   ListItemText,
   Divider,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CategoryIcon from '@mui/icons-material/Category';
 import InfoIcon from '@mui/icons-material/Info';
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Outlet, Link } from 'react-router-dom';
 
 const AdminLayout: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  // const getActiveTab = (path: string) => location.pathname === path;
-
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
-      {/* AppBar */}
-      <AppBar
-        position="fixed"
-        elevation={1}
-        sx={{
-          height: 100,
-          backgroundColor: 'transparent',
-          color: '#ffffff',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-          justifyContent: 'center',
-        }}
-      >
-        <Toolbar sx={{ minHeight: '100px' }}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{
-              mr: 2,
-              '&:hover': { backgroundColor: 'rgba(224, 247, 250, 0.3)', transform: 'scale(1.1)' },
-              transition: 'transform 0.3s ease',
-            }}
-            onClick={toggleSidebar}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            <Button color="inherit" component={Link} to="/" sx={{ fontSize: '1.1rem', fontWeight: '600', }}>
-              Trang chủ
-            </Button>
-          </Typography>
-
-        </Toolbar>
-      </AppBar>
-
       {/* Sidebar */}
       <Drawer
-        anchor="left"
+        variant="permanent"
         open={isSidebarOpen}
-        onClose={toggleSidebar}
-        sx={{ '& .MuiDrawer-paper': { width: 250, backgroundColor: '#2D3A54', color:'white', minWidth:'40vh' } }}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: isSidebarOpen ? 250 : 72,
+            overflowX: 'hidden',
+            backgroundColor: isSidebarOpen ? '#2D3A54' : 'transparent',
+            color: 'white',
+            transition: 'width 0.3s ease, backgroundColor 0.8s ease',
+            
+          },
+        }}
       >
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          {/* Sidebar Items */}
+        <Box
+          sx={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* Sidebar Header (Menu Icon) */}
           <Box>
-            <Typography variant="h6" align="center" sx={{fontWeight:'bold', fontSize:'25px', p: '30px 0'}}>
+            <IconButton
+              onClick={toggleSidebar}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: 'white',
+                width: '100%',
+                // padding: '16px 0',
+                borderRadius:0,
+                '&:hover': { backgroundColor: '#B2EBF2', color: '#2D3A54' },
+              }}
+            >
+              {isSidebarOpen ? <ArrowBackIcon /> : <MenuIcon />}
+            </IconButton>
+
+            <Typography
+              variant="h6"
+              align="center"
+              sx={{
+                fontWeight: 'bold',
+                fontSize: '25px',
+                p: '6px 0',
+                display: isSidebarOpen ? 'block' : 'none',
+              }}
+            >
               Disaster Warning
             </Typography>
-            <Divider sx={{borderColor:'white'}}/>
-            <List sx={{mt: '5vh'}}>
-              <ListItem component={Link} to="/dashboard" onClick={toggleSidebar} sx={{ pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' }} }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
-
-              <ListItem component={Link} to="/info" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
-              </ListItem>
-
-              <ListItem component={Link} to="/notifications" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <NotificationsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Notifications" />
-              </ListItem>
-
-              <ListItem component={Link} to="/dashboard/disaster-details" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <InfoIcon />
-                </ListItemIcon>
-                <ListItemText primary="Disaster Details" />
-              </ListItem>
-              <ListItem component={Link} to="/dashboard/disaster-categories" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="Disaster Categories" />
-              </ListItem>
-              <ListItem component={Link} to="/dashboard/user-management" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-                <ListItemIcon sx={{color:'white'}}>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="User Management" />
-              </ListItem>
-            </List>
+            <Divider sx={{ borderColor: 'white' }} />
           </Box>
 
-          {/* Logout Button */}
-          <Box sx={{mb:'3vh'}}>
-            <Divider sx={{borderColor:'white', mb:'3vh'}}/>
-            <ListItem onClick={() => alert("Logout")} sx={{pl: '2vw',color:'white',cursor:'pointer', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-              <ListItemIcon sx={{color:'white'}}>
+          {/* Sidebar Items */}
+          <List sx={{ mt: isSidebarOpen ? '1.5vh' : '1.5vh' }}>
+            {[
+              { text: 'Home', icon: <HomeIcon />, path: '/' },
+              { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+              { text: 'Profile', icon: <AccountCircleIcon />, path: '/info' },
+              { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
+              { text: 'Disaster Details', icon: <InfoIcon />, path: '/dashboard/disaster-details' },
+              { text: 'Disaster Categories', icon: <CategoryIcon />, path: '/dashboard/disaster-categories' },
+              { text: 'User Management', icon: <PeopleIcon />, path: '/dashboard/user-management' },
+            ].map((item) => (
+              <Tooltip title={isSidebarOpen ? '' : item.text} key={item.text} placement="right">
+                <ListItem
+                  component={Link}
+                  to={item.path}
+                  onClick={() => {
+                    if (!isSidebarOpen) setSidebarOpen(true);
+                  }}
+                  sx={{
+                    pl: '1.5vw',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#B2EBF2',
+                      color: '#2D3A54',
+                      '& .MuiListItemIcon-root': { color: '#2D3A54' },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+                  {isSidebarOpen && <ListItemText primary={item.text} />}
+                </ListItem>
+              </Tooltip>
+            ))}
+          </List>
+
+          {/* Logout and Settings */}
+          <Box sx={{ mb: '3vh' }}>
+            <Divider sx={{ borderColor: 'white', mb: '3vh' }} />
+            <ListItem
+              onClick={() => alert('Logout')}
+              sx={{
+                pl: '1.5vw',
+                color: 'white',
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: '#B2EBF2',
+                  color: '#2D3A54',
+                  '& .MuiListItemIcon-root': { color: '#2D3A54' },
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: 'white' }}>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              {isSidebarOpen && <ListItemText primary="Logout" />}
             </ListItem>
 
-            <ListItem component={Link} to="/settings" onClick={toggleSidebar} sx={{pl: '2vw',color:'white', '&:hover': { backgroundColor: '#B2EBF2', color:'#2D3A54' , '& .MuiListItemIcon-root': { color: '#2D3A54' } } }}>
-              <ListItemIcon sx={{color:'white'}}>
+            <ListItem
+              component={Link}
+              to="/settings"
+              onClick={toggleSidebar}
+              sx={{
+                pl: '1.5vw',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#B2EBF2',
+                  color: '#2D3A54',
+                  '& .MuiListItemIcon-root': { color: '#2D3A54' },
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: 'white' }}>
                 <SettingsIcon />
               </ListItemIcon>
-              <ListItemText primary="Settings" />
+              {isSidebarOpen && <ListItemText primary="Settings" />}
             </ListItem>
           </Box>
         </Box>
       </Drawer>
 
       {/* Content Area */}
-      <Box sx={{ mt: 12, padding: 2, width: '100%' }}>
+      <Box sx={{ mt: 12, padding: 2, pl:6, width: '100%' }}>
         <Outlet />
       </Box>
     </Box>
