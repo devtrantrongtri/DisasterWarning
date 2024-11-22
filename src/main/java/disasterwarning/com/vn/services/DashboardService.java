@@ -18,15 +18,15 @@ public class DashboardService {
 
     // Lấy số lượng người dùng
     public int getUserCount() {
-        // Sử dụng UserRepo để đếm số lượng người dùng với vai trò cụ thể, ví dụ: ROLE_USER
-        long userCount = userRepo.countByRole("ROLE_USER");
-        return (int) userCount;
+        // Kiểm tra role hợp lệ trong database
+        long userCount = userRepo.countByRole("admin");
+        return Math.toIntExact(userCount); // Sử dụng Math.toIntExact để tránh lỗi số lớn
     }
 
     // Lấy số lượng cảnh báo
     public int getAlertCount() {
-        // Sử dụng AlertRepo để đếm số lượng cảnh báo
-        long alertCount = alertRepo.countByStatus("Active"); // Ví dụ lấy số lượng cảnh báo "Active"
-        return (int) alertCount;
+        // Đếm số lượng cảnh báo với trạng thái "Active"
+        long alertCount = alertRepo.countByStatus("Active");
+        return Math.toIntExact(alertCount); // Đảm bảo tương thích với kiểu int
     }
 }
