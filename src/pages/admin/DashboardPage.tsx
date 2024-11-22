@@ -1,14 +1,7 @@
-// src/pages/Admin/DashboardPage.tsx
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  CircularProgress,
-} from '@mui/material';
 import React, { useEffect, useState } from 'react';
-
-import UserInfo from '../../components/Admin/UserInfo';
+import { Box, Grid, Typography, Button, CircularProgress } from '@mui/material';
+import { useGetUserCountQuery, useGetAlertCountQuery } from '../../services/dashboard.service';
+import UserInfo from '../../components/Admin/UserInfo'; // Import UserInfo
 import WeatherInfo from '../../components/Admin/WeatherInfo';
 import CitySelector from '../../components/Admin/CitySelector';
 import DisasterChart from '../../components/Admin/DisasterChart';
@@ -24,9 +17,13 @@ const DashboardPage: React.FC = () => {
 
   const { data: weatherDataByCoords, error: errorByCoords, isLoading: loadingByCoords } = useGetWeatherByCoordsQuery(coords!, { skip: !coords });
   const { data: weatherDataByCityId, error: errorByCityId, isLoading: loadingByCityId } = useGetWeatherByCityIdQuery(cityId!, { skip: !cityId });
-  const isLoading = loadingByCoords || loadingByCityId;
+  const { data: userCount, isLoading: userLoading, error: userError } = useGetUserCountQuery();
+  const { data: alertCount, isLoading: alertLoading, error: alertError } = useGetAlertCountQuery();
+  const isLoading = loadingByCoords || loadingByCityId || userLoading || alertLoading;
   const error = errorByCoords || errorByCityId;
+  
   const weatherData = weatherDataByCoords || weatherDataByCityId;
+
 
   const requestLocation = () => {
     if (navigator.geolocation) {
