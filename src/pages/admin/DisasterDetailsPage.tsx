@@ -4,18 +4,44 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const DisasterDetailsPage: React.FC = () => {
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>Disaster Detail Management</Typography>
-      <TableContainer component={Paper}>
-        <Table>
+    <Box
+    sx={{
+      padding: 3,
+      borderRadius: 4,
+      marginBottom: 2,
+      textAlign: 'center',
+      background: 'transparent', // No background
+      backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+      color: '#00000', // Text color
+      boxShadow: 'none',
+      marginTop:-9,
+    }}>
+      <Typography variant="h4" gutterBottom 
+      sx={{
+
+        textAlign: 'center',
+        color:'#00000',
+      }}>Disaster Detail Management</Typography>
+      <TableContainer component={Paper}
+      sx={{
+        padding: 3,
+        borderRadius: 4,
+        marginBottom: 2,
+        textAlign: 'center',
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        boxShadow: 'none',
+        color:'#00000',
+      }}>
+        <Table >
           <TableHead>
             <TableRow>
-              <TableCell>Disaster ID</TableCell>
-              <TableCell>DisasterDetailID</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Image source</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Disaster ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>DisasterDetailID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Type</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Image source</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -26,9 +52,18 @@ const DisasterDetailsPage: React.FC = () => {
               <TableCell>Description here</TableCell>
               <TableCell>Image URL</TableCell>
               <TableCell>
-                <IconButton color="primary">
-                  <EditIcon />
-                </IconButton>
+              <IconButton
+                color="primary"
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 255, 0.1)', // Thay đổi màu nền khi hover
+                    transform: 'scale(1.1)', // Phóng to nhẹ khi hover
+                  },
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+
               </TableCell>
             </TableRow>
           </TableBody>
