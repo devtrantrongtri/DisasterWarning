@@ -33,6 +33,7 @@ const DangerousLocationsMap: React.FC = () => {
       center={[15.8700, 107.8064]} // Tọa độ trung tâm bản đồ Việt Nam
       zoom={5}
       style={{ height: '450px', width: '100%' }}
+      
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

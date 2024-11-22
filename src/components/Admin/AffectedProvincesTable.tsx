@@ -101,8 +101,16 @@ const AffectedProvincesTable: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: '#f9f9f9', borderRadius: 1, boxShadow: 2 }}>
-      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
+    <Box sx={{ 
+      padding: 3, 
+      backgroundColor: '#f9f9f9', 
+      borderRadius: 4, 
+      background: 'transparent', // No background
+      backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+      color: '#030302', // Text color
+      boxShadow: 'none',
+      }}>
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#030302', textAlign: 'center', }}>
         Bảng tra cứu các tỉnh/thành bị ảnh hưởng thiên tai
       </Typography>
       <CitySelector onCitySelect={handleCitySelect} />
@@ -110,52 +118,78 @@ const AffectedProvincesTable: React.FC = () => {
       {/* Thêm nút "Lấy thời tiết" */}
       <Button
         variant="contained"
-        color="primary"
         onClick={handleGetWeather}
         disabled={!selectedCityId}
-        sx={{ marginTop: 2 }}
+        sx={{
+          marginTop: 2,
+          backgroundColor: '#0e66a1', // Thêm màu cho nền button
+          '&:hover': {
+            backgroundColor: '#fff', // Màu khi hover (nếu cần)
+            color: '#0e66a1',
+          },
+        }}
       >
         Lấy thời tiết
       </Button>
 
+
       {/* Thêm overflowX cho Box chứa bảng để có thể cuộn ngang */}
       <Box sx={{ overflowX: 'auto' }}>
-        <Table sx={{ marginTop: 2, backgroundColor: '#ffffff', borderRadius: 1, minWidth: '800px' }}>
+        <Table sx={{ 
+          marginTop: 2, 
+          backgroundColor: '#ffffff', 
+          borderRadius: 1, 
+          minWidth: '800px',
+          background: 'transparent', // No background
+          backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+          color: '#030302', // Text color
+          boxShadow: 'none',
+          
+          }}>
           <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Tỉnh/Thành</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Quốc gia</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Loại thiên tai</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Ngày xảy ra</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ (°C)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Cảm giác như (°C)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ thấp nhất (°C)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Nhiệt độ cao nhất (°C)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Áp suất (hPa)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Độ ẩm (%)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Tốc độ gió (m/s)</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Thời tiết</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Mô tả</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#555' }}>Hành động</TableCell>
-            </TableRow>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Tỉnh/Thành</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Quốc gia</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Loại thiên tai</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Ngày xảy ra</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Nhiệt độ (°C)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Cảm giác như (°C)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Nhiệt độ thấp nhất (°C)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Nhiệt độ cao nhất (°C)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Áp suất (hPa)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Độ ẩm (%)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Tốc độ gió (m/s)</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Thời tiết</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Mô tả</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color: '#610909', verticalAlign: 'top' }}>Hành động</TableCell>
           </TableHead>
           <TableBody>
             {provinceDataList.length > 0 ? (
               provinceDataList.map((province) => (
-                <TableRow key={province.id} sx={{ '&:nth-of-type(even)': { backgroundColor: '#f2f2f2' } }}>
-                  <TableCell>{province.name}</TableCell>
-                  <TableCell>{province.country}</TableCell>
-                  <TableCell>{province.disasterType}</TableCell>
-                  <TableCell>{province.date}</TableCell>
-                  <TableCell>{province.temperature}</TableCell>
-                  <TableCell>{province.feelsLike}</TableCell>
-                  <TableCell>{province.tempMin}</TableCell>
-                  <TableCell>{province.tempMax}</TableCell>
-                  <TableCell>{province.pressure}</TableCell>
-                  <TableCell>{province.humidity}</TableCell>
-                  <TableCell>{province.windSpeed}</TableCell>
-                  <TableCell>{province.weatherMain}</TableCell>
-                  <TableCell>{province.weatherDescription}</TableCell>
+                <TableRow key={province.id} 
+                sx={{ 
+                  marginTop: 2, 
+                  backgroundColor: '#ffffff', 
+                  borderRadius: 1, 
+                  minWidth: '800px',
+                  background: 'transparent', // No background
+                  backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+                  color: '#030302', // Text color
+                  boxShadow: 'none',
+                  
+                  }}>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.name}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.country}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.disasterType}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.date}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.temperature}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.feelsLike}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.tempMin}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.tempMax}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.pressure}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.humidity}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.windSpeed}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.weatherMain}</TableCell>
+                  <TableCell sx={{ color: '#012238', verticalAlign: 'center' }}>{province.weatherDescription}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleDelete(province.id)} color="error">
                       <DeleteIcon />

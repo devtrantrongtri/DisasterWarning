@@ -30,9 +30,20 @@ interface WeatherInfoProps {
 
 const WeatherInfo: React.FC<WeatherInfoProps> = ({ data }) => {
   const weatherIconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+  const paperStyle = {
+    marginTop:"30px",
+    textAlign: 'center',
+    borderRadius: 0, // Remove the border radius to avoid any rounded edges
+    background: 'transparent', // No background
+    backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+    color: '#030302', // Text color
+    boxShadow: 'none', // Remove any box shadow if present
+
+  };
+  
 
   return (
-    <Paper elevation={3} sx={{ padding: 3, backgroundColor: '#e0f7fa', borderRadius: 2 }}>
+    <Paper elevation={3} sx={paperStyle}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
         {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - Weather Report
       </Typography>
@@ -52,7 +63,12 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ data }) => {
         </Box>
       </Box>
       
-      <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: 3, textAlign: 'center' }}>
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-around', 
+        marginTop: 3, 
+        textAlign: 'center' 
+        }}>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#ff9800' }}>{data.main.temp_min}°C</Typography>
           <Typography variant="body2">Min Temp</Typography>
