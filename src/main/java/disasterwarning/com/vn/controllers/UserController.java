@@ -33,6 +33,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // Endpoint lấy số người dùng
+    @GetMapping("/count")
+    public ResponseEntity<Long> getUserCount() {
+        long userCount = userService.countUsers();  // Gọi phương thức countUsers() từ UserService
+        return ResponseEntity.ok(userCount);
+    }
+
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
@@ -214,4 +221,6 @@ public class UserController {
             return new ResponseEntity<>(responseWrapper, HttpStatus.NOT_FOUND);
         }
     }
+
+
 }

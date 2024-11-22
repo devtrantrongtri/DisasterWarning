@@ -32,4 +32,16 @@ public class DisasterWarning {
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "status", nullable = false)
+    private String status; // Trạng thái: active, inactive, etc.
+
+    // Constructor không có trường `disasterWarningId` (thường dùng cho khởi tạo entity mới)
+    public DisasterWarning(Disaster disaster, Location location, Date startDate, String description, String status) {
+        this.disaster = disaster;
+        this.location = location;
+        this.startDate = startDate;
+        this.description = description;
+        this.status = status;
+    }
 }

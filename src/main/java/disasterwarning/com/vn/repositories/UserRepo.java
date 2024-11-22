@@ -19,4 +19,7 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     @Query("select u from User u where u.location.locationName=:province")
     List<User> findUsersByProvince(@Param("province") String province);
+
+    // Thêm phương thức đếm số lượng người dùng theo vai trò
+    long countByRole(String role);
 }

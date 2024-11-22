@@ -30,6 +30,13 @@ public class UserService implements IUserService{
     @Autowired
     private UserRepo userRepo;
 
+    // Phương thức đếm số người dùng
+    public long countUsers() {
+        return userRepo.count();
+    }
+
+
+
     @Autowired
     private LocationRepo locationRepo;
 

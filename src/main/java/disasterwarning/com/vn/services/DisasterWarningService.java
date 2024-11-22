@@ -25,6 +25,12 @@ public class DisasterWarningService implements IDisasterWarningService {
     @Autowired
     private DisasterWarningRepo disasterWarningRepo;
 
+    // Phương thức đếm số lượng cảnh báo đã gửi
+    public long countSentWarnings() {
+        return disasterWarningRepo.countByStatus("sent");  // Giả sử trạng thái của cảnh báo là "sent"
+    }
+
+
     @Autowired
     private DisasterService disasterService;
 

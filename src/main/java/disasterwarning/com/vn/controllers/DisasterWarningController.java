@@ -37,6 +37,14 @@ public class DisasterWarningController {
     @Autowired
     private DisasterWarningService disasterWarningService;
 
+    // Endpoint lấy số lượng cảnh báo đã gửi
+    @GetMapping("/sent/count")
+    public ResponseEntity<Long> getAlertCount() {
+        long alertCount = disasterWarningService.countSentWarnings();  // Gọi phương thức countSentWarnings() từ DisasterWarningService
+        return ResponseEntity.ok(alertCount);
+    }
+
+
     @GetMapping("/{city}")
     public ResponseEntity<List<DisasterWarningDTO>> getWeatherData(@PathVariable String city) {
         String decodedCity = URLDecoder.decode(city, StandardCharsets.UTF_8);
