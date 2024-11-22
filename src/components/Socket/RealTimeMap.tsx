@@ -10,11 +10,15 @@ import L, { LatLngExpression } from "leaflet";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import "leaflet/dist/leaflet.css";
-import IconsDurov from "../../assets/DuRovAva.jpeg";
+import iconsMap from "../../assets/iconsMap.png";
+import ReactDOMServer from 'react-dom/server';
+import { Avatar } from '@mui/material';
+
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
+
 // Tạo icon tùy chỉnh
 const userIcon = L.icon({
-  iconUrl: IconsDurov,
+  iconUrl: iconsMap,
   iconSize: [50, 50],
   iconAnchor: [25, 50],
   popupAnchor: [0, -50],
@@ -57,15 +61,17 @@ const RealTimeMap: React.FC = () => {
       onConnect: () => {
         console.log("Connected to WebSocket");
 
-        // Đăng ký nhận vị trí từ server
+        // Đăng ký nhận danh sách vị trí từ server
         stompClient.subscribe("/topic/locations", (message) => {
           console.log("Received message", message);
           if (message.body) {
-            const location: UserLocation = JSON.parse(message.body);
-            setPositions((prevPositions) => ({
-              ...prevPositions,
-              [location.userId]: location,
-            }));
+            const locations: UserLocation[] = JSON.parse(message.body);
+            // Chuyển đổi danh sách thành một map
+            const positionsMap: { [key: string]: UserLocation } = {};
+            locations.forEach((location) => {
+              positionsMap[location.userId] = location;
+            });
+            setPositions(positionsMap);
           }
         });
       },
@@ -95,7 +101,7 @@ const RealTimeMap: React.FC = () => {
         // Gửi vị trí lên server
         if (client && client.connected) {
           const userLocation: UserLocation = {
-            userId: "user123", // Thay bằng ID người dùng thực tế
+            userId: localStorage.getItem('userName') || 'Incognito',
             latitude,
             longitude,
           };
