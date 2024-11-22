@@ -113,6 +113,8 @@ public class DisasterInfoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>("An error occurred: " + e.getMessage(),null));
         }
     }
+
+
     @DeleteMapping("/disaster-info/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<?>> deleteDisasterInfo(@PathVariable int id) {
