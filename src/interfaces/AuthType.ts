@@ -49,7 +49,7 @@ export type UserResponse = {
     password?: string;
     role?: string;
     status?: string;
-    location?: { locationName: string };
+    location?: { locationId? : number, locationName?: string };
   };
   
   export type ChangePasswordDTO = {

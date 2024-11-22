@@ -21,7 +21,11 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
-      const token = sessionStorage.getItem("token");
+      let token = sessionStorage.getItem("token");
+      if(token === null) {
+        token = localStorage.getItem("token")
+      }
+      console.log(token)
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
@@ -40,9 +44,6 @@ export const userApi = createApi({
       query: ({ page, size }) => ({
         url: `/user-management/user`,
         params: { page, size },
-        headers: {
-          accept: "*/*",
-        },
       }),
     }),
 
@@ -94,10 +95,6 @@ export const userApi = createApi({
       query: (user) => ({
         url: `/user-management/user/${user.userId}`,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
         body: user,
       }),
     }),
