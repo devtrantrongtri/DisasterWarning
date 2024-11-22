@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import "leaflet/dist/leaflet.css";
-import IconsLocation from '../../assets/locationIconRed.jpg';
-import IconsDurov from '../../assets/DuRovAva.jpeg';
+import IconsDurov from "../../assets/DuRovAva.jpeg";
+
 // Tạo icon tùy chỉnh
 const userIcon = L.icon({
   iconUrl: IconsDurov,
-  iconSize: [50, 50], 
-  iconAnchor: [25, 50], 
-  popupAnchor: [0, -50], 
+  iconSize: [50, 50],
+  iconAnchor: [25, 50],
+  popupAnchor: [0, -50],
 });
 
 // Interface cho vị trí người dùng
@@ -34,9 +40,14 @@ function ChangeView({ center }: { center: LatLngExpression }) {
 }
 
 const RealTimeMap: React.FC = () => {
-  const [positions, setPositions] = useState<{ [key: string]: UserLocation }>({});
+  const [positions, setPositions] = useState<{ [key: string]: UserLocation }>(
+    {}
+  );
   const [client, setClient] = useState<Client | null>(null);
-  const [userPosition, setUserPosition] = useState<LatLngExpression>([21.0278, 105.8342]); // Vị trí mặc định
+  const [userPosition, setUserPosition] = useState<LatLngExpression>([
+    21.0278,
+    105.8342,
+  ]); // Vị trí mặc định
 
   useEffect(() => {
     // Tạo client STOMP
@@ -107,26 +118,73 @@ const RealTimeMap: React.FC = () => {
     };
   }, [client]);
 
-  return (
-<div style={{ height: "100vh", width: "100%" }}>
-  <MapContainer center={userPosition} zoom={16} style={{ height: "100%", width: "100%" }}>
-    <ChangeView center={userPosition} />
-    <TileLayer
-      attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-    {Object.values(positions).map((pos) => (
-      <Marker
-        key={pos.userId}
-        position={[pos.latitude, pos.longitude]}
-        icon={userIcon}
-      >
-        <Popup>{pos.userId}</Popup>
-      </Marker>
-    ))}
-  </MapContainer>
-</div>
+  // Hàm xử lý khi nhấn vào người dùng trong danh sách
+  const handleUserClick = (latitude: number, longitude: number) => {
+    setUserPosition([latitude, longitude]);
+  };
 
+  return (
+    <div style={{ display: "flex", height: "100vh", width: "100%" }}>
+      {/* Thanh bên */}
+      <div
+        style={{
+          width: "250px",
+          backgroundColor: "#f8f9fa",
+          borderRight: "1px solid #ddd",
+          padding: "10px",
+          overflowY: "auto",
+        }}
+      >
+        <h3>Danh sách người dùng</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {Object.keys(positions).map((userId) => (
+            <li
+              key={userId}
+              onClick={() =>
+                handleUserClick(
+                  positions[userId].latitude,
+                  positions[userId].longitude
+                )
+              }
+              style={{
+                cursor: "pointer",
+                padding: "10px",
+                margin: "5px 0",
+                backgroundColor: "#fff",
+                borderRadius: "5px",
+                boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              {userId}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Bản đồ */}
+      <div style={{ flex: 1 }}>
+        <MapContainer
+          center={userPosition}
+          zoom={16}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <ChangeView center={userPosition} />
+          <TileLayer
+            attribution='&copy; OpenStreetMap contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {Object.values(positions).map((pos) => (
+            <Marker
+              key={pos.userId}
+              position={[pos.latitude, pos.longitude]}
+              icon={userIcon}
+            >
+              <Popup>{pos.userId}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
+    </div>
   );
 };
 
