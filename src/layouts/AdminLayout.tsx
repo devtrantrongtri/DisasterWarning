@@ -24,13 +24,30 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 
 const AdminLayout: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
+  const navigate = useNavigate();
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
+  };
+
+   // Hàm xử lý logout
+   const handleLogout = () => {
+    // Xóa token và các thông tin liên quan trong localStorage/sessionStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationDate");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("role");
+
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("expirationDate");
+    sessionStorage.removeItem("userID");
+    sessionStorage.removeItem("role");
+
+    // Chuyển hướng người dùng về trang đăng nhập
+    navigate("/auth");
   };
 
   return (
@@ -130,7 +147,7 @@ const AdminLayout: React.FC = () => {
           <Box sx={{ mb: '3vh' }}>
             <Divider sx={{ borderColor: 'white', mb: '3vh' }} />
             <ListItem
-              onClick={() => alert('Logout')}
+              onClick={handleLogout}
               sx={{
                 pl: '1.5vw',
                 color: 'white',
