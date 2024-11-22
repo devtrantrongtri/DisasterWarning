@@ -14,13 +14,10 @@ public class ModelMapperConfig {
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true)
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-                .setPropertyCondition(context ->
-                        context.getSource() != null &&
-                                !(context.getSource() instanceof org.hibernate.collection.spi.PersistentCollection)
-                );
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+        modelMapper.getConfiguration().setPropertyCondition(context ->
+                context.getSource() != null);
 
         return modelMapper;
     }
 }
-

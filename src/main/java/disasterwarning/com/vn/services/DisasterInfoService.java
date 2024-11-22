@@ -102,17 +102,47 @@ public class DisasterInfoService implements IDisasterInfoService {
     }
 
     @Override
-    public DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO) {
+    public DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO,List<MultipartFile> imageFiles) {
         Optional<DisasterInfo> disasterInfoOpt = disasterInfoRepo.findById(id);
         if (disasterInfoOpt.isEmpty()) {
             throw new RuntimeException("DisasterInfo with ID " + id + " does not exist");
         }
         DisasterInfo existingDisasterInfo = disasterInfoOpt.get();
         DisasterInfo updatedDisasterInfo = mapper.convertToEntity(disasterInfoDTO, DisasterInfo.class);
-        updatedDisasterInfo.setDisasterInfoId(existingDisasterInfo.getDisasterInfoId());
-        updatedDisasterInfo.setDisaster(existingDisasterInfo.getDisaster());
-        updatedDisasterInfo.setImages(existingDisasterInfo.getImages());
-        DisasterInfo savedDisasterInfo = disasterInfoRepo.save(updatedDisasterInfo);
+        existingDisasterInfo.setTypeInfo(updatedDisasterInfo.getTypeInfo());
+        existingDisasterInfo.setInformation(updatedDisasterInfo.getInformation());
+
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            List<Image> imageEntities = new ArrayList<>();
+
+            for (MultipartFile imageFile : imageFiles) {
+                try {
+                    // Upload từng file ảnh lên Cloudinary và lấy URL
+                    ImageCloudinaryResponse mageCloudinaryResponse = fileUploadService.uploadImagev2(imageFile);
+
+                    System.out.println("Uploaded URL: " + mageCloudinaryResponse.getSecureUrl());
+                    System.out.println("Public ID: " + mageCloudinaryResponse.getPublicId());
+                    //Image và  disasterInfo
+                    Image imageEntity = new Image();
+                    imageEntity.setImageUrl(mageCloudinaryResponse.getSecureUrl());
+                    imageEntity.setImagePublicId(mageCloudinaryResponse.getPublicId());
+                    imageEntity.setDisasterInfo(existingDisasterInfo);  //  Linking Image và DisasterInfo
+
+                    imageRepo.save(imageEntity);
+                    System.out.println("Saved Image URL: " + imageEntity.getImageUrl());
+
+                    // add image to images
+                    imageEntities.add(imageEntity);
+                } catch (IOException e) {
+                    throw new RuntimeException("Lỗi khi upload ảnh: " + imageFile.getOriginalFilename(), e);
+                }
+            }
+
+            // Liên kết các ảnh vào disasterInfo và lưu lại vào cơ sở dữ liệu
+            existingDisasterInfo.setImages(imageEntities);
+        }
+
+        DisasterInfo savedDisasterInfo = disasterInfoRepo.save(existingDisasterInfo);
         return mapper.convertToDto(savedDisasterInfo, DisasterInfoDTO.class);
     }
 

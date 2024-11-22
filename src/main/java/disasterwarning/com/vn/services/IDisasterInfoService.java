@@ -12,7 +12,7 @@ public interface IDisasterInfoService {
 
     List<DisasterInfoDTO> findAllDisasterInfos();
 
-    DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO);
+    DisasterInfoDTO updateDisasterInfo(int id, DisasterInfoDTO disasterInfoDTO,List<MultipartFile> imageFiles);
 
     boolean deleteDisasterInfo(int id);
 

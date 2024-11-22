@@ -39,7 +39,7 @@ public class DisasterService implements IDisasterService{
     public DisasterDTO createDisaster(DisasterDTO disasterDTO, MultipartFile image) throws IOException {
         Disaster newDisaster = mapper.convertToEntity(disasterDTO, Disaster.class);
 
-        if(!image.isEmpty()){
+        if(image != null && !image.isEmpty()){
             String imageURL = fileUploadService.uploadImage(image);
             newDisaster.setImageUrl(imageURL);
         }
