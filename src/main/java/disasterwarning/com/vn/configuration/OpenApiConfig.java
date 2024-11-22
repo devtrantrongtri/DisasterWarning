@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
                 termsOfService = "Terms of service"
         ),
         servers = {
-                @Server(description = "Local ENV", url = "http://localhost:8080"),
+                @Server(description = "Local ENV", url = "https://localhost:8080"),
                 @Server(description = "PROD ENV", url = "https://trantrongtri.com")
         },
         security = {

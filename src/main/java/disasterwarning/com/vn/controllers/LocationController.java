@@ -94,7 +94,7 @@ public class LocationController {
     }
 
     @PostMapping("/location/create")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<LocationDTO>> createOrGetLocation(@RequestBody LocationDTO locationDTO) throws DuplicateDataException {
         try {
             // Kiểm tra xem địa điểm đã tồn tại chưa

@@ -63,7 +63,8 @@ public class WebSecurityConfig {
                                 "/disaster-management/disaster",
                                 "/disaster-management/disaster/{id}",
                                 "/disaster-info-management/disaster-info-disasterName/{disasterId}",
-                                "/ws-disaster-warning/**"
+                                "/ws-disaster-warning/**",
+                                "/location-management/location/create/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -80,7 +81,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://192.168.1.86:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://localhost:5173","https://192.168.1.86:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
         configuration.setExposedHeaders(Arrays.asList("x-auth-token"));

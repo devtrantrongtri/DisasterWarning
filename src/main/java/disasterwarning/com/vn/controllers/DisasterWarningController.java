@@ -16,13 +16,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @RequestMapping("/disaster-warning-management")
@@ -132,12 +136,23 @@ public class DisasterWarningController {
         }
     }
 
-    @MessageMapping("/location") // Nhận tin nhắn từ /app/location
-    @SendTo("/topic/locations") // Gửi tin nhắn tới /topic/locations
-    public UserLocation sendLocation(UserLocation location) {
-        //TODO :  Xử lý hoặc lưu trữ vị trí
-        log.info("New user access :{}",location);
-        return location;
+    // Thread-safe map to store user locations
+    private Map<String, UserLocation> userLocations = new ConcurrentHashMap<>();
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @MessageMapping("/location")
+    public void receiveLocation(UserLocation location) {
+        // Store or update the user's location
+        userLocations.put(location.getUserId(), location);
+        log.info("New user access: {}", location);
+
+        // Send the updated list to all clients
+        List<UserLocation> locations = new ArrayList<>(userLocations.values());
+        messagingTemplate.convertAndSend("/topic/locations", locations);
     }
+
+//Z
 
 }
