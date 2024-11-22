@@ -77,9 +77,9 @@ export const disasterApi = createApi({
     
         formData.append("disasterInfo", JSON.stringify(newDisasterInfo.disasterInfo));
 
-        newDisasterInfo.images?.forEach((image, index) => {
+        newDisasterInfo.images?.forEach((image) => {
           if (image.imageFile) {
-            formData.append(`images[${index}]`, image.imageFile);
+            formData.append('images', image.imageFile);
           }
         });
     
@@ -123,9 +123,9 @@ export const disasterApi = createApi({
     
         formData.append("disasterInfo", JSON.stringify(newDisasterInfo.disasterInfo));
 
-        newDisasterInfo.images?.forEach((image, index) => {
+        newDisasterInfo.images?.forEach((image) => {
           if (image.imageFile) {
-            formData.append(`images[${index}]`, image.imageFile);
+            formData.append('images', image.imageFile);
           }
         });
     

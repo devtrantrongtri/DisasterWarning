@@ -14,6 +14,7 @@ export type DisasterInfo = {
     information: string;
     disaster: Disaster;
     images: DisasterImage[];
+    newImages: DisasterImage[];
 };
 
 export interface CreateDisasterRequest {

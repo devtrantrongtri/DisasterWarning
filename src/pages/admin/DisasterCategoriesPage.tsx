@@ -29,7 +29,8 @@ import {
   useCreateDisasterInfoMutation,
   useUpdateDisasterMutation,
   useUpdateDisasterInfoMutation,
-  useDeleteDisasterMutation
+  useDeleteDisasterMutation,
+  useDeleteDisasterInfoMutation
 } from '../../services/disaster.service';
 import { 
   Disaster, 
@@ -76,6 +77,7 @@ const DisasterCategoriesPage: React.FC = () => {
   const [createDisaster] = useCreateDisasterMutation();
   const [createDisasterInfo] = useCreateDisasterInfoMutation();
   const [deleteDisaster] = useDeleteDisasterMutation();
+  const [deleteDisasterInfo] = useDeleteDisasterInfoMutation();
   const [updateDisaster] = useUpdateDisasterMutation();
   const handleOpenDialog = () => {
     setDisasterForm({
@@ -168,6 +170,23 @@ const DisasterCategoriesPage: React.FC = () => {
       setSnackbar({
         open: true,
         message: 'Error deleting disaster',
+        severity: 'error'
+      });
+    }
+  };
+
+  const handleDeleteDisasterInfo = async (disasterInfoId: number) => {
+    try {
+      await deleteDisasterInfo(disasterInfoId).unwrap();
+      setSnackbar({
+        open: true,
+        message: 'DisasterInfo deleted successfully',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Error deleting DisasterInfo',
         severity: 'error'
       });
     }
@@ -542,7 +561,12 @@ const DisasterCategoriesPage: React.FC = () => {
                                 </TableCell>
                                 <TableCell>
                                   <Box sx={{ display: 'flex', gap: 1 }}>
-                                    <IconButton sx={{
+                                    <IconButton 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteDisasterInfo(info.disasterInfoId);
+                                    }}
+                                    sx={{
                                       '&:hover': {
                                         backgroundColor: '#d7e2f7',
                                         transform: 'scale(1.1)'
@@ -1003,6 +1027,7 @@ const DisasterCategoriesPage: React.FC = () => {
         <DialogContent>
           {editingDisasterInfo && (
             <Box>
+              {/* Type Info */}
               <TextField
                 fullWidth
                 label="Type Info"
@@ -1015,6 +1040,8 @@ const DisasterCategoriesPage: React.FC = () => {
                 }
                 margin="normal"
               />
+
+              {/* Information */}
               <TextField
                 fullWidth
                 label="Information"
@@ -1029,18 +1056,88 @@ const DisasterCategoriesPage: React.FC = () => {
                 multiline
                 rows={3}
               />
-              <TextField
-                fullWidth
-                label="Image URL"
-                value={editingDisasterInfo.images || ''}
-                onChange={(e) =>
-                  setEditingDisasterInfo((prev) => ({
-                    ...prev,
-                    image: e.target.value,
-                  }))
-                }
-                margin="normal"
-              />
+
+              {/* Current Images (Cũ) */}
+              <Box>
+                <Typography variant="subtitle1">Current Images:</Typography>
+                <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                  {editingDisasterInfo.images
+                    ?.filter((image) => image.imageUrl) // Chỉ hiển thị ảnh cũ có URL
+                    .map((image, index) => (
+                      <Box key={index} sx={{ position: 'relative', width: '100px', height: '100px' }}>
+                        <img
+                          src={image.imageUrl || ''}
+                          alt={`Current ${index}`}
+                          style={{ width: '100%', height: '100%', borderRadius: '8px', objectFit: 'cover' }}
+                        />
+                      </Box>
+                    ))}
+                </Box>
+              </Box>
+
+              {/* New Images (Mới tải lên) */}
+              <Box>
+                <Typography variant="subtitle1">New Images:</Typography>
+                <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                {(editingDisasterInfo.newImages || []).map((image, index) => (
+                  <Box key={index} sx={{ position: 'relative', width: '100px', height: '100px' }}>
+                    {image.imageFile ? (
+                      <img
+                        src={URL.createObjectURL(image.imageFile)} 
+                        alt={`New Image ${index}`}
+                        style={{ width: '100%', height: '100%', borderRadius: '8px', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Typography variant="body2" color="textSecondary">
+                        No image available
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+                </Box>
+              </Box>
+
+              {/* Upload New Images */}
+              <Box
+                sx={{
+                  display: 'block',
+                  margin: '16px 0',
+                  padding: '8px',
+                  border: '2px dashed #1976d2',
+                  borderRadius: '8px',
+                  backgroundColor: '#f5f5f5',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: '#e3f2fd',
+                  },
+                }}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      const newImages = Array.from(files).map((file) => ({
+                        imageFile: file,
+                        imageUrl: URL.createObjectURL(file), // Lưu trữ URL tạm thời của file mới
+                      }));
+                      setEditingDisasterInfo((prev) => ({
+                        ...prev,
+                        newImages: [...(prev?.newImages || []), ...newImages], // Thêm ảnh mới vào mảng newImages
+                      }));
+                    }
+                  }}
+                  style={{ display: 'none' }}
+                  id="upload-button"
+                />
+                <label htmlFor="upload-button" style={{ cursor: 'pointer', fontWeight: 'bold', color: '#1976d2' }}>
+                  Click to upload new images
+                </label>
+              </Box>
             </Box>
           )}
         </DialogContent>
@@ -1051,7 +1148,7 @@ const DisasterCategoriesPage: React.FC = () => {
           <Button
             onClick={() => {
               if (editingDisasterInfo) {
-                // Gửi request cập nhật DisasterInfo
+                console.log(editingDisasterInfo); // Add your update logic here
               }
               handleCloseDisasterInfoDialog();
             }}
@@ -1063,7 +1160,8 @@ const DisasterCategoriesPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar
+
+     <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
