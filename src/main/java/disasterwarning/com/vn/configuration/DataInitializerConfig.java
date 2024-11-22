@@ -18,10 +18,10 @@ public class DataInitializerConfig {
     CommandLineRunner initDatabase(UserRepo userRepo, PasswordEncoder passwordEncoder, LocationRepo locationRepo) {
         return args -> {
 
-            Location location = locationRepo.findByName("Quang Tri");
+            Location location = locationRepo.findByName("Quảng Trị");
             if (location == null) {
                 location = new Location();
-                location.setLocationName("Quang Tri");
+                location.setLocationName("Quảng Trị");
                 location.setLatitude(BigDecimal.valueOf(16.6904));
                 location.setLongitude(BigDecimal.valueOf(107.1897));
                 location.setStatus("active");

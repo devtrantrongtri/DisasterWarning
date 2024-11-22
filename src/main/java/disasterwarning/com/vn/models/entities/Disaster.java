@@ -27,10 +27,10 @@ public class Disaster {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "disaster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "disaster", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<DisasterInfo> disasterInfos;
 
-    @OneToMany(mappedBy = "disaster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "disaster", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<DisasterWarning> disasterWarnings;
 
     public Disaster(String disasterName, String imageUrl, String description) {

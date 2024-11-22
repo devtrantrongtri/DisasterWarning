@@ -46,8 +46,6 @@ public class DisasterWarningService implements IDisasterWarningService {
     @Value("${Weather_API_KEY}")
     private String Weather_API_KEY;
 
-    private static final String API_URL = "https://api.openweathermap.org/data/2.5/forecast";
-    private static final String API_URL_WeatherAPI = "https://api.weatherapi.com/v1/forecast.json?q=";
     private static final String AI_URL = "http://127.0.0.1:8000/predict/forecast?location=";
 
     @Override
@@ -66,7 +64,7 @@ public class DisasterWarningService implements IDisasterWarningService {
             String existingFormattedDate = dateFormat.format(existingWarningDate);
 
             if (formattedDate.equals(existingFormattedDate)) {
-                if (existingWarning.getLocation().getLocationId()==newDisasterWarning.getLocation().getLocationId()) {
+                if (existingWarning.getLocation().getLocationId() == newDisasterWarning.getLocation().getLocationId()) {
                     throw new RuntimeException("Disaster warning already exists for this date");
                 }
             }
