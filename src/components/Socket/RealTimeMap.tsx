@@ -11,7 +11,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import "leaflet/dist/leaflet.css";
 import IconsDurov from "../../assets/DuRovAva.jpeg";
-
+const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 // Tạo icon tùy chỉnh
 const userIcon = L.icon({
   iconUrl: IconsDurov,
@@ -28,7 +28,7 @@ interface UserLocation {
 }
 
 // URL WebSocket server
-const SOCKET_URL = "http://localhost:8080/ws-disaster-warning";
+const SOCKET_URL = `${baseUrl}/ws-disaster-warning`;
 
 // Component để cập nhật tâm bản đồ
 function ChangeView({ center }: { center: LatLngExpression }) {
