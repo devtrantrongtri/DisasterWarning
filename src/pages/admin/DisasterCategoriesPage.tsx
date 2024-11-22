@@ -49,7 +49,11 @@ const DisasterCategoriesPage: React.FC = () => {
   const [editingDisaster, setEditingDisaster] = useState<Partial<Disaster> | null>(null);
   const [openDisasterDialog, setOpenDisasterDialog] = useState(false);
   const [openDisasterInfoDialog, setOpenDisasterInfoDialog] = useState(false);
-  const [editingDisasterInfo, setEditingDisasterInfo] = useState<Partial<DisasterInfo> | null>(null);
+  const [editingDisasterInfo, setEditingDisasterInfo] = useState<{
+    disasterInfoId: number | null;
+    disasterInfo: Partial<DisasterInfo> | null;
+  }>({ disasterInfoId: null, disasterInfo: null });
+  
   const [disasterForm, setDisasterForm] = useState<Partial<Disaster>>({
     disasterName: '',
     imageUrl: '',
@@ -78,6 +82,7 @@ const DisasterCategoriesPage: React.FC = () => {
   const [createDisasterInfo] = useCreateDisasterInfoMutation();
   const [deleteDisaster] = useDeleteDisasterMutation();
   const [deleteDisasterInfo] = useDeleteDisasterInfoMutation();
+  const [updateDisasterInfo] = useUpdateDisasterInfoMutation();
   const [updateDisaster] = useUpdateDisasterMutation();
   const handleOpenDialog = () => {
     setDisasterForm({
@@ -197,10 +202,72 @@ const DisasterCategoriesPage: React.FC = () => {
     setOpenDisasterDialog(true);
   };  
 
-  const handleEditDisasterInfo = (info: DisasterInfo) => {
-    setEditingDisasterInfo(info);
+  const handleEditDisasterInfo = (disasterInfoId: number, disasterInfo: DisasterInfo) => {
+    setEditingDisasterInfo({
+      disasterInfoId,
+      disasterInfo,
+    });
     setOpenDisasterInfoDialog(true);
-  };  
+  };
+  
+  // Rename your conflicting function to something else
+  const handleEditingDisasterInfo1 = async () => {
+    // Kiểm tra giá trị của `editingDisasterInfo` và `disasterInfo`
+    if (editingDisasterInfo && editingDisasterInfo.disasterInfo) {
+      // Lấy dữ liệu từ `editingDisasterInfo`
+      const { disasterInfo } = editingDisasterInfo;
+  
+      const createDisasterInfoRequest: CreateDisasterInfoRequest = {
+        disasterInfo: {
+          typeInfo: disasterInfo?.typeInfo || '', // Kiểm tra tồn tại và sử dụng giá trị mặc định
+          information: disasterInfo?.information || '',
+          disaster: disasterInfo?.disaster || null, // Nếu không có `disaster`, sử dụng `null`
+        },
+        images: disasterInfo?.newImages || [], // Kiểm tra và dùng mảng rỗng nếu không có
+      };
+  
+      console.log('Create Disaster Info Request:', createDisasterInfoRequest);
+  
+      try {
+        // Gửi yêu cầu cập nhật DisasterInfo
+        const response = await updateDisasterInfo({
+          disasterInfoId: editingDisasterInfo?.disasterInfoId || 0, // Đảm bảo rằng `disasterInfoId` không phải `undefined`
+          disasterInfo: createDisasterInfoRequest,
+        }).unwrap();
+  
+        // Hiển thị thông báo thành công
+        setSnackbar({
+          open: true,
+          message: 'DisasterInfo updated successfully',
+          severity: 'success',
+        });
+        console.log('DisasterInfo updated successfully', response);
+      } catch (error) {
+        // Xử lý lỗi
+        const errorMessage = error instanceof Error ? error.message : 'Error updating DisasterInfo';
+        setSnackbar({
+          open: true,
+          message: errorMessage,
+          severity: 'error',
+        });
+        console.error('Error updating DisasterInfo:', error);
+      }
+    } else {
+      // Thông báo lỗi nếu không có `editingDisasterInfo` hoặc `disasterInfo`
+      console.error('DisasterInfo ID is required or editingDisasterInfo is not valid');
+      setSnackbar({
+        open: true,
+        message: 'DisasterInfo ID is required or editingDisasterInfo is not valid',
+        severity: 'error',
+      });
+    }
+  
+    // Đóng dialog sau khi xử lý
+    handleCloseDisasterInfoDialog();
+  };
+  
+  
+ 
 
   const handleCloseDisasterDialog = () => {
     setOpenDisasterDialog(false);
@@ -209,8 +276,8 @@ const DisasterCategoriesPage: React.FC = () => {
   
   const handleCloseDisasterInfoDialog = () => {
     setOpenDisasterInfoDialog(false);
-    setEditingDisasterInfo(null);
-  };  
+    setEditingDisasterInfo({ disasterInfoId: null, disasterInfo: null });
+  };
 
   const handleSaveDisaster = async () => {
     if (editingDisaster && editingDisaster.disasterId) {
@@ -577,7 +644,7 @@ const DisasterCategoriesPage: React.FC = () => {
                                     <IconButton
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleEditDisasterInfo(info);
+                                        handleEditDisasterInfo(info.disasterInfoId ,info);
                                       }}
                                       sx={{
                                         '&:hover': {
@@ -1031,11 +1098,14 @@ const DisasterCategoriesPage: React.FC = () => {
               <TextField
                 fullWidth
                 label="Type Info"
-                value={editingDisasterInfo.typeInfo || ''}
+                value={editingDisasterInfo.disasterInfo?.typeInfo || ''}
                 onChange={(e) =>
                   setEditingDisasterInfo((prev) => ({
                     ...prev,
-                    typeInfo: e.target.value,
+                    disasterInfo: {
+                      ...prev?.disasterInfo,
+                      typeInfo: e.target.value, // Cập nhật chính xác field `typeInfo`
+                    },
                   }))
                 }
                 margin="normal"
@@ -1045,11 +1115,14 @@ const DisasterCategoriesPage: React.FC = () => {
               <TextField
                 fullWidth
                 label="Information"
-                value={editingDisasterInfo.information || ''}
+                value={editingDisasterInfo.disasterInfo?.information || ''}
                 onChange={(e) =>
                   setEditingDisasterInfo((prev) => ({
                     ...prev,
-                    information: e.target.value,
+                    disasterInfo: {
+                      ...prev?.disasterInfo,
+                      information: e.target.value, // Cập nhật chính xác field `typeInfo`
+                    },
                   }))
                 }
                 margin="normal"
@@ -1061,7 +1134,7 @@ const DisasterCategoriesPage: React.FC = () => {
               <Box>
                 <Typography variant="subtitle1">Current Images:</Typography>
                 <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                  {editingDisasterInfo.images
+                  {editingDisasterInfo.disasterInfo?.images
                     ?.filter((image) => image.imageUrl) // Chỉ hiển thị ảnh cũ có URL
                     .map((image, index) => (
                       <Box key={index} sx={{ position: 'relative', width: '100px', height: '100px' }}>
@@ -1079,7 +1152,7 @@ const DisasterCategoriesPage: React.FC = () => {
               <Box>
                 <Typography variant="subtitle1">New Images:</Typography>
                 <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                {(editingDisasterInfo.newImages || []).map((image, index) => (
+                {(editingDisasterInfo.disasterInfo?.newImages || []).map((image, index) => (
                   <Box key={index} sx={{ position: 'relative', width: '100px', height: '100px' }}>
                     {image.imageFile ? (
                       <img
@@ -1127,7 +1200,10 @@ const DisasterCategoriesPage: React.FC = () => {
                       }));
                       setEditingDisasterInfo((prev) => ({
                         ...prev,
-                        newImages: [...(prev?.newImages || []), ...newImages], // Thêm ảnh mới vào mảng newImages
+                        disasterInfo: {
+                          ...prev?.disasterInfo, // Giữ lại các thông tin cũ trong disasterInfo
+                          newImages: [...(prev?.disasterInfo?.newImages || []), ...newImages], // Thêm ảnh mới vào mảng newImages
+                        },
                       }));
                     }
                   }}
@@ -1146,12 +1222,7 @@ const DisasterCategoriesPage: React.FC = () => {
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              if (editingDisasterInfo) {
-                console.log(editingDisasterInfo); // Add your update logic here
-              }
-              handleCloseDisasterInfoDialog();
-            }}
+            onClick={handleEditingDisasterInfo1}
             color="primary"
             variant="contained"
           >

@@ -6,7 +6,8 @@ import {
   CreateDisasterInfoRequest,
   CreateDisasterInfoResponse,
   DisasterWarning,
-  GetDisasterByIdResponse
+  GetDisasterByIdResponse,
+  DisasterInfo
 } from "../interfaces/DisasterType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
@@ -117,25 +118,22 @@ export const disasterApi = createApi({
     }),
     
 
-    updateDisasterInfo: builder.mutation<CreateDisasterInfoResponse, CreateDisasterInfoRequest>({
-      query: (newDisasterInfo) => {
+    updateDisasterInfo: builder.mutation<CreateDisasterInfoResponse, { disasterInfoId: number; disasterInfo: CreateDisasterInfoRequest }>({
+      query: ({disasterInfoId, disasterInfo}) => {
         const formData = new FormData();
     
-        formData.append("disasterInfo", JSON.stringify(newDisasterInfo.disasterInfo));
+        formData.append("disasterInfo", JSON.stringify(disasterInfo.disasterInfo));
 
-        newDisasterInfo.images?.forEach((image) => {
+        disasterInfo.images?.forEach((image) => {
           if (image.imageFile) {
             formData.append('images', image.imageFile);
           }
         });
     
         return {
-          url: `/disaster-info-management/disaster-info`,
-          method: "POST",
-          body: formData,
-          headers: {
-            accept: "*/*",
-          },
+          url: `/disaster-info-management/disaster-info/${disasterInfoId}`,
+          method: "PUT",
+          body: formData
         };
       },
     }),
