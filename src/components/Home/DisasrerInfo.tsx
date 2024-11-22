@@ -1,22 +1,17 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import AboutUsImage from "../../assets/aboutus.png";
+const AboutUs: React.FC = () => {
 
-interface DisasterInfoProps {
-  imageUrl: string;
-  description: string;
-}
-
-
-const DisasterInfo: React.FC<DisasterInfoProps> = ({ imageUrl, description }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, padding: 10 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap:10, padding: 6 }}>
       {/* Phần hình ảnh chiếm một nửa */}
       <Box
         component="img"
-        src={imageUrl}
-        alt="Ảnh về thiên tai"
+        src={AboutUsImage}
+        alt="Ảnh về chúng tôi"
         sx={{
-          width: '50%',
+          width: '800px',
           height: 'auto',
           border: '1px solid #ccc',
           borderRadius: '8px',
@@ -25,16 +20,16 @@ const DisasterInfo: React.FC<DisasterInfoProps> = ({ imageUrl, description }) =>
       />
 
       {/* Phần thông tin chiếm một nửa */}
-      <Box sx={{ width: '50%' }}>
-        <Typography variant="h6" gutterBottom>
-          Nội dung về thiên tai trong nước/quốc tế
+      <Box sx={{ width: '50%'}}>
+        <Typography variant="h3" gutterBottom sx={{color:'white', fontWeight:'bold'}}>
+          Về chúng tôi
         </Typography>
-        <Typography variant="body1">
-          {description}
+        <Typography variant="body1" sx={{color:'white', fontSize:'18px'}}>
+          Chúng tôi hân hạnh...................................................
         </Typography>
       </Box>
     </Box>
   );
 };
 
-export default DisasterInfo;
+export default AboutUs;

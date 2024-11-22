@@ -1,254 +1,143 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  Grid, 
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
-  Divider,
-  Chip,
-  Avatar
-} from '@mui/material';
-import { 
-  LocationOn,
-  Message,
-  Share
-} from '@mui/icons-material';
-
-interface TeamMember {
-  name: string;
-  role: string;
-  phone: string;
-  status: 'available' | 'busy' | 'offline';
-}
-
-interface RescueTeam {
-  id: string;
-  name: string;
-  location: string;
-  members: TeamMember[];
-  activeOperations: number;
-  lastUpdate: string;
-  image: string;
-  description: string;
-}
+import { Box, Typography, Grid, Paper } from '@mui/material';
+import CuuTroImage from '../../assets/cuutro.png';
+import HoiChuThapDoImg from '../../assets/HCTĐ.png';
+import MTTQHueImg from '../../assets/MTTQHue.jpg';
+import MTTQHCMImg from '../../assets/MTTQHCM.jpg';
 
 const SupportPage: React.FC = () => {
-  const rescueTeams: RescueTeam[] = [
+  const regions = [
     {
-      id: 'team-a',
-      name: 'ĐỘI CỨU TRỢ A',
-      location: 'Quận 1, TP.HCM',
-      members: [
-        { name: 'Nguyễn Văn A', role: 'Đội trưởng', phone: '0901234567', status: 'available' },
-        { name: 'Trần Thị B', role: 'Y tế', phone: '0901234568', status: 'busy' },
-        { name: 'Lê Văn C', role: 'Hậu cần', phone: '0901234569', status: 'available' },
-      ],
-      activeOperations: 2,
-      lastUpdate: '10 phút trước',
-      image: 'https://img.freepik.com/premium-vector/rescue-teams-save-people-drowning-ocean-by-helicopter-inflatable-rubber-boat-life-jacket_343650-99.jpg?w=740', // Thay thế URL hình ảnh thực tế của đội A
-      description: 'Chuyên về cứu hộ đường thủy và hỗ trợ di tản trong vùng ngập lụt. Trang bị đầy đủ phương tiện cứu sinh và thiết bị chuyên dụng.'
+      name: 'Miền Bắc',
+      info: 'Hội Chữ thập đỏ Việt Nam\nĐịa chỉ: 82 Nguyễn Du, Hai Bà Trưng, Hà Nội\nSĐT: 024 38 224 030\n\nỦy ban Mặt trận Tổ quốc Việt Nam\nĐịa chỉ: Số 46 Tràng Thi, quận Hoàn Kiếm, Hà Nội\nSố điện thoại: 08 046 154\n\n',
+      image: HoiChuThapDoImg,
     },
     {
-      id: 'team-b',
-      name: 'ĐỘI CỨU TRỢ B',
-      location: 'Quận 2, TP.HCM',
-      members: [
-        { name: 'Phạm Văn D', role: 'Đội trưởng', phone: '0901234570', status: 'available' },
-        { name: 'Hoàng Thị E', role: 'Y tế', phone: '0901234571', status: 'offline' },
-      ],
-      activeOperations: 1,
-      lastUpdate: '30 phút trước',
-      image: 'https://img.freepik.com/free-vector/modern-emergency-word-concept-with-flat-design_23-2147934544.jpg?t=st=1732088279~exp=1732091879~hmac=93d8e42f4b2717058a42a379a0986586424cd3503ba0c45b59ca82ab5420e1b9&w=740', // Thay thế URL hình ảnh thực tế của đội B
-      description: 'Đội chuyên về y tế cấp cứu và sơ cứu ban đầu. Được trang bị xe cứu thương và thiết bị y tế hiện đại.'
+      name: 'Miền Trung',
+      info: 'Hội Chữ thập đỏ Đà Nẵng\nĐịa chỉ: 522 Ông Ích Khiêm, Hải Châu, Đà Nẵng\nSĐT: 0236 3821 185\n\nỦy ban Mặt trận Tổ quốc Việt Nam tỉnh Thừa Thiên Huế\nĐịa chỉ: Số 47 Hai Bà Trưng, thành phố Huế, Thừa Thiên Huế\nSố điện thoại: 0234 3823 823\n\n',
+      image: MTTQHueImg,
     },
     {
-      id: 'team-c',
-      name: 'ĐỘI CỨU TRỢ C',
-      location: 'Quận 3, TP.HCM',
-      members: [
-        { name: 'Vũ Văn F', role: 'Đội trưởng', phone: '0901234572', status: 'busy' },
-        { name: 'Ngô Thị G', role: 'Hậu cần', phone: '0901234573', status: 'available' },
-      ],
-      activeOperations: 3,
-      lastUpdate: '1 giờ trước',
-      image: 'https://img.freepik.com/free-vector/rescue-using-stretcher-forest_1308-107868.jpg?t=st=1732087612~exp=1732091212~hmac=017802e4ecad9236dcef897175feed5a26aef5486e41ae01c137d4d1f5dff8ec&w=826', // Thay thế URL hình ảnh thực tế của đội C
-      description: 'Chuyên về hậu cần và vận chuyển hàng cứu trợ. Sở hữu đội xe tải và kho bãi rộng lớn.'
-    }
+      name: 'Miền Nam',
+      info: 'Hội Chữ thập đỏ TP.HCM\nĐịa chỉ: 201 Nguyễn Thị Minh Khai, Quận 1, TP.HCM\nSĐT: 028 38 325 729 - 028 39 255 626\n\nỦy ban Mặt trận Tổ quốc Việt Nam TP. Hồ Chí Minh\nĐịa chỉ: Số 55 Mạc Đĩnh Chi, phường Đa Kao, quận 1, TP. Hồ Chí Minh\nSố điện thoại: 028 38 221 368 - 028 38 244 848',
+      image: MTTQHCMImg,
+    },
   ];
 
-  const getStatusColor = (status: TeamMember['status']) => {
-    switch (status) {
-      case 'available':
-        return '#4caf50';
-      case 'busy':
-        return '#ff9800';
-      case 'offline':
-        return '#9e9e9e';
-      default:
-        return '#9e9e9e';
-    }
-  };
-
-  const getStatusText = (status: TeamMember['status']) => {
-    switch (status) {
-      case 'available':
-        return 'Sẵn sàng';
-      case 'busy':
-        return 'Đang bận';
-      case 'offline':
-        return 'Ngoại tuyến';
-      default:
-        return 'Không xác định';
-    }
-  };
-
   return (
-    <Box sx={{ padding: 4, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-      <Typography 
-        variant="h4" 
-        align="center" 
-        gutterBottom 
-        sx={{ 
-          mt: 4,
-          mb: 4,
+    <Box
+      sx={{
+        padding: 4,
+        backgroundColor: 'transparent',
+        boxShadow: 3,
+        pd: 10,
+        margin: 7,
+        borderRadius: '10px',
+        backdropFilter: 'blur(5px)',
+      }}
+    >
+      {/* Phần hình ảnh thông tin cứu trợ */}
+      <Typography
+        sx={{
+          position: 'absolute',
+          height: '600px',
+          width:'96%',
+          borderRadius: '40px',
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
           fontWeight: 'bold',
-          color: '#1a237e'
+          color:'white'
         }}
       >
-        Thông Tin Cứu Trợ
-      </Typography>
+      </Typography> 
+
+      <Typography
+      variant="h5"
+      sx={{
+        position: 'absolute',
+        color: 'white',
+        fontWeight: 'bold',
+        textShadow:'2px 2px 2px rgba(45, 58, 84, 0.8)',
+        textAlign:'center',
+        width:'100%',
+        top:'20%',
+        fontSize:'55px',
+        fontFamily:'Verdana'
+      }}
+    >
+      THÔNG TIN CỨU TRỢ
+    </Typography>
+
+    <Typography
+      sx={{
+        position: 'absolute',
+        color: '#e9d5d5',
+        fontWeight: 'bold',
+        textShadow:'2px 2px 2px rgba(45, 58, 84, 0.8)',
+        textAlign:'center',
+        width:'100%',
+        top:'28%',
+        fontSize:'25px',
+        fontFamily:'Verdana'
+      }}
+    >
+      Hãy liên hệ khi cần thiết!
+    </Typography>
+
+      <Paper
+        elevation={3}
+        sx={{
+          height: '600px',
+          marginBottom: 4,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(213, 208, 208, 0.4)',
+          borderRadius: '40px'
+        }}
+      >
+        <img
+          src={CuuTroImage}
+          alt="Ảnh thông tin cứu trợ"
+          style={{ height: '100%', objectFit: 'contain' }}
+        />
+      </Paper>
 
       <Grid container spacing={4} justifyContent="center">
-        {rescueTeams.map((team) => (
-          <Grid item xs={12} md={4} key={team.id}>
-            <Card 
-              elevation={3} 
-              sx={{ 
-                height: '100%', 
-                display: 'flex', 
+        {regions.map((region, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Paper
+              elevation={3}
+              sx={{
+                padding: 2,
+                display: 'flex',
                 flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6,
-                }
+                alignItems: 'center',
+                backgroundColor: 'rgba(224, 224, 224, 0.3)',
+                borderRadius:10,
               }}
             >
-              <CardMedia
-                component="img"
-                height="250"
-                image={team.image}
-                alt={team.name}
-                sx={{
-                  objectFit: 'contain', // Hiển thị toàn bộ hình ảnh trong khung
-                  
-                }}
+              {/* Hình ảnh */}
+                <Box component="img"
+              src={region.image}
+              alt={region.name}
+              sx={{
+                height: "150px",
+                borderRadius: "800px",
+                boxShadow: 4,
+                marginBottom: 2,
+              }}
               />
-              <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1a237e' }}>
-                    {team.name}
-                  </Typography>
-                  <Chip 
-                    label={`${team.activeOperations} hoạt động`}
-                    color="primary"
-                    size="small"
-                  />
-                </Box>
 
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  {team.description}
-                </Typography>
+              {/* Tên miền */}
+              <Typography variant="h4" gutterBottom sx={{fontWeight:500, color:'#2D3A53',fontFamily:'Verdana'}}>
+                {region.name}
+              </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <LocationOn sx={{ mr: 1, color: 'action.active' }} />
-                  <Typography variant="body2" color="text.secondary">
-                    {team.location}
-                  </Typography>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                  Thành viên chính:
-                </Typography>
-                {team.members.map((member, index) => (
-                  <Box key={index} sx={{ mb: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Avatar sx={{ 
-                        width: 32, 
-                        height: 32,
-                        backgroundColor: '#1a237e'
-                      }}>
-                        {member.name[0]}
-                      </Avatar>
-                      <Box>
-                        <Typography variant="body2">
-                          {member.name} - {member.role}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Box
-                            sx={{
-                              width: 8,
-                              height: 8,
-                              borderRadius: '50%',
-                              backgroundColor: getStatusColor(member.status)
-                            }}
-                          />
-                          <Typography variant="caption" color="text.secondary">
-                            {getStatusText(member.status)}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
-
-                <Box sx={{ mt: 'auto', pt: 2 }}>
-                  <Divider sx={{ mb: 2 }} />
-                  
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="caption" color="text.secondary">
-                      Cập nhật: {team.lastUpdate}
-                    </Typography>
-                    <Box>
-                      <Button
-                        startIcon={<Message />}
-                        variant="contained"
-                        size="small"
-                        sx={{ 
-                          mr: 1,
-                          backgroundColor: '#1a237e',
-                          '&:hover': {
-                            backgroundColor: '#0d47a1'
-                          }
-                        }}
-                      >
-                        Liên hệ
-                      </Button>
-                      <Button
-                        startIcon={<Share />}
-                        variant="outlined"
-                        size="small"
-                        sx={{ 
-                          color: '#1a237e',
-                          borderColor: '#1a237e',
-                          '&:hover': {
-                            borderColor: '#0d47a1',
-                            backgroundColor: 'rgba(26, 35, 126, 0.04)'
-                          }
-                        }}
-                      >
-                        Chia sẻ
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+              {/* Thông tin */}
+              <Typography variant="body1" align="center" whiteSpace="pre-line">
+                {region.info}
+              </Typography>
+            </Paper>
           </Grid>
         ))}
       </Grid>

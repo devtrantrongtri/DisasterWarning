@@ -49,9 +49,14 @@ export type UserResponse = {
     password?: string;
     role?: string;
     status?: string;
-    location?: { locationId: number };
+    location?: { locationId? : number, locationName?: string };
   };
-    
+  
+  export type ChangePasswordDTO = {
+    oldPassword: string;
+    password: string;
+    retypePassword: string;
+  };
   
   export type Pageable = {
     pageNumber: number;

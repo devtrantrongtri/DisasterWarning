@@ -118,7 +118,7 @@ const UserManagementPage: React.FC = () => {
         userId: selectedUser.userId,
         userName: selectedUser.userName,
         email: selectedUser.email,
-        password: selectedUser.password, // Include the password
+        password: selectedUser.password,
         role: selectedUser.role,
         status: selectedUser.status,
         location: locationId ? { locationId } : selectedUser.location,

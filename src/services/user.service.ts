@@ -9,8 +9,10 @@ import {
   RegisterResponse,
   User,
   CountTokenRequest,
+  ChangePasswordDTO,
   UserUpdate,
 } from "../interfaces/AuthType";
+import ChangePasswordPopup from "../pages/auth/ChangPassword";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 
@@ -19,7 +21,11 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+      let token = sessionStorage.getItem("token");
+      if(token === null) {
+        token = localStorage.getItem("token")
+      }
+      console.log(token)
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
@@ -38,9 +44,6 @@ export const userApi = createApi({
       query: ({ page, size }) => ({
         url: `/user-management/user`,
         params: { page, size },
-        headers: {
-          accept: "*/*",
-        },
       }),
     }),
 
@@ -88,14 +91,23 @@ export const userApi = createApi({
       }),
     }),
 
-    updateUser: build.mutation<void, User>({
+    updateUser: build.mutation<void, UserUpdate>({
       query: (user) => ({
         url: `/user-management/user/${user.userId}`,
         method: "PUT",
+        body: user,
+      }),
+    }),
+
+    changePassword: build.mutation<void, ChangePasswordDTO>({
+      query: (formData) => ({
+        url: "/forgot-password/change_password",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
-        body: user,
+        body: formData,  // Send formData directly as the body
       }),
     }),
 
@@ -136,6 +148,7 @@ export const {
   useRegisterMutation,
   useCreateLocationMutation,
   useSendOtpMutation, 
+  useChangePasswordMutation,
   useUpdateUserMutation,
   useGetUserByIdQuery,
   useCountTokenQuery
