@@ -20,24 +20,37 @@ const DangerousLocations: React.FC = () => {
   return (
     <Card
       sx={{
-        maxWidth: 500,
+        minWidth: 308,
         mx: 'auto', 
-        mt: 4,
-        boxShadow: 3,
-        borderRadius: 2,
+        mt: 0,
+        borderRadius: 4,
         overflow: 'hidden',
         borderColor: 'primary.main',
+
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        color: '#030302', // Text color
+        boxShadow: 'none',
+        
       }}
     >
-      <CardContent sx={{ backgroundColor: '#f7f9fc', paddingBottom: 0 }}>
-        <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: 'bold', color: 'primary.main' }}
-        >
-          Các khu vực nguy hiểm
-        </Typography>
+      <CardContent sx={{ 
+        backgroundColor: '#f7f9fc', 
+        paddingBottom: 0, 
+        background: 'transparent', // No background
+        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+        color: '#030302', // Text color
+        boxShadow: 'none',
+        }}>
+      <Typography
+        variant="h6"
+        align="center"
+        gutterBottom
+        sx={{ fontWeight: 'bold', color: '##030302', marginBottom: 4 }} // Sử dụng mã màu trực tiếp
+      >
+        Các khu vực nguy hiểm
+      </Typography>
+
 
         <Box
           mb={2}
@@ -46,6 +59,7 @@ const DangerousLocations: React.FC = () => {
             borderRadius: 1,
             overflow: 'hidden',
             boxShadow: 2,
+            border: '2px solid #0e66a1',
           }}
         >
           <DangerousLocationsMap />
@@ -62,7 +76,10 @@ const DangerousLocations: React.FC = () => {
             color: 'text.secondary',
           }}
         >
-          <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+          <Typography 
+            variant="body1" 
+            align='center'
+            sx={{ fontWeight: 'bold',color: '#030302' }}>
             Danh sách các khu vực
           </Typography>
         </Box>

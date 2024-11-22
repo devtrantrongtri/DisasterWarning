@@ -6,7 +6,7 @@ const ActivityHistory = () => {
 
   useEffect(() => {
     // Retrieve the activity history from sessionStorage
-    const loginHistory = sessionStorage.getItem('expirationDate');
+    const loginHistory = localStorage.getItem('expirationDate');
 
     const activitiesList: any[] = [];
 

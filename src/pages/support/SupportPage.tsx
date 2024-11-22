@@ -45,7 +45,9 @@ const SupportPage: React.FC = () => {
           borderRadius: '40px',
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
           fontWeight: 'bold',
-          color:'white'
+          color:'white',
+
+          
         }}
       >
       </Typography> 
@@ -59,7 +61,7 @@ const SupportPage: React.FC = () => {
         textShadow:'2px 2px 2px rgba(45, 58, 84, 0.8)',
         textAlign:'center',
         width:'100%',
-        top:'20%',
+        top:'10%',
         fontSize:'55px',
         fontFamily:'Verdana'
       }}
@@ -73,11 +75,11 @@ const SupportPage: React.FC = () => {
         color: '#e9d5d5',
         fontWeight: 'bold',
         textShadow:'2px 2px 2px rgba(45, 58, 84, 0.8)',
-        textAlign:'center',
         width:'100%',
-        top:'28%',
+        top:'35%',
         fontSize:'25px',
-        fontFamily:'Verdana'
+        fontFamily:'Verdana',
+        marginLeft:"500px",
       }}
     >
       Hãy liên hệ khi cần thiết!

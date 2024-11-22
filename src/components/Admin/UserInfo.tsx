@@ -17,31 +17,51 @@ const UserInfo: React.FC = () => {
       setAlertCount(alertData);  // Lưu số lượng cảnh báo từ API
     }
   }, [userData, alertData]);
-
+  const paperStyle = {
+    
+    padding: 1,
+    textAlign: 'center',
+    minHeight: '150px',
+    width: '350px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    borderRadius: 0, // Remove the border radius to avoid any rounded edges
+    background: 'transparent', // No background
+    backdropFilter: 'blur(10px)', // Optional: blurred effect on background
+    color:'#030302',
+    boxShadow: 'none', // Remove any box shadow if present
+  };
+  
+  
+  
+  
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', backgroundColor: '#e0e0e0' }}>
-        <Typography variant="h6">Số lượng người dùng</Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginLeft: 1}}>
+      <Paper elevation={3} sx={paperStyle}>
+        <Typography variant="h6" sx={{ marginBottom: 1, fontWeight: 'bold' }}>Số lượng người dùng</Typography>
         {userLoading ? (
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>Đang tải...</Typography>
         ) : (
-          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h3" sx={{ fontWeight: 'bold', color:'#fff' }}>
             {userCount ?? '0'}
           </Typography>
         )}
       </Paper>
-      <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', backgroundColor: '#e0e0e0' }}>
-        <Typography variant="h6">Số lượng cảnh báo được gửi đi</Typography>
+  
+      <Paper elevation={3} sx={paperStyle}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Số lượng cảnh báo được gửi đi</Typography>
         {alertLoading ? (
           <Typography variant="h3" sx={{ fontWeight: 'bold' }}>Đang tải...</Typography>
         ) : (
-          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h3" sx={{ fontWeight: 'bold', color:'#fff' }}>
             {alertCount ?? '0'}
           </Typography>
         )}
       </Paper>
     </Box>
   );
+  
 };
 
 export default UserInfo;

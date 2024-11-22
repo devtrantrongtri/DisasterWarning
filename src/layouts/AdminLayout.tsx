@@ -25,6 +25,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 
 const AdminLayout: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -113,12 +115,13 @@ const AdminLayout: React.FC = () => {
           <List sx={{ mt: isSidebarOpen ? '1.5vh' : '1.5vh' }}>
             {[
               { text: 'Home', icon: <HomeIcon />, path: '/' },
-              { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+              // { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
               { text: 'Profile', icon: <AccountCircleIcon />, path: '/info' },
-              { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
-              { text: 'Disaster Details', icon: <InfoIcon />, path: '/dashboard/disaster-details' },
+              // { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
+              // { text: 'Disaster Details', icon: <InfoIcon />, path: '/dashboard/disaster-details' },
               { text: 'Disaster Categories', icon: <CategoryIcon />, path: '/dashboard/disaster-categories' },
               { text: 'User Management', icon: <PeopleIcon />, path: '/dashboard/user-management' },
+              // { text: 'User Management', icon: <WarningAmberIcon />, path: '/dashboard/disaster-warning' },
             ].map((item) => (
               <Tooltip title={isSidebarOpen ? '' : item.text} key={item.text} placement="right">
                 <ListItem

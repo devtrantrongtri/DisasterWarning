@@ -17,7 +17,7 @@ export const disasterApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers) => {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       console.log("token header is: ", token);
       if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;

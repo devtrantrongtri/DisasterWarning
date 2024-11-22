@@ -104,7 +104,7 @@ const PrivateRoute: RouteType[] = [
         layout: NoneLayout,
       },
       { 
-        path: "warning-management",
+        path: "disaster-warning",
         page: WarningManagementPage,
         layout: NoneLayout,
       },

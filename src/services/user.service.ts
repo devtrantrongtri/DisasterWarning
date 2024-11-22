@@ -100,24 +100,24 @@ export const userApi = createApi({
       query: (formData) => ({
         url: "/forgot-password/change_password",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        // },
         body: formData,  // Send formData directly as the body
       }),
     }),
 
     getUserById: build.query<GetUserByIdResponse, number>({
       query: (userId) => {
-        const token = sessionStorage.getItem("token");
+        // const token = sessionStorage.getItem("token");
         return {
           url: `/user-management/user/${userId}`,
           method: "GET",
-          headers: {
-            accept: "*/*",
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   accept: "*/*",
+          //   Authorization: `Bearer ${token}`,
+          // },
         };
       },
     }),

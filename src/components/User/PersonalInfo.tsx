@@ -6,7 +6,7 @@ import ChangePasswordForm from '../../pages/auth/ChangPassword';
 const PersonalInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const userId = Number(sessionStorage.getItem("userID"));
+  const userId = Number(localStorage.getItem("userID"));
 
   // Lấy dữ liệu người dùng từ API
   const { data: user } = useGetUserByIdQuery(userId);
@@ -55,7 +55,7 @@ const PersonalInfo = () => {
         return;
       }
       
-      let role_ = sessionStorage.getItem('role');
+      let role_ = localStorage.getItem('role');
       if(role_ == '[ROLE_ADMIN]'){
         role_ = 'admin';
       }
