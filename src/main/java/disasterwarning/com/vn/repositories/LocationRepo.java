@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface LocationRepo extends JpaRepository<Location, Integer> {
 
@@ -19,4 +21,8 @@ public interface LocationRepo extends JpaRepository<Location, Integer> {
 
     @Query("select l from Location l where l.status = 'active'")
     Page<Location> findAllLocationActive(Pageable pageable);
+
+    @Query("select l from Location l join l.disasterWarnings dw where dw.startDate between :startDate and :endDate group by l")
+    List<Location> findAllLocationWithWarning(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
 }

@@ -3,12 +3,10 @@ package disasterwarning.com.vn.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import disasterwarning.com.vn.models.dtos.*;
-import disasterwarning.com.vn.models.entities.Disaster;
 import disasterwarning.com.vn.models.entities.DisasterWarning;
 import disasterwarning.com.vn.models.entities.Location;
 import disasterwarning.com.vn.repositories.DisasterWarningRepo;
 import disasterwarning.com.vn.services.sendMail.IMailService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -68,7 +66,9 @@ public class DisasterWarningService implements IDisasterWarningService {
             String existingFormattedDate = dateFormat.format(existingWarningDate);
 
             if (formattedDate.equals(existingFormattedDate)) {
-                throw new RuntimeException("Disaster warning already exists for this date");
+                if (existingWarning.getLocation().getLocationId()==newDisasterWarning.getLocation().getLocationId()) {
+                    throw new RuntimeException("Disaster warning already exists for this date");
+                }
             }
         }
 
@@ -158,7 +158,6 @@ public class DisasterWarningService implements IDisasterWarningService {
         return mapper.convertToDtoPage(disasterWarnings, DisasterWarningDTO.class);
     }
 
-    @Transactional
     public boolean deleteDisasterWarning(int id) {
         DisasterWarning disasterWarning = disasterWarningRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Disaster Warning not found"));

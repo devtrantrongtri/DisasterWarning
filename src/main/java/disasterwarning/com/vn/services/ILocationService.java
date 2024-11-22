@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ILocationService {
@@ -24,4 +25,6 @@ public interface ILocationService {
     public LocationDTO updateLocation(int id, LocationDTO locationDTO) throws DataNotFoundException;
 
     public boolean deleteLocation(int id) throws DataNotFoundException;
+
+    public List<LocationDTO> findLocationHaveWarning() throws DataNotFoundException;
 }

@@ -24,7 +24,7 @@ public class Disaster {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @OneToMany(mappedBy = "disaster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
