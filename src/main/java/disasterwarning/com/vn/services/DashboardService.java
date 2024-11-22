@@ -19,14 +19,14 @@ public class DashboardService {
     // Lấy số lượng người dùng
     public int getUserCount() {
         // Kiểm tra role hợp lệ trong database
-        long userCount = userRepo.countByRole("admin");
+        long userCount = userRepo.countByRole("user");
         return Math.toIntExact(userCount); // Sử dụng Math.toIntExact để tránh lỗi số lớn
     }
 
     // Lấy số lượng cảnh báo
     public int getAlertCount() {
         // Đếm số lượng cảnh báo với trạng thái "Active"
-        long alertCount = alertRepo.countByStatus("Active");
+        long alertCount = alertRepo.countByStatus("active");
         return Math.toIntExact(alertCount); // Đảm bảo tương thích với kiểu int
     }
 }
