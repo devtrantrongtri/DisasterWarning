@@ -3,9 +3,12 @@ package disasterwarning.com.vn.controllers;
 import disasterwarning.com.vn.Response.ResponseWrapper;
 import disasterwarning.com.vn.exceptions.DataNotFoundException;
 import disasterwarning.com.vn.models.dtos.DisasterWarningDTO;
+import disasterwarning.com.vn.models.dtos.UserDTO;
 import disasterwarning.com.vn.models.dtos.UserLocation;
 import disasterwarning.com.vn.models.dtos.WeatherData;
+import disasterwarning.com.vn.security.CustomUserDetails;
 import disasterwarning.com.vn.services.DisasterWarningService;
+import disasterwarning.com.vn.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +40,8 @@ public class DisasterWarningController {
 
     @Autowired
     private DisasterWarningService disasterWarningService;
+    @Autowired
+    private UserService userService;
 
     // Endpoint lấy số lượng cảnh báo đã gửi
     @GetMapping("/sent/count")
@@ -177,4 +183,24 @@ public class DisasterWarningController {
     }
 //Z
 
+    @GetMapping("/disaster-warning/location")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USER')")
+    public ResponseEntity<ResponseWrapper<List<DisasterWarningDTO>>> findDisasterWarningByLocationName(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        UserDTO user = userService.findUserByEmail(userDetails.getUsername());
+        List<DisasterWarningDTO> disasterWarnings = disasterWarningService.findDisasterWarningByLocationName(user.getLocation().getLocationName());
+
+        ResponseWrapper<List<DisasterWarningDTO>> responseWrapper = new ResponseWrapper<>(
+                (disasterWarnings != null && !disasterWarnings.isEmpty()) ?
+                        "Disaster Warnings retrieved successfully" :
+                        "No Disaster Warnings found",
+                disasterWarnings
+        );
+
+        HttpStatus status = (disasterWarnings != null && !disasterWarnings.isEmpty()) ?
+                HttpStatus.OK :
+                HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(responseWrapper, status);
+    }
 }

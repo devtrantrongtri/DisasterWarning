@@ -10,8 +10,8 @@ public interface DisasterWarningRepo extends JpaRepository<DisasterWarning, Inte
 
     long countByStatus(String status); // Đếm số bản ghi theo trạng thái
 
-    @Query("SELECT d FROM DisasterWarning d WHERE d.location.locationId = :locationId")
-    List<DisasterWarning> findDisasterWarningByLocation(int locationId);
+    @Query(value = "SELECT d FROM DisasterWarning d WHERE d.location.locationName=:name")
+    List<DisasterWarning> findDisasterWarningByLocationName(String name);
 
     @Query("SELECT d FROM DisasterWarning d WHERE d.description = :description")
     DisasterWarning findDisasterWarningByDescription(String description);

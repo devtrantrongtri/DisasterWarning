@@ -98,7 +98,7 @@ public class DisasterWarningService implements IDisasterWarningService {
                 }
             }
         }
-
+        newDisasterWarning.setStatus("active");
         disasterWarningRepo.save(newDisasterWarning);
 
         return mapper.convertToEntity(newDisasterWarning, DisasterWarningDTO.class);
@@ -299,4 +299,13 @@ public class DisasterWarningService implements IDisasterWarningService {
             return null;
         }
     }
+
+    public  List<DisasterWarningDTO> findDisasterWarningByLocationName(String locationName){
+        List<DisasterWarning> disasterWarnings = disasterWarningRepo.findDisasterWarningByLocationName(locationName);
+        if(disasterWarnings.isEmpty()){
+            throw new RuntimeException("Disaster Warning not found");
+        }
+        return mapper.convertToDtoList(disasterWarnings, DisasterWarningDTO.class);
+    }
+
 }
