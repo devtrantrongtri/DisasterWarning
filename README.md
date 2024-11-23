@@ -54,17 +54,73 @@ DisasterWarning/
     └── package.json
 ```
 
-## Hướng Dẫn Cài Đặt
+## Hướng Dẫn Cài Đặt và Cấu Hình
 
 ### Yêu Cầu Hệ Thống
 - Python 3.8 trở lên (cho AI)
 - Java 11 trở lên (cho BE)
 - Node.js 14 trở lên (cho FE)
-- MongoDB
-- Redis (cho WebSocket)
+- PostgreSQL
 
-### Cài Đặt
-1. **Thành phần AI**
+### Thiết Lập HTTPS
+
+#### 1. Lấy Địa Chỉ IP Máy Chủ
+```bash
+# Linux/Ubuntu
+ip a
+# Windows
+ipconfig
+# MacOS
+ifconfig
+```
+
+#### 2. Thiết Lập HTTPS cho Frontend
+1. Cài đặt và tạo chứng chỉ SSL:
+   ```bash
+   sudo apt install mkcert
+   mkcert -install
+   mkcert localhost 192.168.1.86
+   ```
+
+2. Cấu hình trong `vite.config.ts`:
+   ```typescript
+   import { defineConfig } from 'vite';
+   import react from '@vitejs/plugin-react';
+   import fs from 'fs';
+
+   const https = {
+     key: fs.readFileSync('./cert/localhost+1-key.pem'),
+     cert: fs.readFileSync('./cert/localhost+1.pem'),
+   };
+
+   export default defineConfig({
+     plugins: [react()],
+     server: {
+       https,
+       host: '192.168.1.86',
+       port: 3000,
+     },
+   });
+   ```
+
+#### 3. Thiết Lập HTTPS cho Backend
+1. Tạo và chuyển đổi chứng chỉ:
+   ```bash
+   openssl pkcs12 -export -out keystore.p12 -inkey localhost+1-key.pem -in localhost+1.pem -name springboot
+   ```
+
+2. Cấu hình trong `application.properties`:
+   ```properties
+   server.port=8443
+   server.ssl.key-store=classpath:keystore.p12
+   server.ssl.key-store-password=your-password
+   server.ssl.key-store-type=PKCS12
+   server.ssl.key-alias=springboot
+   ```
+
+### Cài Đặt Các Thành Phần
+
+1. **AI Component**
    ```bash
    cd AI
    pip install -r requirements.txt
@@ -81,21 +137,6 @@ DisasterWarning/
    cd FE
    npm install
    ```
-
-## Cấu Hình HTTPS
-### Frontend
-1. Tạo chứng chỉ SSL:
-   ```bash
-   mkcert localhost [your-ip]
-   ```
-2. Cấu hình trong `vite.config.ts`
-
-### Backend
-1. Chuyển đổi chứng chỉ:
-   ```bash
-   openssl pkcs12 -export -out keystore.p12 -inkey localhost+1-key.pem -in localhost+1.pem
-   ```
-2. Cấu hình trong `application.properties`
 
 ## Khởi Chạy Hệ Thống
 
@@ -123,6 +164,11 @@ DisasterWarning/
 - Gửi cảnh báo tức thì
 - Theo dõi trạng thái online/offline
 
+## Kiểm Tra và Vận Hành
+- Truy cập Frontend: `https://192.168.1.86:3000`
+- Truy cập Backend: `https://192.168.1.86:8443`
+- Kiểm tra API: `curl -k https://192.168.1.86:8443`
+
 ## Đóng Góp
 Vui lòng tham khảo `CONTRIBUTING.md` để biết chi tiết về quy trình đóng góp.
 
@@ -130,6 +176,8 @@ Vui lòng tham khảo `CONTRIBUTING.md` để biết chi tiết về quy trình 
 Dự án này được cấp phép theo giấy phép MIT.
 
 ## Liên Hệ và Hỗ Trợ
-- Email: support@disasterwarning.com
-- Website: https://disasterwarning.com
-- Điện thoại: (84) 123-456-789
+- Email: devtrantrongtri@gmail.com
+- Điện thoại: (84) 332 403 656
+
+## Về Chúng Tôi
+![Về chúng tôi](/img/aboutus.png)
