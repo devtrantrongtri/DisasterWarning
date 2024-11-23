@@ -82,3 +82,16 @@ export type Sort = {
     unsorted: boolean;
     empty: boolean;
 };
+
+
+
+export interface DisasterWarningCreate {
+    disasterWarningId: number;
+    startDate: number;
+    description: string;
+  }
+  
+  export interface WarningResponse {
+    message: string;
+    data: DisasterWarningCreate[];
+  }

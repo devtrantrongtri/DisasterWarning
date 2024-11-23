@@ -13,6 +13,7 @@ import {
   UserUpdate,
 } from "../interfaces/AuthType";
 import ChangePasswordPopup from "../pages/auth/ChangPassword";
+import { WarningResponse } from "../interfaces/DisasterType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL_V1;
 
@@ -136,6 +137,20 @@ export const userApi = createApi({
       },
     }),
 
+    getCreateWarning: build.query<String,any>({
+      query: () => ({
+        url: `/disaster-warning-management/disaster-warning/sendWarning`,
+        method:'GET'
+      }),
+    }),
+
+    getWarning: build.query<WarningResponse, void>({
+      query: () => ({
+        url: '/disaster-warning-management/disaster-warning/location',
+        method: 'GET',
+      }),
+    }),
+
   }),
 });
 
@@ -148,5 +163,7 @@ export const {
   useChangePasswordMutation,
   useUpdateUserMutation,
   useGetUserByIdQuery,
-  useCountTokenQuery
+  useCountTokenQuery,
+  useGetCreateWarningQuery,
+  useGetWarningQuery
 } = userApi;

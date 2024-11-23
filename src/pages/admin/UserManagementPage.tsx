@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -32,6 +32,7 @@ import {
   useUpdateUserMutation,
   useCreateLocationMutation,
   useGetUserByIdQuery,
+  useGetCreateWarningQuery,
 } from '../../services/user.service';
 import { User } from '../../interfaces/AuthType';
 import CitySelector from '../../components/Admin/CitySelector';
@@ -54,26 +55,47 @@ const UserManagementPage: React.FC = () => {
     severity: 'success',
   });
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
-  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number ; name?:string } | null>(null);
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number; name?: string } | null>(null);
   const [locationOptionSelected, setLocationOptionSelected] = useState(false);
+
+  const [showWarning, setShowWarning] = useState(false); // State to control when to call the warning API
 
   const { data, isLoading, isError, refetch } = useGetUsersQuery({ page: page - 1, size });
   const [updateUser] = useUpdateUserMutation();
   const [createLocation] = useCreateLocationMutation();
+
+  // Use skip to control when to call the warning API
+  const {
+    data: warningData,
+    isLoading: warningLoading,
+    isError: warningError,
+    refetch: refetchWarning,
+  } = useGetCreateWarningQuery(null, {
+    skip: !showWarning,
+  });
 
   // Fetch user data when opening the edit dialog
   const { data: userData, isLoading: isUserLoading, isError: isUserError } = useGetUserByIdQuery(selectedUserId!, {
     skip: selectedUserId === null,
     refetchOnMountOrArgChange: true,
   });
-  
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (userData) {
-      
       setSelectedUser(userData.data);
     }
-  }, [userData,openLocationDialog]);
+  }, [userData, openLocationDialog]);
+
+  // Handle the "Tạo cảnh báo ?" button click
+  const handleCreateWarning = () => {
+    setShowWarning(true);
+    refetchWarning(); // Fetch the warning data
+  };
+
+  // Close the warning data display
+  const handleCloseWarning = () => {
+    setShowWarning(false);
+  };
 
   const handleOpenEditDialog = (userId: number) => {
     setSelectedUserId(userId);
@@ -90,7 +112,7 @@ const UserManagementPage: React.FC = () => {
 
   const handleUpdateUser = async () => {
     if (!selectedUser) return;
-    console.log("f :",selectedUser.location)
+    console.log('f :', selectedUser.location);
     let locationId = selectedUser.location?.locationId || null;
 
     if (coordinates) {
@@ -175,7 +197,7 @@ const UserManagementPage: React.FC = () => {
     setCoordinates({
       latitude: city.coord.lat,
       longitude: city.coord.lon,
-      name : city.name
+      name: city.name,
     });
     setLocationOptionSelected(true);
     setOpenLocationDialog(false);
@@ -188,33 +210,92 @@ const UserManagementPage: React.FC = () => {
   const totalPages = data.data.totalPages;
 
   return (
-    <Box 
+    <Box
       sx={{
         padding: 3,
         borderRadius: 4,
         marginBottom: 2,
         textAlign: 'center',
-        background: 'transparent', // No background
-        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
-        color: '#030302', // Text color
+        background: 'transparent',
+        backdropFilter: 'blur(10px)',
+        color: '#030302',
         marginTop: -9,
-    }}>
+      }}
+    >
+      {/* "Tạo cảnh báo ?" Button */}
+      <Button
+        variant="contained"
+        color="warning"
+        startIcon={<WarningIcon />}
+        sx={{
+          padding: 1,
+          borderRadius: 1,
+          background: '#CC0000',
+          backdropFilter: 'blur(10px)',
+          textAlign: 'center',
+          color: '#fff',
+          transition: 'background 0.3s, color 0.3s',
+          '&:hover': {
+            background: '#f0f0f0',
+            color: '#000',
+          },
+          mb: 2,
+        }}
+        onClick={handleCreateWarning}
+      >
+        Tạo cảnh báo ?
+      </Button>
+
+      {/* Display warning data when available */}
+      {showWarning && (
+        <Box
+          sx={{
+            padding: 2,
+            borderRadius: 2,
+            backgroundColor: '#fff3cd',
+            color: '#856404',
+            mb: 2,
+          }}
+        >
+          {warningLoading && <Typography>Đang tải cảnh báo...</Typography>}
+          {warningError && <Typography>Có lỗi xảy ra khi tải cảnh báo.</Typography>}
+          {warningData && (
+            <Box>
+              {/* Adjust the rendering based on the structure of warningData */}
+              <Typography variant="h6">Dữ liệu cảnh báo:</Typography>
+              {/* Assuming warningData is an array */}
+              {warningData.data && warningData.data.length > 0 ? (
+                warningData.data.map((warning: any, index: number) => (
+                  <Typography key={index}>{warning.message}</Typography>
+                ))
+              ) : (
+                <Typography>Không có cảnh báo nào.</Typography>
+              )}
+            </Box>
+          )}
+          <Button variant="text" onClick={handleCloseWarning} sx={{ mt: 1 }}>
+            Đóng
+          </Button>
+        </Box>
+      )}
+
       <Typography variant="h4" gutterBottom>
         Quản lý người dùng
       </Typography>
-      <TableContainer component={Paper}
+      <TableContainer
+        component={Paper}
         sx={{
           padding: 3,
-            borderRadius: 4,
-            marginBottom: 2,
-            textAlign: 'center',
-            background: 'transparent', // No background
-            minHeight:"440px",
-
-        }}>
+          borderRadius: 4,
+          marginBottom: 2,
+          textAlign: 'center',
+          background: 'transparent',
+          minHeight: '440px',
+        }}
+      >
         <Table>
-          <TableHead >
-            <TableRow >
+          <TableHead>
+            <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }} />
               <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Tên người dùng</TableCell>
@@ -224,7 +305,7 @@ const UserManagementPage: React.FC = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>Hành động</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody >
+          <TableBody>
             {users.map((user) => (
               <React.Fragment key={user.userId}>
                 <TableRow hover>
@@ -237,33 +318,32 @@ const UserManagementPage: React.FC = () => {
                       {openRow === user.userId ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                   </TableCell>
-                  <TableCell sx={{ color:"#fff" }}>{user.userId}</TableCell>
-                  <TableCell sx={{ color:"#fff" }}>{user.userName}</TableCell>
-                  <TableCell sx={{ color:"#fff" }}>{user.email}</TableCell>
-                  <TableCell sx={{ color:"#fff" }}>
+                  <TableCell sx={{ color: '#fff' }}>{user.userId}</TableCell>
+                  <TableCell sx={{ color: '#fff' }}>{user.userName}</TableCell>
+                  <TableCell sx={{ color: '#fff' }}>{user.email}</TableCell>
+                  <TableCell sx={{ color: '#fff' }}>
                     {user.location
                       ? `${user.location.locationName} (${user.location.latitude}, ${user.location.longitude})`
                       : 'N/A'}
                   </TableCell>
                   <TableCell>
-                  <Box
-                    sx={{
-                      padding: 1,
-                      borderRadius: 4,
-                      background: '#0066CC',
-                      backdropFilter: 'blur(10px)',
-                      textAlign: 'center',
-                      color: '#fff',
-                      transition: 'background 0.3s, color 0.3s', // Smooth transition
-                      '&:hover': {
-                        background: '#fff', // Hover background color
-                        color: '#0066CC', // Hover text color
-                      },
-                    }}
-                  >
-                    {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
-                  </Box>
-
+                    <Box
+                      sx={{
+                        padding: 1,
+                        borderRadius: 4,
+                        background: '#0066CC',
+                        backdropFilter: 'blur(10px)',
+                        textAlign: 'center',
+                        color: '#fff',
+                        transition: 'background 0.3s, color 0.3s',
+                        '&:hover': {
+                          background: '#fff',
+                          color: '#0066CC',
+                        },
+                      }}
+                    >
+                      {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <IconButton color="primary" onClick={() => handleOpenEditDialog(user.userId)}>
@@ -276,18 +356,18 @@ const UserManagementPage: React.FC = () => {
                       variant="contained"
                       color="warning"
                       startIcon={<WarningIcon />}
-                      sx={{ 
+                      sx={{
                         padding: 1,
-                      borderRadius: 1,
-                      background: '#CC0000',
-                      backdropFilter: 'blur(10px)',
-                      textAlign: 'center',
-                      color: '#fff',
-                      transition: 'background 0.3s, color 0.3s', // Smooth transition
-                      '&:hover': {
-                        background: '#f0f0f0', // Hover background color
-                        color: '#000', // Hover text color
-                      },
+                        borderRadius: 1,
+                        background: '#CC0000',
+                        backdropFilter: 'blur(10px)',
+                        textAlign: 'center',
+                        color: '#fff',
+                        transition: 'background 0.3s, color 0.3s',
+                        '&:hover': {
+                          background: '#f0f0f0',
+                          color: '#000',
+                        },
                       }}
                     >
                       Tạo cảnh báo
@@ -328,45 +408,53 @@ const UserManagementPage: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        marginTop: 2,
-        }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: 2,
+        }}
+      >
         <Pagination count={totalPages} page={page} onChange={handleChangePage} color="primary" />
       </Box>
 
       {/* Dialog chỉnh sửa người dùng */}
-      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="sm"
-        sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        padding: 3,
-        backgroundColor: '#ffffff',
-        borderRadius: 4,
-        textAlign: 'center',
-        background: 'transparent', // No background
-        backdropFilter: 'blur(10px)', // Optional: blurred effect on background
-        boxShadow: 'none',
-        }}>
-        
-        <DialogTitle
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          marginTop: 2,
+      <Dialog
+        open={openEditDialog}
+        onClose={handleCloseEditDialog}
+        fullWidth
+        maxWidth="sm"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
           padding: 3,
           backgroundColor: '#ffffff',
           borderRadius: 4,
-          marginBottom: 2,
           textAlign: 'center',
-          background: 'transparent', // No background
-          backdropFilter: 'blur(10px)', // Optional: blurred effect on background
-          color: '#0066CC', // Text color
+          background: 'transparent',
+          backdropFilter: 'blur(10px)',
           boxShadow: 'none',
-          fontWeight: 'bold'
-          }}>
-          Chỉnh sửa thông tin</DialogTitle>
+        }}
+      >
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: 2,
+            padding: 3,
+            backgroundColor: '#ffffff',
+            borderRadius: 4,
+            marginBottom: 2,
+            textAlign: 'center',
+            background: 'transparent',
+            backdropFilter: 'blur(10px)',
+            color: '#0066CC',
+            boxShadow: 'none',
+            fontWeight: 'bold',
+          }}
+        >
+          Chỉnh sửa thông tin
+        </DialogTitle>
         <DialogContent>
           {isUserLoading ? (
             <Typography>Đang tải thông tin người dùng...</Typography>
@@ -441,15 +529,8 @@ const UserManagementPage: React.FC = () => {
       </Dialog>
 
       {/* Dialog để chọn địa điểm */}
-      <Dialog
-        open={openLocationDialog}
-        onClose={() => setOpenLocationDialog(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle
-          sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}
-        >
+      <Dialog open={openLocationDialog} onClose={() => setOpenLocationDialog(false)} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
           Chọn Phương Thức Địa Điểm
         </DialogTitle>
         <DialogContent>
@@ -465,11 +546,7 @@ const UserManagementPage: React.FC = () => {
           <CitySelector onCitySelect={handleCitySelect} />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
-          <Button
-            onClick={() => setOpenLocationDialog(false)}
-            color="secondary"
-            variant="outlined"
-          >
+          <Button onClick={() => setOpenLocationDialog(false)} color="secondary" variant="outlined">
             Đóng
           </Button>
         </DialogActions>
@@ -482,11 +559,7 @@ const UserManagementPage: React.FC = () => {
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={handleCloseNotification} severity={notification.severity} sx={{ width: '100%' }}>
           {notification.message}
         </Alert>
       </Snackbar>
